@@ -16,5 +16,16 @@ namespace Escaner_DML
         {
             InitializeComponent();
         }
+
+        private void BtnSalir_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void BtnAnalizar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
+
 }
