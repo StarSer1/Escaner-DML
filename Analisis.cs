@@ -14,10 +14,11 @@ namespace Escaner_DML
         Regex delimitadores = new Regex(@"[.,()']");
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
+        Regex constantes = new Regex(@"\b\d+\b");
 
         List<string> tokens = new List<string>();
 
-        public void Analizador(RichTextBox texto)
+        public List<string> Analizador(RichTextBox texto)
         {
             string cadena = "";
             texto.Text = texto.Text.ToUpper() + " ";
@@ -28,25 +29,61 @@ namespace Escaner_DML
                 string c = texto.Text[i].ToString();
                 if (!delimitadores.IsMatch(c))
                 {
-                    if (c != " ")
+                    if (sigoRelacional)
+                    {
+                        if (relacionales.IsMatch(c) && c != " ")
+                        {
+                            cadena += c;
+                            tokens.Add(cadena);
+                            cadena = "";
+                            c = "";
+                        }
+                        sigoRelacional = false;
+                    }
+                    if (c != " " && !relacionales.IsMatch(c) && !constantes.IsMatch(c))
                     {
                         if (c != "\n")
                             cadena += c;
                     }
                     if (relacionales.IsMatch(c))
                     {
-                        if (sigoRelacional)
+                        if (c != " ")
                         {
                             tokens.Add(cadena);
-                            cadena = "";
-                            sigoRelacional = false;
-                            InsertarEspacio(texto.Text, i + 1);
-                        }
-                        else
-                        {
-                            tokens.Add(cadena.Remove(cadena.Length - 1));
                             cadena = c;
-                            sigoRelacional = true;
+                            if (i + 1 < texto.TextLength)  
+                            {
+                                char siguienteChar = texto.Text[i + 1];
+
+                                if (relacionales.IsMatch(siguienteChar.ToString()))
+                                {
+                                    sigoRelacional = true;
+                                }
+                                else
+                                {
+                                    tokens.Add(cadena);
+                                    cadena = "";
+                                }
+                            }
+                        }
+                    }
+                    if (constantes.IsMatch(c))
+                    {
+                        if (i + 1 < texto.TextLength)
+                        {
+                            char siguienteChar = texto.Text[i + 1];
+
+                            //si el siguiente es espacio en blanco
+                            if (siguienteChar.ToString() == " ")
+                            {
+                                cadena += c;
+                                tokens.Add(cadena);
+                                cadena = "";
+                            }
+                            else if (constantes.IsMatch(siguienteChar.ToString()))
+                            {
+                                cadena += c;
+                            }
                         }
                     }
                     if (c == " " || c == "\n")
@@ -89,8 +126,8 @@ namespace Escaner_DML
                     cadena = "";
                     tokens.Add(c);
                 }
-                
             }
+            return tokens;
         }
         public string InsertarEspacio(string palabra, int indice)
         {
@@ -113,3 +150,24 @@ namespace Escaner_DML
         }
     }
 }
+
+
+/*if (i + 1 < texto.TextLength)
+{
+    char siguienteChar = texto.Text[i + 1];
+
+    //si el siguiente es espacio en blanco
+    if (siguienteChar.ToString() == " ")
+    {
+        cadena = "";
+    }
+    else if (constantes.IsMatch(siguienteChar.ToString()))
+    {
+        cadena += c;
+    }
+    else
+    {
+        tokens.Add(cadena);
+        cadena = "";
+    }
+}*/
