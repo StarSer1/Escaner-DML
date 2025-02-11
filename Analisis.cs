@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,10 @@ namespace Escaner_DML
         Regex constantes = new Regex(@"\b\d+\b");
 
         List<string> tokens = new List<string>();
-
+        static void QuitarElementosVacios(List<string> lista)
+        {
+            lista.RemoveAll(item => string.IsNullOrEmpty(item));
+        }
         public List<string> Analizador(RichTextBox texto)
         {
             string cadena = "";
@@ -130,6 +134,13 @@ namespace Escaner_DML
                     cadena = "";
                     tokens.Add(c);
                 }
+                tokens.RemoveAll(item => string.IsNullOrEmpty(item));
+
+                /*foreach (string token in tokens)
+                {
+                    if (token == "")
+                    tokens.Remove(token);
+                }*/
             }
             return tokens;
         }
