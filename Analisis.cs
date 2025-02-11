@@ -11,7 +11,7 @@ namespace Escaner_DML
     public class Analisis
     {
         Regex reservadas = new Regex(@"\b(SELECT|FROM|WHERE|IN|AND|OR|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES)\b");
-        Regex delimitadores = new Regex(@"[.,()']");
+        Regex delimitadores = new Regex(@"[.,()'’‘]");
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
         Regex constantes = new Regex(@"\b\d+\b");
@@ -80,7 +80,11 @@ namespace Escaner_DML
                                 tokens.Add(cadena);
                                 cadena = "";
                             }
-                            else if (constantes.IsMatch(siguienteChar.ToString()))
+                            else if (constantes.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
+                            {
+                                cadena += c;
+                            }
+                            else if (delimitadores.IsMatch(siguienteChar.ToString()))
                             {
                                 cadena += c;
                             }
@@ -108,7 +112,7 @@ namespace Escaner_DML
                                 cadena = "";
 
                             }
-                            if (delimitadores.IsMatch(tokens.Last()) && cadena != "")
+                            if (delimitadores.IsMatch(tokens.Last()))
                             {
                                 tokens.Add(cadena);
                                 cadena = "";
