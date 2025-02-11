@@ -16,13 +16,39 @@ namespace Escaner_DML
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
         Regex constantes = new Regex(@"\b\d+\b");
+        int contador = 1;
+        int valorIdentificador = 401;
+        int valorConstante = 600;
+        Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
+        {
+            // Palabras Reservadas (1)
+            { "SELECT", 10 }, { "FROM", 11 }, { "WHERE", 12 }, { "IN", 13 },
+            { "AND", 14 }, { "OR", 15 }, { "CREATE", 16 }, { "TABLE", 17 },
+            { "CHAR", 18 }, { "NUMERIC", 19 }, { "NOT", 20 }, { "NULL", 21 },
+            { "CONSTRAINT", 22 }, { "KEY", 23 }, { "PRIMARY", 24 }, { "FOREIGN", 25 },
+            { "REFERENCES", 26 }, { "INSERT", 27 }, { "INTO", 28 }, { "VALUES", 29 },
+
+            // Delimitadores (5)
+            { ",", 50 }, { ".", 51 }, { "(", 52 }, { ")", 53 }, { "'", 54 },
+
+            // Constantes (6)
+            { "d", 61 }, { "a", 62 },
+
+            // Operadores (7)
+            { "+", 70 }, { "-", 71 }, { "*", 72 }, {"/", 73},
+
+            // Relacionales (8)
+            { ">", 81 }, { "<", 82 }, { "=", 83 }, { ">=", 84 }, { "<=", 85 }
+        };
 
         List<string> tokens = new List<string>();
        
-        public List<string> Analizador(RichTextBox texto)
+        public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex)
         {
             string cadena = "";
+            int linea = 1;
             texto.Text = texto.Text.ToUpper() + " ";
+            bool comillas = false;
             bool sigo = false;
             bool sigoRelacional = false;
             for (int i = 0; i<texto.TextLength; i++)
@@ -36,6 +62,8 @@ namespace Escaner_DML
                         {
                             cadena += c;
                             tokens.Add(cadena);
+                            if (cadena != "")
+                                MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                             cadena = "";
                             c = "";
                         }
@@ -51,6 +79,8 @@ namespace Escaner_DML
                         if (c != " ")
                         {
                             tokens.Add(cadena);
+                            if (cadena != "")
+                                MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                             cadena = c;
                             if (i + 1 < texto.TextLength)  
                             {
@@ -63,6 +93,8 @@ namespace Escaner_DML
                                 else
                                 {
                                     tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                 }
                             }
@@ -79,6 +111,8 @@ namespace Escaner_DML
                             {
                                 cadena += c;
                                 tokens.Add(cadena);
+                                if (cadena != "")
+                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                                 cadena = "";
                             }
                             else if (constantes.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
@@ -96,6 +130,8 @@ namespace Escaner_DML
                         if (reservadas.IsMatch(cadena))
                         {
                             tokens.Add(cadena);
+                            if (cadena != "")
+                                MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                             cadena = "";
                         }
                         else if (tokens.Count != 0)
@@ -103,6 +139,8 @@ namespace Escaner_DML
                             if (reservadas.IsMatch(tokens.Last()) && cadena != "")
                             {
                                 tokens.Add(cadena);
+                                if (cadena != "")
+                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                                 sigo = true;
                                 cadena = "";
 
@@ -110,12 +148,16 @@ namespace Escaner_DML
                             if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
                             {
                                 tokens.Add(cadena);
+                                if (cadena != "")
+                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                                 cadena = "";
 
                             }
                             if (delimitadores.IsMatch(tokens.Last()))
                             {
                                 tokens.Add(cadena);
+                                if (cadena != "")
+                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                                 cadena = "";
                             }
                             else
@@ -127,14 +169,101 @@ namespace Escaner_DML
                 }
                 else
                 {
-                    tokens.Add(cadena);
+                    if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
+                    else if (cadena != "" && comillas == true)
+                    {
+                        tokens.Add(cadena);
+                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last()+"~", linea);
+                        comillas = false;
+                    }
+                    else
+                    {
+                        tokens.Add(cadena);
+                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                        tokens.Add(c);
+                        if (c != "")
+                            MostrarDgv(dgvCons, dgvIden, dgvLex, c, linea);
+                    }
                     cadena = "";
-                    tokens.Add(c);
                 }
                 tokens.RemoveAll(item => string.IsNullOrEmpty(item));
+                if (c == "\n")
+                    linea++;
             }
             return tokens;
         }
+        public void MostrarDgv(DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, string token, int linea)
+        {
+            tablaSimbolos.TryGetValue(token, out int valor);
+            if (reservadas.IsMatch(token))
+            {
+                dgvLex.Rows.Add(contador, linea, token, 1, valor);
+            }
+            else if (delimitadores.IsMatch(token))
+            {
+                dgvLex.Rows.Add(contador, linea, token, 5, valor);
+            }
+            else if (operadores.IsMatch(token))
+            {
+                dgvLex.Rows.Add(contador, linea, token, 7, valor);
+            }
+            else if (constantes.IsMatch(token))
+            {
+                dgvLex.Rows.Add(contador, linea, token, 6, valorConstante);
+                if (Regex.IsMatch(token, @"^\d+$"))
+                    dgvCons.Rows.Add(contador, token, 61, valorConstante);
+                else if (Regex.IsMatch(token, @"^[a-zA-Z0-9]+$"))
+                    dgvCons.Rows.Add(contador, token, 62, valorConstante);
+            }
+            else if (relacionales.IsMatch(token))
+            {
+                dgvLex.Rows.Add(contador, linea, token, 8, valor);
+            }
+            else if (token.Contains('~'))
+            {
+                dgvLex.Rows.Add(contador, linea, "CONSTANTE", 6, valorConstante);
+                dgvCons.Rows.Add(contador, token.Remove(token.Length - 1), 62, valorConstante);
+                valorConstante++;
+            }
+            else
+            {
+                bool encontrado = false;
+                // Recorrer el array por si lo encuentra
+                for (int i = 0; i < dgvIden.Rows.Count; i++)
+                {
+                    if (dgvIden.Rows[i].Cells[0].Value != null && dgvIden.Rows[i].Cells[0].Value.ToString() == token)
+                    {
+                        if (dgvIden.Rows[i].Cells[2].Value != null)
+                        {
+                            dgvIden.Rows[i].Cells[2].Value += ", "+linea.ToString();
+                        }
+                        encontrado = true;
+                    }
+                }
+
+                for (int i = 0; i < dgvLex.Rows.Count; i++)
+                {
+                    if (dgvLex.Rows[i].Cells[2].Value != null && dgvLex.Rows[i].Cells[2].Value.ToString() == token)
+                    {
+                        if (dgvLex.Rows[i].Cells[4].Value != null)
+                        {
+                            dgvLex.Rows.Add(contador, linea, token, 4, dgvLex.Rows[i].Cells[4].Value);
+                        }
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (encontrado ==  false)
+                {
+                    dgvLex.Rows.Add(contador, linea, token, 4, valorIdentificador);
+                    dgvIden.Rows.Add(token, valorIdentificador, linea);
+                    valorIdentificador++;
+                    encontrado = false;
+                }
+            }
+            contador++;
+        }
+
         public string InsertarEspacio(string palabra, int indice)
         {
             string nuevaPalabra = "";

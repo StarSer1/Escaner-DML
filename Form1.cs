@@ -28,7 +28,11 @@ namespace Escaner_DML
 
         private void BtnAnalizar_Click(object sender, EventArgs e)
         {
+            DgvConstantes.Rows.Clear();
+            DgvIdentificadores.Rows.Clear();
+            DgvLexica.Rows.Clear();
             Analisis = new Analisis();
+            Analisis.Analizador(txtEntrada, DgvConstantes, DgvIdentificadores, DgvLexica);
         }
 
         private void Form1_Load(object sender, EventArgs e)

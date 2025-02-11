@@ -96,6 +96,7 @@
             this.Column12});
             this.DgvConstantes.Location = new System.Drawing.Point(338, 44);
             this.DgvConstantes.Name = "DgvConstantes";
+            this.DgvConstantes.RowHeadersVisible = false;
             this.DgvConstantes.Size = new System.Drawing.Size(240, 197);
             this.DgvConstantes.TabIndex = 2;
             // 
@@ -129,6 +130,7 @@
             this.Column8});
             this.DgvIdentificadores.Location = new System.Drawing.Point(338, 271);
             this.DgvIdentificadores.Name = "DgvIdentificadores";
+            this.DgvIdentificadores.RowHeadersVisible = false;
             this.DgvIdentificadores.Size = new System.Drawing.Size(240, 213);
             this.DgvIdentificadores.TabIndex = 3;
             // 
@@ -158,6 +160,7 @@
             this.Column5});
             this.DgvLexica.Location = new System.Drawing.Point(599, 44);
             this.DgvLexica.Name = "DgvLexica";
+            this.DgvLexica.RowHeadersVisible = false;
             this.DgvLexica.Size = new System.Drawing.Size(401, 440);
             this.DgvLexica.TabIndex = 4;
             // 
@@ -246,9 +249,9 @@
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 498);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 500);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1012, 25);
+            this.statusStrip1.Size = new System.Drawing.Size(1012, 23);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -256,21 +259,21 @@
             // 
             this.toolStripStatusLabel1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(258, 20);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(264, 18);
             this.toolStripStatusLabel1.Text = "David Alejandro De Los Santos Cruz";
             // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(372, 20);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(380, 18);
             this.toolStripStatusLabel2.Text = "                                              Carlos Omar Celis Calzada";
             // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(367, 20);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(366, 18);
             this.toolStripStatusLabel3.Text = "                                   Brandon Israel Nuñez Montoya";
             // 
             // cmbEjemplo
