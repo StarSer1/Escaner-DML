@@ -26,6 +26,9 @@ namespace Escaner_DML
         int contador = 1;
         int valorIdentificador = 401;
         int valorConstante = 600;
+        int acumuladorParentesisAbierto = 0;
+        int acumuladorComillas = 0;
+
         Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
         {
             // Palabras Reservadas (1)
@@ -56,7 +59,7 @@ namespace Escaner_DML
                 MessageBox.Show("Errores detectados");
             
         }
-        public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex)
+        public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError)
         {
             string cadena = "";
             int linea = 1;
@@ -168,6 +171,11 @@ namespace Escaner_DML
                             }
                             if (delimitadores.IsMatch(tokens.Last()))
                             {
+                                if (c == "(")
+                                    acumuladorParentesisAbierto++;
+                                else if (c == ")")
+                                    acumuladorParentesisAbierto--;
+
                                 tokens.Add(cadena);
                                 if (cadena != "")
                                     MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
@@ -183,8 +191,17 @@ namespace Escaner_DML
                         }
                     }
                 }
-                else
+                else 
                 {
+                    if (c == "(")
+                        acumuladorParentesisAbierto++;
+                    else if (c == ")")
+                        acumuladorParentesisAbierto--;
+
+                    if (c == "'" || c == "’" || c == "‘")
+                        acumuladorComillas++;
+
+
                     if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
                     else if (cadena != "" && comillas == true)
                     {
@@ -209,6 +226,20 @@ namespace Escaner_DML
                 tokens.RemoveAll(item => string.IsNullOrEmpty(item));
                 if (c == "\n")
                     linea++;
+            }
+            if (acumuladorParentesisAbierto != 0)
+            {
+                dgvCons.Rows.Clear();
+                dgvIden.Rows.Clear();
+                dgvLex.Rows.Clear();
+                txtError.Text = "Faltan parentesis";
+            }
+            if (acumuladorComillas%2 != 0)
+            {
+                dgvCons.Rows.Clear();
+                dgvIden.Rows.Clear();
+                dgvLex.Rows.Clear();
+                txtError.Text = "Faltan comillas";
             }
             return tokens;
         }
@@ -240,6 +271,7 @@ namespace Escaner_DML
                     dgvCons.Rows.Add(contador, token, 61, valorConstante);
                 else if (Regex.IsMatch(token, @"^[a-zA-Z0-9]+$"))
                     dgvCons.Rows.Add(contador, token, 62, valorConstante);
+                valorConstante++;
             }
             else if (relacionales.IsMatch(token))
             {
@@ -305,24 +337,3 @@ namespace Escaner_DML
         }
     }
 }
-
-
-/*if (i + 1 < texto.TextLength)
-{
-    char siguienteChar = texto.Text[i + 1];
-
-    //si el siguiente es espacio en blanco
-    if (siguienteChar.ToString() == " ")
-    {
-        cadena = "";
-    }
-    else if (constantes.IsMatch(siguienteChar.ToString()))
-    {
-        cadena += c;
-    }
-    else
-    {
-        tokens.Add(cadena);
-        cadena = "";
-    }
-}*/

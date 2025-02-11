@@ -23,18 +23,21 @@ namespace Escaner_DML
 
         private void BtnSalir_Click(object sender, EventArgs e)
         {
-            //Application.Exit();
-            Analisis = new Analisis();
-            Analisis.MetodoError(txtEntrada.Text);
+            Application.Exit();
+           // Analisis = new Analisis();
+           // Analisis.MetodoError(txtEntrada.Text);
         }
 
         private void BtnAnalizar_Click(object sender, EventArgs e)
         {
+            txtError.Text = "";
             DgvConstantes.Rows.Clear();
             DgvIdentificadores.Rows.Clear();
             DgvLexica.Rows.Clear();
             Analisis = new Analisis();
-            Analisis.Analizador(txtEntrada, DgvConstantes, DgvIdentificadores, DgvLexica);
+            Analisis.Analizador(txtEntrada, DgvConstantes, DgvIdentificadores, DgvLexica, txtError);
+            
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -54,8 +57,13 @@ namespace Escaner_DML
             }
             if (cmbEjemplo.SelectedIndex == 2)
             {
-                txtEntrada.Text = "SELECT ANOMBRE \r\nFROM ALUMNOS,INSCRITOS,CARRERAS \r\nWHERE ALUMNOS.A#=INSCRITOS.A# AND ALUMNOS.C#=CARRERAS.C# \r\nAND INSCRITOS.SEMESTRE='2010I' \r\nAND CARRERAS.CNOMBRE='ISC' \r\nAND LUMNOS.GENERACION='2010'";
+                txtEntrada.Text = "SELECT M#,MNOMBRE \r\nFROM MATERIAS \r\nWHERE M# IN (SELECT M# \r\nFROM INSCRITOS \r\nWHERE A# IN (SELECT A# \r\nFROM ALUMNOS \r\nWHERE ANOMBRE='MESSI LIONEL'))";
             }
+            if (cmbEjemplo.SelectedIndex == 3)
+            {
+                txtEntrada.Text = "SELECT ANOMBRE \r\nFROM ALUMNOS \r\nWHERE A# IN (SELECT A# \r\nFROM INSCRITOS \r\nWHERE CALIFICACION < 70 \r\nAND M# IN (SELECT M# \r\nFROM MATERIAS \r\nWHERE C# IN (SELECT C# \r\nFROM CARRERAS \r\nWHERE D# IN (SELECT D# \r\nFROM DEPARTAMENTOS \r\nWHERE DNOMBRE = 'CIECOM'))))";
+            }
+            
         }
     }
 

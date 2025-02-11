@@ -55,6 +55,8 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.cmbEjemplo = new System.Windows.Forms.ComboBox();
+            this.txtError = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.DgvConstantes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DgvIdentificadores)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DgvLexica)).BeginInit();
@@ -249,9 +251,9 @@
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 500);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 491);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1012, 23);
+            this.statusStrip1.Size = new System.Drawing.Size(1012, 25);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -259,21 +261,21 @@
             // 
             this.toolStripStatusLabel1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(264, 18);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(258, 20);
             this.toolStripStatusLabel1.Text = "David Alejandro De Los Santos Cruz";
             // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(380, 18);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(372, 20);
             this.toolStripStatusLabel2.Text = "                                              Carlos Omar Celis Calzada";
             // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(366, 18);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(367, 20);
             this.toolStripStatusLabel3.Text = "                                   Brandon Israel Nuñez Montoya";
             // 
             // cmbEjemplo
@@ -282,19 +284,37 @@
             this.cmbEjemplo.Items.AddRange(new object[] {
             "Ejemplo 1",
             "Ejemplo 2",
-            "Ejemplo 3"});
+            "Ejemplo 3",
+            "Ejemplo 4"});
             this.cmbEjemplo.Location = new System.Drawing.Point(16, 44);
             this.cmbEjemplo.Name = "cmbEjemplo";
             this.cmbEjemplo.Size = new System.Drawing.Size(300, 21);
             this.cmbEjemplo.TabIndex = 8;
             this.cmbEjemplo.SelectedIndexChanged += new System.EventHandler(this.cmbEjemplo_SelectedIndexChanged);
             // 
+            // txtError
+            // 
+            this.txtError.Location = new System.Drawing.Point(81, 410);
+            this.txtError.Name = "txtError";
+            this.txtError.Size = new System.Drawing.Size(235, 20);
+            this.txtError.TabIndex = 9;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(12, 410);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(63, 20);
+            this.textBox1.TabIndex = 10;
+            this.textBox1.Text = "MENSAJE";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Salmon;
-            this.ClientSize = new System.Drawing.Size(1012, 523);
+            this.ClientSize = new System.Drawing.Size(1012, 516);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtError);
             this.Controls.Add(this.cmbEjemplo);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.txtEntrada);
@@ -353,6 +373,8 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ComboBox cmbEjemplo;
+        private System.Windows.Forms.TextBox txtError;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 
