@@ -23,7 +23,9 @@ namespace Escaner_DML
 
         private void BtnSalir_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            //Application.Exit();
+            Analisis = new Analisis();
+            Analisis.MetodoError(txtEntrada.Text);
         }
 
         private void BtnAnalizar_Click(object sender, EventArgs e)

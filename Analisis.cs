@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,6 +18,11 @@ namespace Escaner_DML
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
         Regex constantes = new Regex(@"\b\d+\b");
+        Regex EntradasValidas = new Regex(@"\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|
+            REFERENCES|INSERT|INTO|VALUES)\b|[()]|\w+(\s,\s(?!\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|
+                KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES)\b)\w+)+|[<=|>=|<|>]|('[\w#]+')|((?<=(<|>|<=|>=|=)\s+)\d+)|(\d+(?=\s+(<|>
+            |<=|>=|=)))|(?!\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT
+                                                                                                                                              |INTO|VALUES)\b)(?!((?<=(<|>|<=|>=|=)\s+)\d+)|(\d+(?=\s+(<|>|<=|>=|=))))(?<!')\b[\w#]+(?!)");
         int contador = 1;
         int valorIdentificador = 401;
         int valorConstante = 600;
@@ -40,9 +47,15 @@ namespace Escaner_DML
             // Relacionales (8)
             { ">", 81 }, { "<", 82 }, { "=", 83 }, { ">=", 84 }, { "<=", 85 }
         };
-
         List<string> tokens = new List<string>();
-       
+        public void MetodoError(string texto)
+        {
+            if (EntradasValidas.IsMatch(texto))
+                MessageBox.Show("El programa esta libre de errores");
+            else
+                MessageBox.Show("Errores detectados");
+            
+        }
         public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex)
         {
             string cadena = "";
@@ -162,7 +175,10 @@ namespace Escaner_DML
                             }
                             else
                             {
-
+                                tokens.Add(cadena);
+                                if (cadena != "")
+                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                cadena = "";
                             }
                         }
                     }
@@ -173,18 +189,22 @@ namespace Escaner_DML
                     else if (cadena != "" && comillas == true)
                     {
                         tokens.Add(cadena);
-                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last()+"~", linea);
+                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last() + "~", linea);
                         comillas = false;
                     }
                     else
-                    {
+                    {                       
                         tokens.Add(cadena);
-                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                        if(tokens.Last() != "")
+                            MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                         tokens.Add(c);
                         if (c != "")
                             MostrarDgv(dgvCons, dgvIden, dgvLex, c, linea);
                     }
                     cadena = "";
+
+
+
                 }
                 tokens.RemoveAll(item => string.IsNullOrEmpty(item));
                 if (c == "\n")
@@ -207,6 +227,12 @@ namespace Escaner_DML
             {
                 dgvLex.Rows.Add(contador, linea, token, 7, valor);
             }
+            else if (token.Contains('~'))
+            {
+                dgvLex.Rows.Add(contador, linea, "CONSTANTE", 6, valorConstante);
+                dgvCons.Rows.Add(contador, token.Remove(token.Length - 1), 62, valorConstante);
+                valorConstante++;
+            }
             else if (constantes.IsMatch(token))
             {
                 dgvLex.Rows.Add(contador, linea, token, 6, valorConstante);
@@ -218,12 +244,6 @@ namespace Escaner_DML
             else if (relacionales.IsMatch(token))
             {
                 dgvLex.Rows.Add(contador, linea, token, 8, valor);
-            }
-            else if (token.Contains('~'))
-            {
-                dgvLex.Rows.Add(contador, linea, "CONSTANTE", 6, valorConstante);
-                dgvCons.Rows.Add(contador, token.Remove(token.Length - 1), 62, valorConstante);
-                valorConstante++;
             }
             else
             {
