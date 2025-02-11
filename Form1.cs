@@ -29,12 +29,6 @@ namespace Escaner_DML
         private void BtnAnalizar_Click(object sender, EventArgs e)
         {
             Analisis = new Analisis();
-
-            
-            Tabla = Analisis.Analizador(txtEntrada);
-            for (int i = 0; i < Tabla.Count; i++) {
-                DgvLexica.Rows.Add('1', '1', Tabla[i],'1','1');
-            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
