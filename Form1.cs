@@ -30,6 +30,7 @@ namespace Escaner_DML
 
         private void BtnAnalizar_Click(object sender, EventArgs e)
         {
+            txtError.BackColor = Color.White;
             txtError.Text = "";
             DgvConstantes.Rows.Clear();
             DgvIdentificadores.Rows.Clear();
@@ -64,6 +65,16 @@ namespace Escaner_DML
                 txtEntrada.Text = "SELECT ANOMBRE \r\nFROM ALUMNOS \r\nWHERE A# IN (SELECT A# \r\nFROM INSCRITOS \r\nWHERE CALIFICACION < 70 \r\nAND M# IN (SELECT M# \r\nFROM MATERIAS \r\nWHERE C# IN (SELECT C# \r\nFROM CARRERAS \r\nWHERE D# IN (SELECT D# \r\nFROM DEPARTAMENTOS \r\nWHERE DNOMBRE = 'CIECOM'))))";
             }
             
+        }
+
+        private void BtnClear_Click(object sender, EventArgs e)
+        {
+            DgvConstantes.Rows.Clear();
+            DgvIdentificadores.Rows.Clear();
+            DgvLexica.Rows.Clear();
+            txtError.Text = string.Empty;
+            txtEntrada.Text = string.Empty;
+            txtError.BackColor = Color.White;
         }
     }
 

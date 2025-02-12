@@ -28,6 +28,7 @@ namespace Escaner_DML
         int valorConstante = 600;
         int acumuladorParentesisAbierto = 0;
         int acumuladorComillas = 0;
+        Errores Errores = new Errores();
 
         Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
         {
@@ -227,20 +228,8 @@ namespace Escaner_DML
                 if (c == "\n")
                     linea++;
             }
-            if (acumuladorParentesisAbierto != 0)
-            {
-                dgvCons.Rows.Clear();
-                dgvIden.Rows.Clear();
-                dgvLex.Rows.Clear();
-                txtError.Text = "Faltan parentesis";
-            }
-            if (acumuladorComillas%2 != 0)
-            {
-                dgvCons.Rows.Clear();
-                dgvIden.Rows.Clear();
-                dgvLex.Rows.Clear();
-                txtError.Text = "Faltan comillas";
-            }
+            Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
+            Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
             return tokens;
         }
         public void MostrarDgv(DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, string token, int linea)
