@@ -18,16 +18,13 @@ namespace Escaner_DML
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
         Regex constantes = new Regex(@"\b\d+\b");
-        Regex EntradasValidas = new Regex(@"\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|
-            REFERENCES|INSERT|INTO|VALUES)\b|[()]|\w+(\s,\s(?!\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|
-                KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES)\b)\w+)+|[<=|>=|<|>]|('[\w#]+')|((?<=(<|>|<=|>=|=)\s+)\d+)|(\d+(?=\s+(<|>
-            |<=|>=|=)))|(?!\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT
-                                                                                                                                              |INTO|VALUES)\b)(?!((?<=(<|>|<=|>=|=)\s+)\d+)|(\d+(?=\s+(<|>|<=|>=|=))))(?<!')\b[\w#]+(?!)");
+        
         int contador = 1;
         int valorIdentificador = 401;
         int valorConstante = 600;
         int acumuladorParentesisAbierto = 0;
         int acumuladorComillas = 0;
+        bool empezoComilla = false;
         Errores Errores = new Errores();
 
         Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
@@ -52,14 +49,6 @@ namespace Escaner_DML
             { ">", 81 }, { "<", 82 }, { "=", 83 }, { ">=", 84 }, { "<=", 85 }
         };
         List<string> tokens = new List<string>();
-        public void MetodoError(string texto)
-        {
-            if (EntradasValidas.IsMatch(texto))
-                MessageBox.Show("El programa esta libre de errores");
-            else
-                MessageBox.Show("Errores detectados");
-            
-        }
         public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError)
         {
             string cadena = "";
@@ -142,58 +131,69 @@ namespace Escaner_DML
                             }
                         }
                     }
-                    if (c == " " || c == "\n")
+                    if (c == " " || c == "\n" )
                     {
-                        if (reservadas.IsMatch(cadena))
+                        if (empezoComilla == false)
                         {
-                            tokens.Add(cadena);
-                            if (cadena != "")
-                                MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                            cadena = "";
+                            if (reservadas.IsMatch(cadena))
+                            {
+                                tokens.Add(cadena);
+                                if (cadena != "")
+                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                cadena = "";
+                            }
+                            else if (tokens.Count != 0)
+                            {
+                                if (reservadas.IsMatch(tokens.Last()) && cadena != "")
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    sigo = true;
+                                    cadena = "";
+
+                                }
+                                if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+
+                                }
+                                if (delimitadores.IsMatch(tokens.Last()))
+                                {
+                                    if (c == "(")
+                                        acumuladorParentesisAbierto++;
+                                    else if (c == ")")
+                                        acumuladorParentesisAbierto--;
+
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                                else
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                            }
                         }
-                        else if (tokens.Count != 0)
+                        else
                         {
-                            if (reservadas.IsMatch(tokens.Last()) && cadena != "")
-                            {
-                                tokens.Add(cadena);
-                                if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                                sigo = true;
-                                cadena = "";
-
-                            }
-                            if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
-                            {
-                                tokens.Add(cadena);
-                                if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                                cadena = "";
-
-                            }
-                            if (delimitadores.IsMatch(tokens.Last()))
-                            {
-                                if (c == "(")
-                                    acumuladorParentesisAbierto++;
-                                else if (c == ")")
-                                    acumuladorParentesisAbierto--;
-
-                                tokens.Add(cadena);
-                                if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                                cadena = "";
-                            }
-                            else
-                            {
-                                tokens.Add(cadena);
-                                if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                                cadena = "";
-                            }
+                            cadena += " ";
                         }
                     }
                 }
                 else 
                 {
+                    if ("'’‘".Contains(c))
+                    {
+                        empezoComilla = !empezoComilla;
+                    }
                     if (c == "(")
                         acumuladorParentesisAbierto++;
                     else if (c == ")")
