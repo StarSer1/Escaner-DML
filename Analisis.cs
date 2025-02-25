@@ -13,6 +13,7 @@ namespace Escaner_DML
 {
     public class Analisis
     {
+        // ajua
         Regex reservadas = new Regex(@"\b(SELECT|FROM|WHERE|IN|AND|OR|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES)\b");
         Regex delimitadores = new Regex(@"[.,()'’‘]");
         Regex operadores = new Regex(@"[+\-*/]");
