@@ -14,12 +14,12 @@ namespace Escaner_DML
     public class Analisis
     {
         // ajua
-        Regex reservadas = new Regex(@"\b(SELECT|FROM|WHERE|IN|AND|OR|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES)\b");
+        Regex reservadas = new Regex(@"\b(SELECT|FROM|WHERE|IN|AND|OR|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES|GO|PROCEDURE|VARCHAR|AS|IF|EXISTS|BEGIN|PRINT|END)\b");
         Regex delimitadores = new Regex(@"[.,()'’‘]");
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
         Regex constantes = new Regex(@"\b\d+\b");
-        
+
         int contador = 1;
         int valorIdentificador = 401;
         int valorConstante = 600;
@@ -35,7 +35,9 @@ namespace Escaner_DML
             { "AND", 14 }, { "OR", 15 }, { "CREATE", 16 }, { "TABLE", 17 },
             { "CHAR", 18 }, { "NUMERIC", 19 }, { "NOT", 20 }, { "NULL", 21 },
             { "CONSTRAINT", 22 }, { "KEY", 23 }, { "PRIMARY", 24 }, { "FOREIGN", 25 },
-            { "REFERENCES", 26 }, { "INSERT", 27 }, { "INTO", 28 }, { "VALUES", 29 },
+            { "REFERENCES", 26 }, { "INSERT", 27 }, { "INTO", 28 }, { "VALUES", 29 }, { "GO", 30 },
+            { "PROCEDURE", 31 }, { "VARCHAR", 32 }, { "AS", 33 }, { "IF", 34 }, { "EXISTS", 35 },
+            { "BEGIN", 36 },{ "PRINT", 37 },{ "END", 38 },
 
             // Delimitadores (5)
             { ",", 50 }, { ".", 51 }, { "(", 52 }, { ")", 53 }, { "'", 54 },
@@ -256,7 +258,7 @@ namespace Escaner_DML
             }
             else if (constantes.IsMatch(token))
             {
-                dgvLex.Rows.Add(contador, linea, token, 6, valorConstante);
+                dgvLex.Rows.Add(contador, linea, "CONSTANTE", 6, valorConstante);
                 if (Regex.IsMatch(token, @"^\d+$"))
                     dgvCons.Rows.Add(contador, token, 61, valorConstante);
                 else if (Regex.IsMatch(token, @"^[a-zA-Z0-9]+$"))
@@ -282,7 +284,6 @@ namespace Escaner_DML
                         encontrado = true;
                     }
                 }
-
                 for (int i = 0; i < dgvLex.Rows.Count; i++)
                 {
                     if (dgvLex.Rows[i].Cells[2].Value != null && dgvLex.Rows[i].Cells[2].Value.ToString() == token)
