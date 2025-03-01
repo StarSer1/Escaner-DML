@@ -26,6 +26,7 @@ namespace Escaner_DML
         int valorConstante = 600;
         int acumuladorParentesisAbierto = 0;
         int acumuladorComillas = 0;
+        bool empezoComilla = false;
         Errores Errores = new Errores();
 
         Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
@@ -153,39 +154,48 @@ namespace Escaner_DML
                                 sigo = true;
                                 cadena = "";
 
-                            }
-                            if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
-                            {
-                                tokens.Add(cadena);
-                                if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                                cadena = "";
+                                }
+                                if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    cadena = "";
 
-                            }
-                            if (delimitadores.IsMatch(tokens.Last()))
-                            {
-                                if (c == "(")
-                                    acumuladorParentesisAbierto++;
-                                else if (c == ")")
-                                    acumuladorParentesisAbierto--;
+                                }
+                                if (delimitadores.IsMatch(tokens.Last()))
+                                {
+                                    if (c == "(")
+                                        acumuladorParentesisAbierto++;
+                                    else if (c == ")")
+                                        acumuladorParentesisAbierto--;
 
-                                tokens.Add(cadena);
-                                if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                                cadena = "";
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                                else
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
                             }
-                            else
-                            {
-                                tokens.Add(cadena);
-                                if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                                cadena = "";
-                            }
+                        }
+                        else
+                        {
+                            cadena += " ";
                         }
                     }
                 }
                 else 
                 {
+                    if ("'’‘".Contains(c))
+                    {
+                        empezoComilla = !empezoComilla;
+                    }
                     if (c == "(")
                         acumuladorParentesisAbierto++;
                     else if (c == ")")
