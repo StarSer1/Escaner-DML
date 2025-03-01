@@ -92,7 +92,7 @@ namespace Escaner_DML
                             if (cadena != "")
                                 MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                             cadena = c;
-                            if (i + 1 < texto.TextLength)  
+                            if (i + 1 < texto.TextLength)
                             {
                                 char siguienteChar = texto.Text[i + 1];
 
@@ -137,22 +137,24 @@ namespace Escaner_DML
                     }
                     if ((c == " " || c == "\n") && comillas == false)
                     {
-                        if (reservadas.IsMatch(cadena))
+                        if (empezoComilla == false)
                         {
-                            tokens.Add(cadena);
-                            if (cadena != "")
-                                MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                            cadena = "";
-                        }
-                        else if (tokens.Count != 0)
-                        {
-                            if (reservadas.IsMatch(tokens.Last()) && cadena != "")
+                            if (reservadas.IsMatch(cadena))
                             {
                                 tokens.Add(cadena);
                                 if (cadena != "")
                                     MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
-                                sigo = true;
                                 cadena = "";
+                            }
+                            else if (tokens.Count != 0)
+                            {
+                                if (reservadas.IsMatch(tokens.Last()) && cadena != "")
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    sigo = true;
+                                    cadena = "";
 
                                 }
                                 if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
