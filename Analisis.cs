@@ -13,16 +13,14 @@ namespace Escaner_DML
 {
     public class Analisis
     {
-        Regex reservadas = new Regex(@"\b(SELECT|FROM|WHERE|IN|AND|OR|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES)\b");
-        Regex delimitadores = new Regex(@"[.,()'’‘]");
+        Regex reservadas = new Regex(@"\b(SELECT|FROM|WHERE|IN|AND|OR|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|
+        CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES|PROCEDURE|AS|BEGIN|DECLARE|PRINT|CAST|VARCHAR|END|INT)\b");
+        Regex delimitadores = new Regex(@"[.,()'’‘;]");
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
         Regex constantes = new Regex(@"\b\d+\b");
-        Regex EntradasValidas = new Regex(@"\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|
-            REFERENCES|INSERT|INTO|VALUES)\b|[()]|\w+(\s,\s(?!\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|
-                KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES)\b)\w+)+|[<=|>=|<|>]|('[\w#]+')|((?<=(<|>|<=|>=|=)\s+)\d+)|(\d+(?=\s+(<|>
-            |<=|>=|=)))|(?!\b(SELECT|FROM|WHERE|AND|OR|IN|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT
-                                                                                                                                              |INTO|VALUES)\b)(?!((?<=(<|>|<=|>=|=)\s+)\d+)|(\d+(?=\s+(<|>|<=|>=|=))))(?<!')\b[\w#]+(?!)");
+        
+                                                                                                                                            
         int contador = 1;
         int valorIdentificador = 401;
         int valorConstante = 600;
@@ -37,10 +35,12 @@ namespace Escaner_DML
             { "AND", 14 }, { "OR", 15 }, { "CREATE", 16 }, { "TABLE", 17 },
             { "CHAR", 18 }, { "NUMERIC", 19 }, { "NOT", 20 }, { "NULL", 21 },
             { "CONSTRAINT", 22 }, { "KEY", 23 }, { "PRIMARY", 24 }, { "FOREIGN", 25 },
-            { "REFERENCES", 26 }, { "INSERT", 27 }, { "INTO", 28 }, { "VALUES", 29 },
+            { "REFERENCES", 26 }, { "INSERT", 27 }, { "INTO", 28 }, { "VALUES", 29 }, { "INT", 30},
+            { "PROCEDURE", 31 }, { "AS", 32}, { "BEGIN", 33}, { "DECLARE", 34}, {"PRINT", 35},
+            { "CAST", 36 }, { "VARCHAR", 37}, {"END", 38},
 
             // Delimitadores (5)
-            { ",", 50 }, { ".", 51 }, { "(", 52 }, { ")", 53 }, { "'", 54 },
+            { ",", 50 }, { ".", 51 }, { "(", 52 }, { ")", 53 }, { "'", 54 }, {";", 55},
 
             // Constantes (6)
             { "d", 61 }, { "a", 62 },
@@ -52,14 +52,6 @@ namespace Escaner_DML
             { ">", 81 }, { "<", 82 }, { "=", 83 }, { ">=", 84 }, { "<=", 85 }
         };
         List<string> tokens = new List<string>();
-        public void MetodoError(string texto)
-        {
-            if (EntradasValidas.IsMatch(texto))
-                MessageBox.Show("El programa esta libre de errores");
-            else
-                MessageBox.Show("Errores detectados");
-            
-        }
         public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError)
         {
             string cadena = "";
@@ -86,7 +78,7 @@ namespace Escaner_DML
                         }
                         sigoRelacional = false;
                     }
-                    if (c != " " && !relacionales.IsMatch(c) && !constantes.IsMatch(c))
+                    if (c != " " && !relacionales.IsMatch(c) && !constantes.IsMatch(c) || comillas == true)
                     {
                         if (c != "\n")
                             cadena += c;
@@ -142,7 +134,7 @@ namespace Escaner_DML
                             }
                         }
                     }
-                    if (c == " " || c == "\n")
+                    if ((c == " " || c == "\n") && comillas == false)
                     {
                         if (reservadas.IsMatch(cadena))
                         {
@@ -209,6 +201,13 @@ namespace Escaner_DML
                         tokens.Add(cadena);
                         MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last() + "~", linea);
                         comillas = false;
+                    }
+                    else if (cadena != "" && (c == ")" || c == ",") && constantes.IsMatch(cadena))
+                    {
+                        tokens.Add(cadena);
+                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last() + "~", linea);
+                        tokens.Add(c);
+                        MostrarDgv(dgvCons, dgvIden, dgvLex, c, linea);
                     }
                     else
                     {                       
@@ -325,4 +324,5 @@ namespace Escaner_DML
             return nuevaPalabra;
         }
     }
+
 }
