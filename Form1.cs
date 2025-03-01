@@ -14,7 +14,7 @@ namespace Escaner_DML
     public partial class Form1 : Form
     {
         Analisis Analisis;
-        new List<string> Tabla;
+        List<string> TablaLex;
         public Form1()
         {
             InitializeComponent();
@@ -36,8 +36,7 @@ namespace Escaner_DML
             DgvIdentificadores.Rows.Clear();
             DgvLexica.Rows.Clear();
             Analisis = new Analisis();
-            Analisis.Analizador(txtEntrada, DgvConstantes, DgvIdentificadores, DgvLexica, txtError);
-            
+            TablaLex = Analisis.Analizador(txtEntrada, DgvConstantes, DgvIdentificadores, DgvLexica, txtError);
 
         }
 

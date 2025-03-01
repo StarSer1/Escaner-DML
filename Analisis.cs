@@ -14,12 +14,37 @@ namespace Escaner_DML
     public class Analisis
     {
         Regex reservadas = new Regex(@"\b(SELECT|FROM|WHERE|IN|AND|OR|CREATE|TABLE|CHAR|NUMERIC|NOT|NULL|
-        CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES|PROCEDURE|AS|BEGIN|DECLARE|PRINT|CAST|VARCHAR|END|INT)\b");
+        CONSTRAINT|KEY|PRIMARY|FOREIGN|REFERENCES|INSERT|INTO|VALUES)\b");
         Regex delimitadores = new Regex(@"[.,()'’‘;]");
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
         Regex constantes = new Regex(@"\b\d+\b");
-        
+
+        Stack<string> pila = new Stack<string>();
+        string[,] TablaSintac =
+        {
+//             4     8             10           11    12    13    14    15    50    51    53    54    61    62    72    199
+            { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
+            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
+            { "304 303", null, null, null, null, null, null, null, null, null , null, null, null, null, null, null}, // 302 
+            { null, null, null, "99", null, null, null, null, "50 302", null, null, null, null, null, null,  "99"}, // 303
+            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, // 304
+            { null , "99", null, "99", null, "99", "99", "99", "99", "51 4", "99", null, null, null, null, "99" }, // 305
+            { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 306
+            {  null, null, null, null, "99", null, null, null, "50 306", null, "99", null, null, null, null, "99"},
+            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+            { "4", null, null, null, "99", null, null, null, "99", null, "99", null, null, null, null, "99"},
+            { null, null, null, null, "12 311", null, null, null, null, null, "99", null, null, null, null, "99" },
+            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, null, null, null, null, null, "317 311", "317 311", null, null, "99", null, null, null, null, "99" },
+            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null },
+            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { "304", null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null },
+            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null },
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
+            { null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null }
+        };
                                                                                                                                             
         int contador = 1;
         int valorIdentificador = 401;
@@ -36,9 +61,7 @@ namespace Escaner_DML
             { "AND", 14 }, { "OR", 15 }, { "CREATE", 16 }, { "TABLE", 17 },
             { "CHAR", 18 }, { "NUMERIC", 19 }, { "NOT", 20 }, { "NULL", 21 },
             { "CONSTRAINT", 22 }, { "KEY", 23 }, { "PRIMARY", 24 }, { "FOREIGN", 25 },
-            { "REFERENCES", 26 }, { "INSERT", 27 }, { "INTO", 28 }, { "VALUES", 29 }, { "INT", 30},
-            { "PROCEDURE", 31 }, { "AS", 32}, { "BEGIN", 33}, { "DECLARE", 34}, {"PRINT", 35},
-            { "CAST", 36 }, { "VARCHAR", 37}, {"END", 38},
+            { "REFERENCES", 26 }, { "INSERT", 27 }, { "INTO", 28 }, { "VALUES", 29 },
 
             // Delimitadores (5)
             { ",", 50 }, { ".", 51 }, { "(", 52 }, { ")", 53 }, { "'", 54 }, {";", 55},
@@ -243,6 +266,47 @@ namespace Escaner_DML
             Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
             return tokens;
         }
+
+        public void Sintaxis(List<string> tokens)
+        {
+            pila.Push("$");
+            pila.Push("300");
+            tokens.Add("$");
+            int apun = 0;
+            string equis;
+            do
+            {
+                string X = pila.Pop();
+                string K = tokens[apun];
+                if ((int.TryParse(X, out int a) == true) || X == "$")
+                {
+                    if (X == K)
+                        apun++;
+                    else
+                    {
+                        //ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}
+                    }
+                }
+                else
+                {
+                    string produccion = TablaSintac[int.Parse(ConvertirToken(K)), int.Parse(X)];
+                    if (produccion != null)
+                    {
+                        if (produccion != "99")
+                        {
+                            produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
+                        }
+
+                    }
+                    else
+                    {
+                        // ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros} 
+                    }
+                }
+                equis = X;
+            }
+            while (equis != "$");
+        }
         public void MostrarDgv(DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, string token, int linea)
         {
             tablaSimbolos.TryGetValue(token, out int valor);
@@ -316,24 +380,16 @@ namespace Escaner_DML
             contador++;
         }
 
-        public string InsertarEspacio(string palabra, int indice)
+        public string ConvertirToken(string token)
         {
-            string nuevaPalabra = "";
-            int i = 0;
-            while (i < palabra.Length)
+            if (tablaSimbolos.TryGetValue(token, out int valor))
             {
-                if (i != indice)
-                {
-                    nuevaPalabra += palabra[i];
-                    i++;
-                }
-                else
-                {
-                    nuevaPalabra += " "+ palabra[i];
-                    i++;
-                }
+                return valor.ToString();
             }
-            return nuevaPalabra;
+            else
+            {
+                return 4.ToString();
+            }
         }
     }
 
