@@ -23,7 +23,7 @@ namespace Escaner_DML
         Stack<string> pila = new Stack<string>();
         string[,] TablaSintac =
         {
-//             4     8             10           11    12    13    14    15    50    51    53    54    61    62    72    199
+//             4     8             10           11    12    13    14    15    50    51    53    54    61    62    72    99
             { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
             { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
             { "304 303", null, null, null, null, null, null, null, null, null , null, null, null, null, null, null}, // 302 
@@ -73,7 +73,10 @@ namespace Escaner_DML
             { "+", 70 }, { "-", 71 }, { "*", 72 }, {"/", 73},
 
             // Relacionales (8)
-            { ">", 81 }, { "<", 82 }, { "=", 83 }, { ">=", 84 }, { "<=", 85 }
+            { ">", 81 }, { "<", 82 }, { "=", 83 }, { ">=", 84 }, { "<=", 85 },
+
+            // Espacio en Blanco
+            {"", 99 }
         };
         List<string> tokens = new List<string>();
         public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError)
@@ -165,6 +168,7 @@ namespace Escaner_DML
                             if (reservadas.IsMatch(cadena))
                             {
                                 tokens.Add(cadena);
+                                tokens.Add(c);
                                 if (cadena != "")
                                     MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                                 cadena = "";
@@ -258,12 +262,13 @@ namespace Escaner_DML
 
 
                 }
-                tokens.RemoveAll(item => string.IsNullOrEmpty(item));
+                //tokens.RemoveAll(item => string.IsNullOrEmpty(item));
                 if (c == "\n")
                     linea++;
             }
             Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
             Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
+            tokens = RemoverDuplicadosVacios(tokens);
             return tokens;
         }
 
@@ -280,16 +285,17 @@ namespace Escaner_DML
                 string K = tokens[apun];
                 if (!X.StartsWith("3") || X == "$")
                 {
-                    if (X == K)
+                    if (X == ConvertirToken(K))
                         apun++;
                     else
                     {
+                        MessageBox.Show("ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}");
                         //ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}
                     }
                 }
                 else
                 {
-                    string produccion = TablaSintac[int.Parse(ConvertirToken(K)), int.Parse(X)];
+                    string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
                     if (produccion != null)
                     {
                         if (produccion != "99")
@@ -300,6 +306,7 @@ namespace Escaner_DML
                     }
                     else
                     {
+                        MessageBox.Show("ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros}");
                         // ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros} 
                     }
                 }
@@ -392,12 +399,72 @@ namespace Escaner_DML
             }
         }
 
-        public string EncontrarIndiceK(string token)
+        public int EncontrarIndiceK(string token)
         {
-            switch (token)
+            if (token == "8") return 1;
+            else if (token == "10") return 2;
+            else if (token == "11") return 3;
+            else if (token == "12") return 4;
+            else if (token == "13") return 5;
+            else if (token == "14") return 6;
+            else if (token == "15") return 7;
+            else if (token == "50") return 8;
+            else if (token == "51") return 9;
+            else if (token == "53") return 10;
+            else if (token == "54") return 11;
+            else if (token == "61") return 12;
+            else if (token == "62") return 13;
+            else if (token == "72") return 14;
+            else if (token == "99") return 15;
+            else return 0;
+        }
+        public int EncontrarIndiceX(string regla)
+        {
+            if (regla == "300") return 0;
+            else if (regla == "301") return 1;
+            else if (regla == "302") return 2;
+            else if (regla == "303") return 3;
+            else if (regla == "304") return 4;
+            else if (regla == "305") return 5;
+            else if (regla == "306") return 6;
+            else if (regla == "307") return 7;
+            else if (regla == "308") return 8;
+            else if (regla == "309") return 9;
+            else if (regla == "310") return 10;
+            else if (regla == "311") return 11;
+            else if (regla == "312") return 12;
+            else if (regla == "313") return 13;
+            else if (regla == "314") return 14;
+            else if (regla == "315") return 15;
+            else if (regla == "316") return 16;
+            else if (regla == "317") return 17;
+            else if (regla == "318") return 18;
+            else if (regla == "319") return 19;
+            else return -1;
+        }
+        public List<string> RemoverDuplicadosVacios(List<string> lista)
+        {
+            List<string> nuevaLista = new List<string>();
+            bool ultimoFueVacio = false;
+
+            foreach (string item in lista)
             {
-                case 
+                if (item == "")
+                {
+                    if (!ultimoFueVacio)
+                    {
+                        nuevaLista.Add(item);
+                        ultimoFueVacio = true;
+                    }
+                }
+                else
+                {
+                    nuevaLista.Add(item);
+                    ultimoFueVacio = false;
+                }
             }
+
+            return nuevaLista;
         }
     }
 
