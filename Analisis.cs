@@ -278,7 +278,7 @@ namespace Escaner_DML
             {
                 string X = pila.Pop();
                 string K = tokens[apun];
-                if ((int.TryParse(X, out int a) == true) || X == "$")
+                if (!X.StartsWith("3") || X == "$")
                 {
                     if (X == K)
                         apun++;
@@ -389,6 +389,14 @@ namespace Escaner_DML
             else
             {
                 return 4.ToString();
+            }
+        }
+
+        public string EncontrarIndiceK(string token)
+        {
+            switch (token)
+            {
+                case 
             }
         }
     }
