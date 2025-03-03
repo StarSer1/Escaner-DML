@@ -76,7 +76,7 @@ namespace Escaner_DML
             { ">", 81 }, { "<", 82 }, { "=", 83 }, { ">=", 84 }, { "<=", 85 },
 
             // Espacio en Blanco
-            {"", 99 }
+            {"$", 199 }
         };
         List<string> tokens = new List<string>();
         public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError)
@@ -168,7 +168,7 @@ namespace Escaner_DML
                             if (reservadas.IsMatch(cadena))
                             {
                                 tokens.Add(cadena);
-                                tokens.Add(c);
+                                //tokens.Add(c);
                                 if (cadena != "")
                                     MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                                 cadena = "";
@@ -262,19 +262,19 @@ namespace Escaner_DML
 
 
                 }
-                //tokens.RemoveAll(item => string.IsNullOrEmpty(item));
+                tokens.RemoveAll(item => string.IsNullOrEmpty(item));
                 if (c == "\n")
                     linea++;
             }
             Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
             Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
-            tokens = RemoverDuplicadosVacios(tokens);
+            //tokens = RemoverDuplicadosVacios(tokens);
             return tokens;
         }
 
         public void Sintaxis(List<string> tokens)
         {
-            pila.Push("$");
+            pila.Push("199");
             pila.Push("300");
             tokens.Add("$");
             int apun = 0;
@@ -283,7 +283,7 @@ namespace Escaner_DML
             {
                 string X = pila.Pop();
                 string K = tokens[apun];
-                if (!X.StartsWith("3") || X == "$")
+                if (!X.StartsWith("3") || X == "199")
                 {
                     if (X == ConvertirToken(K))
                         apun++;
@@ -311,8 +311,8 @@ namespace Escaner_DML
                     }
                 }
                 equis = X;
-            }
-            while (equis != "$");
+            }          
+            while (equis != "199");
         }
         public void MostrarDgv(DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, string token, int linea)
         {
@@ -415,7 +415,7 @@ namespace Escaner_DML
             else if (token == "61") return 12;
             else if (token == "62") return 13;
             else if (token == "72") return 14;
-            else if (token == "99") return 15;
+            else if (token == "199") return 15;
             else return 0;
         }
         public int EncontrarIndiceX(string regla)
