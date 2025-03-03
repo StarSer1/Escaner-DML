@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -105,7 +106,7 @@ namespace Escaner_DML
                         }
                         sigoRelacional = false;
                     }
-                    if (c != " " && !relacionales.IsMatch(c) && !constantes.IsMatch(c) || comillas == true)
+                    if (c != " " && !relacionales.IsMatch(c) && !constantes.IsMatch(c))
                     {
                         if (c != "\n")
                             cadena += c;
@@ -161,7 +162,7 @@ namespace Escaner_DML
                             }
                         }
                     }
-                    if ((c == " " || c == "\n") && comillas == false)
+                    if (c == " " || c == "\n")
                     {
                         if (empezoComilla == false)
                         {
@@ -272,7 +273,7 @@ namespace Escaner_DML
             return tokens;
         }
 
-        public void Sintaxis(List<string> tokens)
+        public void Sintaxis(List<string> tokens, TextBox texto)
         {
             pila.Push("199");
             pila.Push("300");
@@ -291,6 +292,43 @@ namespace Escaner_DML
                     {
                         MessageBox.Show("ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}");
                         //ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}
+
+                        if (tokens[apun] == ",")
+                        {
+                            if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                            {
+                                texto.Text = "Error 204: Se esperaba Identificador. ";
+                                texto.BackColor = Color.FromArgb(255, 137, 137);
+                                break;
+                            }
+                        }
+                        if (!constantes.IsMatch(tokens[apun - 1]))
+                        {
+                            if (tokens[apun - 1] != "=")
+                            {
+                                texto.Text = "Error 208: Se esperaba Operador Relacional. ";
+                                texto.BackColor = Color.FromArgb(255, 137, 137);
+                                break;
+                            }
+                        }
+                        if (tokens[apun] == "(")
+                        {
+                            if (!reservadas.IsMatch(tokens[apun - 1]))
+                            {
+                                texto.Text = "Error 201: Se esperaba Palabra Reservada. ";
+                                texto.BackColor = Color.FromArgb(255, 137, 137);
+                                break;
+                            }
+                        }
+                        if (4.ToString() == ConvertirToken(tokens[apun]))
+                        {
+                            if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
+                            {
+                                texto.Text = "Error 201: Se esperaba Palabra Reservada. ";
+                                texto.BackColor = Color.FromArgb(255, 137, 137);
+                                break;
+                            }
+                        }
                     }
                 }
                 else
@@ -309,7 +347,17 @@ namespace Escaner_DML
                         MessageBox.Show("ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros}");
                         // ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros} 
                     }
+                    if (reservadas.IsMatch(tokens[apun]))
+                    {
+                        if (reservadas.IsMatch(tokens[apun + 1]))
+                        {
+                            texto.Text = "Error 204: Se esperaba Identificador. ";
+                            texto.BackColor = Color.FromArgb(255, 137, 137);
+                            break;
+                        }
+                    }
                 }
+                
                 equis = X;
             }          
             while (equis != "199");
@@ -391,6 +439,7 @@ namespace Escaner_DML
         {
             if (tablaSimbolos.TryGetValue(token, out int valor))
             {
+                if (valor.ToString().StartsWith("8")) return 8.ToString();
                 return valor.ToString();
             }
             else
@@ -401,7 +450,7 @@ namespace Escaner_DML
 
         public int EncontrarIndiceK(string token)
         {
-            if (token == "8") return 1;
+            if (token.StartsWith("8")) return 1;
             else if (token == "10") return 2;
             else if (token == "11") return 3;
             else if (token == "12") return 4;

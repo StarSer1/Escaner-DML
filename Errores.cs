@@ -50,5 +50,8 @@ namespace Escaner_DML
                 txtError.Text = "Sin Error";
             }
         }
+
+
+
     }
 }

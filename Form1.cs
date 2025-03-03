@@ -37,7 +37,7 @@ namespace Escaner_DML
             DgvLexica.Rows.Clear();
             Analisis = new Analisis();
             TablaLex = Analisis.Analizador(txtEntrada, DgvConstantes, DgvIdentificadores, DgvLexica, txtError);
-            Analisis.Sintaxis(TablaLex);
+            Analisis.Sintaxis(TablaLex, txtError);
         }
 
         private void Form1_Load(object sender, EventArgs e)
