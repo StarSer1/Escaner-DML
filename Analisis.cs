@@ -293,15 +293,7 @@ namespace Escaner_DML
                         MessageBox.Show("ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}");
                         //ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}
 
-                        if (tokens[apun] == ",")
-                        {
-                            if (4.ToString() != ConvertirToken(tokens[apun + 1]))
-                            {
-                                texto.Text = "Error 204: Se esperaba Identificador. ";
-                                texto.BackColor = Color.FromArgb(255, 137, 137);
-                                break;
-                            }
-                        }
+
                         if (!constantes.IsMatch(tokens[apun - 1]))
                         {
                             if (tokens[apun - 1] != "=")
@@ -350,6 +342,15 @@ namespace Escaner_DML
                     if (reservadas.IsMatch(tokens[apun]))
                     {
                         if (reservadas.IsMatch(tokens[apun + 1]))
+                        {
+                            texto.Text = "Error 204: Se esperaba Identificador. ";
+                            texto.BackColor = Color.FromArgb(255, 137, 137);
+                            break;
+                        }
+                    }
+                    if (tokens[apun] == ",")
+                    {
+                        if (4.ToString() != ConvertirToken(tokens[apun + 1]))
                         {
                             texto.Text = "Error 204: Se esperaba Identificador. ";
                             texto.BackColor = Color.FromArgb(255, 137, 137);
