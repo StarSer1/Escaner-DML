@@ -87,7 +87,7 @@ namespace Escaner_DML
             {"$", 199 }
         };
         List<string> tokens = new List<string>();
-        public List<string> Analizador(RichTextBox texto, DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError)
+        public List<string> Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError)
         {
             string cadena = "";
             int linea = 1;
@@ -111,7 +111,7 @@ namespace Escaner_DML
                             cadena += c;
                             tokens.Add(cadena);
                             if (cadena != "")
-                                MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                MostrarDgv(dgvLex, tokens.Last(), linea);
                             cadena = "";
                             c = "";
                         }
@@ -128,7 +128,7 @@ namespace Escaner_DML
                         {
                             tokens.Add(cadena);
                             if (cadena != "")
-                                MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                MostrarDgv(dgvLex, tokens.Last(), linea);
                             cadena = c;
                             if (i + 1 < texto.TextLength)
                             {
@@ -142,7 +142,7 @@ namespace Escaner_DML
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                 }
                             }
@@ -160,7 +160,7 @@ namespace Escaner_DML
                                 cadena += c;
                                 tokens.Add(cadena);
                                 if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    MostrarDgv(dgvLex, tokens.Last(), linea);
                                 cadena = "";
                             }
                             else if (constantes.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
@@ -182,7 +182,7 @@ namespace Escaner_DML
                                 tokens.Add(cadena);
                                 //tokens.Add(c);
                                 if (cadena != "")
-                                    MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                    MostrarDgv(dgvLex, tokens.Last(), linea);
                                 cadena = "";
                             }
                             else if (tokens.Count != 0)
@@ -191,7 +191,7 @@ namespace Escaner_DML
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
                                     sigo = true;
                                     cadena = "";
 
@@ -200,7 +200,7 @@ namespace Escaner_DML
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
 
                                 }
@@ -213,14 +213,14 @@ namespace Escaner_DML
 
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                 }
                                 else
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                 }
                             }
@@ -251,24 +251,24 @@ namespace Escaner_DML
                     else if (cadena != "" && comillas == true)
                     {
                         tokens.Add(cadena);
-                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last() + "~", linea);
+                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         comillas = false;
                     }
                     else if (cadena != "" && (c == ")" || c == ",") && constantes.IsMatch(cadena))
                     {
                         tokens.Add(cadena);
-                        MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last() + "~", linea);
+                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         tokens.Add(c);
-                        MostrarDgv(dgvCons, dgvIden, dgvLex, c, linea);
+                        MostrarDgv(dgvLex, c, linea);
                     }
                     else
                     {
                         tokens.Add(cadena);
                         if (tokens.Last() != "")
-                            MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
+                            MostrarDgv(dgvLex, tokens.Last(), linea);
                         tokens.Add(c);
                         if (c != "")
-                            MostrarDgv(dgvCons, dgvIden, dgvLex, c, linea);
+                            MostrarDgv(dgvLex, c, linea);
                     }
                     cadena = "";
 
@@ -289,6 +289,7 @@ namespace Escaner_DML
 
         public void Sintaxis(List<string> tokens, TextBox texto)
         {
+            bool error = false;
             int lineas = 1;
             string KparaN = "";
             pila.Push("199");
@@ -316,20 +317,17 @@ namespace Escaner_DML
                         }
                         else
                         {
-                            MessageBox.Show("ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}");
-                            //ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}
+                            error = true;
 
                             if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
                             {
-                                texto.Text = "Error 2:208: Linea "+lineas+" Se esperaba Operador Relacional";
-                                texto.BackColor = Color.FromArgb(255, 137, 137);
+                                Errores.ErrorOperadorRelacional(texto, lineas);
                             }
                             if (tokens[apun] == "(")
                             {
                                 if (!reservadas.IsMatch(tokens[apun - 1]))
                                 {
-                                    texto.Text = "Error 2:201: Linea " + lineas + " Se esperaba Palabra Reservada";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    Errores.ErrorPalabraReservada(texto, lineas);
                                     break;
                                 }
                             }
@@ -337,23 +335,15 @@ namespace Escaner_DML
                             {
                                 if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
                                 {
-                                    texto.Text = "Error 2:201: Linea "+lineas+" Se esperaba Palabra Reservada";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    Errores.ErrorPalabraReservada(texto, lineas);
                                     break;
                                 }
                             }
                             if (relacionales.IsMatch(tokens[apun]))
                             {
-                                if (apun + 2 >= tokens.Count)
-                                {
-                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
-                                    break;
-                                }
                                 if (4.ToString() != ConvertirToken(tokens[apun + 1]))
                                 {
-                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
                             }
@@ -372,23 +362,21 @@ namespace Escaner_DML
                         }
                         else
                         {
-                            MessageBox.Show("ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros}");
+                            error = true;
 
-                            if (reservadas.IsMatch(tokens[apun]))
+                            if (reservadas.IsMatch(tokens[apun-1]))
                             {
-                                if (reservadas.IsMatch(tokens[apun + 1]))
+                                if (reservadas.IsMatch(tokens[apun]))
                                 {
-                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
                             }
-                            if (tokens[apun] == ",")
+                            if (tokens[apun-1] == ",")
                             {
-                                if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                if (4.ToString() != ConvertirToken(tokens[apun]))
                                 {
-                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
                             }
@@ -396,14 +384,12 @@ namespace Escaner_DML
                             {
                                 if (apun + 2 >= tokens.Count)
                                 {
-                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
                                 if (4.ToString() != ConvertirToken(tokens[apun + 1]))
                                 {
-                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
                             }
@@ -411,12 +397,10 @@ namespace Escaner_DML
                             {
                                 if (apun + 2 >= tokens.Count)
                                 {
-                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
-                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
                             }
-                            // ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros} 
                         }
 
                     }
@@ -430,10 +414,13 @@ namespace Escaner_DML
                 equis = X;
             }          
             while (equis != "199");
-            texto.Text = "Sin Error";
-            texto.BackColor = Color.FromArgb(232, 255, 223);
+            if (error == false)
+            {
+                Errores.SinError(texto, lineas);
+            }
         }
-        public void MostrarDgv(DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, string token, int linea)
+        #region Utilidades
+        public void MostrarDgv(DataGridView dgvLex, string token, int linea)
         {
             tablaSimbolos.TryGetValue(token, out int valor);
             if (reservadas.IsMatch(token))
@@ -451,17 +438,17 @@ namespace Escaner_DML
             else if (token.Contains('~'))
             {
                 dgvLex.Rows.Add(contador, linea, "CONSTANTE", 6, valorConstante);
-                dgvCons.Rows.Add(contador, token.Remove(token.Length - 1), 62, valorConstante);
+                //dgvCons.Rows.Add(contador, token.Remove(token.Length - 1), 62, valorConstante);
                 valorConstante++;
             }
             else if (constantes.IsMatch(token))
             {
                 dgvLex.Rows.Add(contador, linea, token, 6, valorConstante);
-                if (Regex.IsMatch(token, @"^\d+$"))
-                    dgvCons.Rows.Add(contador, token, 61, valorConstante);
-                else if (Regex.IsMatch(token, @"^[a-zA-Z0-9]+$"))
-                    dgvCons.Rows.Add(contador, token, 62, valorConstante);
-                valorConstante++;
+                //if (Regex.IsMatch(token, @"^\d+$"))
+                    //dgvCons.Rows.Add(contador, token, 61, valorConstante);
+                if (Regex.IsMatch(token, @"^[a-zA-Z0-9]+$"))
+                    //dgvCons.Rows.Add(contador, token, 62, valorConstante);
+                    valorConstante++;
             }
             else if (relacionales.IsMatch(token))
             {
@@ -471,17 +458,17 @@ namespace Escaner_DML
             {
                 bool encontrado = false;
                 // Recorrer el array por si lo encuentra
-                for (int i = 0; i < dgvIden.Rows.Count; i++)
-                {
-                    if (dgvIden.Rows[i].Cells[0].Value != null && dgvIden.Rows[i].Cells[0].Value.ToString() == token)
-                    {
-                        if (dgvIden.Rows[i].Cells[2].Value != null)
-                        {
-                            dgvIden.Rows[i].Cells[2].Value += ", "+linea.ToString();
-                        }
-                        encontrado = true;
-                    }
-                }
+                //for (int i = 0; i < dgvIden.Rows.Count; i++)
+                //{
+                //    if (dgvIden.Rows[i].Cells[0].Value != null && dgvIden.Rows[i].Cells[0].Value.ToString() == token)
+                //    {
+                //        if (dgvIden.Rows[i].Cells[2].Value != null)
+                //        {
+                //            dgvIden.Rows[i].Cells[2].Value += ", "+linea.ToString();
+                //        }
+                //        encontrado = true;
+                //    }
+                //}
 
                 for (int i = 0; i < dgvLex.Rows.Count; i++)
                 {
@@ -498,14 +485,13 @@ namespace Escaner_DML
                 if (encontrado ==  false)
                 {
                     dgvLex.Rows.Add(contador, linea, token, 4, valorIdentificador);
-                    dgvIden.Rows.Add(token, valorIdentificador, linea);
+                    //dgvIden.Rows.Add(token, valorIdentificador, linea);
                     valorIdentificador++;
                     encontrado = false;
                 }
             }
             contador++;
         }
-
         public string ConvertirToken(string token)
         {
             if (tablaSimbolos.TryGetValue(token, out int valor))
@@ -562,30 +548,7 @@ namespace Escaner_DML
             else if (regla == "319") return 19;
             else return -1;
         }
-        public List<string> RemoverDuplicadosVacios(List<string> lista)
-        {
-            List<string> nuevaLista = new List<string>();
-            bool ultimoFueVacio = false;
-
-            foreach (string item in lista)
-            {
-                if (item == "")
-                {
-                    if (!ultimoFueVacio)
-                    {
-                        nuevaLista.Add(item);
-                        ultimoFueVacio = true;
-                    }
-                }
-                else
-                {
-                    nuevaLista.Add(item);
-                    ultimoFueVacio = false;
-                }
-            }
-
-            return nuevaLista;
-        }
+        #endregion
     }
 
 }

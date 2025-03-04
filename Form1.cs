@@ -34,11 +34,11 @@ namespace Escaner_DML
         {
             txtError.BackColor = Color.White;
             txtError.Text = "";
-            DgvConstantes.Rows.Clear();
-            DgvIdentificadores.Rows.Clear();
+            //DgvConstantes.Rows.Clear();
+            //DgvIdentificadores.Rows.Clear();
             DgvLexica.Rows.Clear();
             Analisis = new Analisis(errorActivado);
-            TablaLex = Analisis.Analizador(txtEntrada, DgvConstantes, DgvIdentificadores, DgvLexica, txtError);
+            TablaLex = Analisis.Analizador(txtEntrada, DgvLexica, txtError);
             if (Analisis.errorActivado == false)
             {
                 Analisis.Sintaxis(TablaLex, txtError);
@@ -54,27 +54,39 @@ namespace Escaner_DML
         {
             if (cmbEjemplo.SelectedIndex == 0)
             {
-                txtEntrada.Text = "SELECT * \r\nFROM PROFESORES \r\nWHERE EDAD >45 AND GRADO='MAE' OR GRADO='DOC'";
+                txtEntrada.Text = "SELECT *\r\nFROM PROFESORES\r\nWHERE EDAD >45 AND GRADO=MAE' OR GRADO='DOC'";
             }
             if (cmbEjemplo.SelectedIndex == 1)
             {
-                txtEntrada.Text = "SELECT ANOMBRE \r\nFROM ALUMNOS,INSCRITOS \r\nWHERE ALUMNOS.A#=INSCRITOS.A# AND INSCRITOS.SEMESTRE='2010I'";
+                txtEntrada.Text = "SELECT ANOMBRE\r\nFROM ALUMNOS,INSCRITOS,\r\nWHERE ALUMNOS.A#=INSCRITOS.A# AND\r\nINSCRITOS.SEMESTRE='2010I'";
             }
             if (cmbEjemplo.SelectedIndex == 2)
             {
-                txtEntrada.Text = "SELECT M#,MNOMBRE \r\nFROM MATERIAS \r\nWHERE M# IN (SELECT M# \r\nFROM INSCRITOS \r\nWHERE A# IN (SELECT A# \r\nFROM ALUMNOS \r\nWHERE ANOMBRE='MESSI LIONEL'))";
+                txtEntrada.Text = "SELECT ANOMBRE\r\nFROM ALUMNOS\r\nWHERE A# IN(SELECT A#\r\nFROM INSCRITOS\r\nWHERE P# IN (SELECT P#\r\nFROM PROFESORES\r\nWHERE GRADO='MAE'))\r\nAND C# IN (SELECT C#\r\nFROM\r\nWHERE CNOMBRE='ISC')";
             }
             if (cmbEjemplo.SelectedIndex == 3)
             {
-                txtEntrada.Text = "SELECT ANOMBRE \r\nFROM ALUMNOS \r\nWHERE A# IN (SELECT A# \r\nFROM INSCRITOS \r\nWHERE CALIFICACION < 70 \r\nAND M# IN (SELECT M# \r\nFROM MATERIAS \r\nWHERE C# IN (SELECT C# \r\nFROM CARRERAS \r\nWHERE D# IN (SELECT D# \r\nFROM DEPARTAMENTOS \r\nWHERE DNOMBRE = 'CIECOM'))))";
+                txtEntrada.Text = "SELECT ANOMBRE\r\nFROM ALUMNOS A,INSCRITOS I,CARRERAS C\r\nWHERE A.A#=I.A# AND A.C#=C.C#\r\nAND I.SEMESTRE='2010I' C.CNOMBRE='ITC'";
             }
-            
+            if (cmbEjemplo.SelectedIndex == 4)
+            {
+                txtEntrada.Text = "SELECT A#,ANOMBRE\r\nFROM ALUMNOS\r\nWHERE C# IN (SELECT C#\r\nFROM CARRERAS\r\nWHERE SEMESTRES=9)\r\nAND A# (SELECT A#\r\nFROM INSCRITOS\r\nWHERE SEMESTRE='2010I')";
+            }
+            if (cmbEjemplo.SelectedIndex == 5)
+            {
+                txtEntrada.Text = "SELECT ANOMBRE\r\nFROM ALUMNOS,INSCRITOS,CARRERAS\r\nWHERE ALUMNOS.A#=INSCRITOS.A# AND ALUMNOS.C#=CARRERAS.C#\r\nAND INSCRITOS.SEMESTRE='2010I'\r\nAND CARRERAS.CNOMBRE='ISC\r\nAND ALUMNOS.GENERACION='2010'";
+            }
+            if (cmbEjemplo.SelectedIndex == 6)
+            {
+                txtEntrada.Text = "SELECT ANOMBRE\r\nFROM ALUMNOS,INSCRITOS,CARRERAS\r\nWHERE ALUMNOS.A#=INSCRITOS.A# AND ALUMNOS.C#=CARRERAS.C#\r\nAND INSCRITOS.SEMESTRE '2010I'\r\nAND CARRERAS.CNOMBRE='ISC'\r\nAND ALUMNOS.GENERACION='2010'";
+            }
+
         }
 
         private void BtnClear_Click(object sender, EventArgs e)
         {
-            DgvConstantes.Rows.Clear();
-            DgvIdentificadores.Rows.Clear();
+            //DgvConstantes.Rows.Clear();
+            //DgvIdentificadores.Rows.Clear();
             DgvLexica.Rows.Clear();
             txtError.Text = string.Empty;
             txtEntrada.Text = string.Empty;

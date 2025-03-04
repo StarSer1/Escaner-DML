@@ -10,6 +10,27 @@ namespace Escaner_DML
 {
     public class Errores
     {
+        public void ErrorOperadorRelacional(TextBox txtError, int lineas)
+        {
+            txtError.Text = "Error 2:208: Linea " + lineas + " Se esperaba Operador Relacional";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void ErrorPalabraReservada(TextBox txtError, int lineas)
+        {
+            txtError.Text = "Error 2:201: Linea " + lineas + " Se esperaba Palabra Reservada";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void ErrorIdentificador(TextBox txtError, int lineas)
+        {
+            txtError.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void SinError(TextBox txtError, int lineas)
+        {
+            txtError.Text = "Sin Error";
+            txtError.BackColor = Color.FromArgb(232, 255, 223);
+        }
+
         public bool ErrorParentesis (DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError, int acum)
         {
             if (acum < 0)
