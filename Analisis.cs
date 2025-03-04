@@ -20,6 +20,13 @@ namespace Escaner_DML
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
         Regex constantes = new Regex(@"\b\d+\b");
+        public bool errorActivado = false;
+
+        public Analisis(bool error)
+        {
+            this.errorActivado = error;
+        }
+
 
         Stack<string> pila = new Stack<string>();
         string[,] TablaSintac =
@@ -88,7 +95,7 @@ namespace Escaner_DML
             bool comillas = false;
             bool sigo = false;
             bool sigoRelacional = false;
-            for (int i = 0; i<texto.TextLength; i++)
+            for (int i = 0; i < texto.TextLength; i++)
             {
                 string c = texto.Text[i].ToString();
                 if (!delimitadores.IsMatch(c))
@@ -220,7 +227,7 @@ namespace Escaner_DML
                         }
                     }
                 }
-                else 
+                else
                 {
                     if ("'’‘".Contains(c))
                     {
@@ -250,9 +257,9 @@ namespace Escaner_DML
                         MostrarDgv(dgvCons, dgvIden, dgvLex, c, linea);
                     }
                     else
-                    {                       
+                    {
                         tokens.Add(cadena);
-                        if(tokens.Last() != "")
+                        if (tokens.Last() != "")
                             MostrarDgv(dgvCons, dgvIden, dgvLex, tokens.Last(), linea);
                         tokens.Add(c);
                         if (c != "")
@@ -267,10 +274,12 @@ namespace Escaner_DML
                 if (c == "\n")
                     linea++;
             }
-            Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
-            Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
-            //tokens = RemoverDuplicadosVacios(tokens);
-            return tokens;
+            bool errorParentesis = Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
+            bool errorComillas = Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
+            if (errorComillas || errorParentesis)
+                errorActivado = true;
+                //tokens = RemoverDuplicadosVacios(tokens);
+                return tokens;
         }
 
         public void Sintaxis(List<string> tokens, TextBox texto)
@@ -294,14 +303,11 @@ namespace Escaner_DML
                         //ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}
 
 
-                        if (!constantes.IsMatch(tokens[apun - 1]))
+                        if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun -1]))
                         {
-                            if (tokens[apun - 1] != "=")
-                            {
-                                texto.Text = "Error 208: Se esperaba Operador Relacional. ";
-                                texto.BackColor = Color.FromArgb(255, 137, 137);
-                                break;
-                            }
+                            texto.Text = "Error 208: Se esperaba Operador Relacional. ";
+                            texto.BackColor = Color.FromArgb(255, 137, 137);
+                            break;
                         }
                         if (tokens[apun] == "(")
                         {
