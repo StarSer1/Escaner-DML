@@ -98,6 +98,10 @@ namespace Escaner_DML
             for (int i = 0; i < texto.TextLength; i++)
             {
                 string c = texto.Text[i].ToString();
+                if ( c == "\n")
+                {
+
+                }
                 if (!delimitadores.IsMatch(c))
                 {
                     if (sigoRelacional)
@@ -192,7 +196,7 @@ namespace Escaner_DML
                                     cadena = "";
 
                                 }
-                                if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
+                                else if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
@@ -200,7 +204,7 @@ namespace Escaner_DML
                                     cadena = "";
 
                                 }
-                                if (delimitadores.IsMatch(tokens.Last()))
+                                else if (delimitadores.IsMatch(tokens.Last()))
                                 {
                                     if (c == "(")
                                         acumuladorParentesisAbierto++;
@@ -225,6 +229,7 @@ namespace Escaner_DML
                         {
                             cadena += " ";
                         }
+                        tokens.Add(c);
                     }
                 }
                 else
@@ -270,104 +275,163 @@ namespace Escaner_DML
 
 
                 }
-                tokens.RemoveAll(item => string.IsNullOrEmpty(item));
+                tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " "));
                 if (c == "\n")
                     linea++;
             }
-            bool errorParentesis = Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
-            bool errorComillas = Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
-            if (errorComillas || errorParentesis)
-                errorActivado = true;
+            //bool errorParentesis = Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
+            //bool errorComillas = Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
+            //if (errorComillas || errorParentesis)
+                //errorActivado = true;
                 //tokens = RemoverDuplicadosVacios(tokens);
                 return tokens;
         }
 
         public void Sintaxis(List<string> tokens, TextBox texto)
         {
+            int lineas = 1;
+            string KparaN = "";
             pila.Push("199");
             pila.Push("300");
+            List<string> tokensConN = tokens;
+            tokens = tokens.Where(s => s != "\n").ToList();
             tokens.Add("$");
             int apun = 0;
+            int apunN = 0;
             string equis;
             do
             {
                 string X = pila.Pop();
                 string K = tokens[apun];
-                if (!X.StartsWith("3") || X == "199")
+                if (apunN < tokensConN.Count())
+                    KparaN = tokensConN[apunN];
+                if (KparaN != "\n")
                 {
-                    if (X == ConvertirToken(K))
-                        apun++;
+                    if (!X.StartsWith("3") || X == "199")
+                    {
+                        if (X == ConvertirToken(K))
+                        {
+                            apun++;
+                            apunN++;
+                        }
+                        else
+                        {
+                            MessageBox.Show("ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}");
+                            //ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}
+
+                            if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                            {
+                                texto.Text = "Error 2:208: Linea "+lineas+" Se esperaba Operador Relacional";
+                                texto.BackColor = Color.FromArgb(255, 137, 137);
+                            }
+                            if (tokens[apun] == "(")
+                            {
+                                if (!reservadas.IsMatch(tokens[apun - 1]))
+                                {
+                                    texto.Text = "Error 2:201: Linea " + lineas + " Se esperaba Palabra Reservada";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
+                            }
+                            if (4.ToString() == ConvertirToken(tokens[apun]))
+                            {
+                                if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
+                                {
+                                    texto.Text = "Error 2:201: Linea "+lineas+" Se esperaba Palabra Reservada";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
+                            }
+                            if (relacionales.IsMatch(tokens[apun]))
+                            {
+                                if (apun + 2 >= tokens.Count)
+                                {
+                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
+                                if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                {
+                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     else
                     {
-                        MessageBox.Show("ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}");
-                        //ERROR: {Cuando X y K son Terminales, pero X!=K. Tomar el valor de X}
-
-
-                        if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun -1]))
+                        string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
+                        if (produccion != null)
                         {
-                            texto.Text = "Error 208: Se esperaba Operador Relacional. ";
-                            texto.BackColor = Color.FromArgb(255, 137, 137);
-                            break;
-                        }
-                        if (tokens[apun] == "(")
-                        {
-                            if (!reservadas.IsMatch(tokens[apun - 1]))
+                            if (produccion != "99")
                             {
-                                texto.Text = "Error 201: Se esperaba Palabra Reservada. ";
-                                texto.BackColor = Color.FromArgb(255, 137, 137);
-                                break;
+                                produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
                             }
+
                         }
-                        if (4.ToString() == ConvertirToken(tokens[apun]))
+                        else
                         {
-                            if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
+                            MessageBox.Show("ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros}");
+
+                            if (reservadas.IsMatch(tokens[apun]))
                             {
-                                texto.Text = "Error 201: Se esperaba Palabra Reservada. ";
-                                texto.BackColor = Color.FromArgb(255, 137, 137);
-                                break;
+                                if (reservadas.IsMatch(tokens[apun + 1]))
+                                {
+                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
                             }
+                            if (tokens[apun] == ",")
+                            {
+                                if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                {
+                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
+                            }
+                            if (relacionales.IsMatch(tokens[apun]))
+                            {
+                                if (apun + 2 >= tokens.Count)
+                                {
+                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
+                                if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                {
+                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
+                            }
+                            if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun]))
+                            {
+                                if (apun + 2 >= tokens.Count)
+                                {
+                                    texto.Text = "Error 2:204: Linea " + lineas + " Se esperaba Identificador";
+                                    texto.BackColor = Color.FromArgb(255, 137, 137);
+                                    break;
+                                }
+                            }
+                            // ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros} 
                         }
+
                     }
                 }
                 else
                 {
-                    string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
-                    if (produccion != null)
-                    {
-                        if (produccion != "99")
-                        {
-                            produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
-                        }
-
-                    }
-                    else
-                    {
-                        MessageBox.Show("ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros}");
-                        // ERROR: {Cuando TS[X,K]=Celda Vacía. Tomar el valor de los primeros} 
-                    }
-                    if (reservadas.IsMatch(tokens[apun]))
-                    {
-                        if (reservadas.IsMatch(tokens[apun + 1]))
-                        {
-                            texto.Text = "Error 204: Se esperaba Identificador. ";
-                            texto.BackColor = Color.FromArgb(255, 137, 137);
-                            break;
-                        }
-                    }
-                    if (tokens[apun] == ",")
-                    {
-                        if (4.ToString() != ConvertirToken(tokens[apun + 1]))
-                        {
-                            texto.Text = "Error 204: Se esperaba Identificador. ";
-                            texto.BackColor = Color.FromArgb(255, 137, 137);
-                            break;
-                        }
-                    }
+                    lineas++;
+                    apunN++;
+                    pila.Push(X);
                 }
-                
                 equis = X;
             }          
             while (equis != "199");
+            texto.Text = "Sin Error";
+            texto.BackColor = Color.FromArgb(232, 255, 223);
         }
         public void MostrarDgv(DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, string token, int linea)
         {
