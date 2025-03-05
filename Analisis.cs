@@ -322,6 +322,21 @@ namespace Escaner_DML
                         else
                         {
                             error = true;
+                            if(reservadas.IsMatch(tokens[apun-1]) && tokens[apun].StartsWith("'")&& tokens[apun].EndsWith("'"))
+                            {
+                                Errores.ErrorIdentificador(texto, lineas);
+                                break;
+                            }
+                            if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                            {
+                                Errores.ErrorConstante(texto, lineas);
+                                break;
+                            }
+                            if (operadores.IsMatch(tokens[apun - 1]))
+                            {
+                                Errores.ErrorOperador(texto, lineas);
+                                break;
+                            }
 
                             if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
                             {
@@ -367,6 +382,16 @@ namespace Escaner_DML
                         else
                         {
                             error = true;
+                            if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
+                            {
+                                Errores.ErrorIdentificador(texto, lineas);
+                                break;
+                            }
+                            if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                            {
+                                Errores.ErrorConstante(texto, lineas);
+                                break;
+                            }
 
                             if (reservadas.IsMatch(tokens[apun-1]))
                             {
