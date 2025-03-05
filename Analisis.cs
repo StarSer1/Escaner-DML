@@ -19,7 +19,8 @@ namespace Escaner_DML
         Regex delimitadores = new Regex(@"[.,()'’‘;]");
         Regex operadores = new Regex(@"[+\-*/]");
         Regex relacionales = new Regex(@"(>=|<=|>|<|=)");
-        Regex constantes = new Regex(@"\b\d+\b");
+        Regex constantesTL = new Regex(@"\b\d+\b");
+        Regex constantes = new Regex(@"'([^']*)'");
         public bool errorActivado = false;
 
         public Analisis(bool error)
@@ -117,7 +118,7 @@ namespace Escaner_DML
                         }
                         sigoRelacional = false;
                     }
-                    if (c != " " && !relacionales.IsMatch(c) && !constantes.IsMatch(c))
+                    if (c != " " && !relacionales.IsMatch(c) && !constantesTL.IsMatch(c))
                     {
                         if (c != "\n")
                             cadena += c;
@@ -148,7 +149,7 @@ namespace Escaner_DML
                             }
                         }
                     }
-                    if (constantes.IsMatch(c))
+                    if (constantesTL.IsMatch(c))
                     {
                         if (i + 1 < texto.TextLength)
                         {
@@ -163,7 +164,7 @@ namespace Escaner_DML
                                     MostrarDgv(dgvLex, tokens.Last(), linea);
                                 cadena = "";
                             }
-                            else if (constantes.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
+                            else if (constantesTL.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
                             {
                                 cadena += c;
                             }
@@ -236,6 +237,8 @@ namespace Escaner_DML
                 {
                     if ("'’‘".Contains(c))
                     {
+                        if (empezoComilla == false) 
+                            tokens.Add(c);
                         empezoComilla = !empezoComilla;
                     }
                     if (c == "(")
@@ -250,11 +253,12 @@ namespace Escaner_DML
                     if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
                     else if (cadena != "" && comillas == true)
                     {
-                        tokens.Add(cadena);
+                        tokens.Add("'"+cadena+"'");
+                        tokens.Add(c);
                         MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         comillas = false;
                     }
-                    else if (cadena != "" && (c == ")" || c == ",") && constantes.IsMatch(cadena))
+                    else if (cadena != "" && (c == ")" || c == ",") && constantesTL.IsMatch(cadena))
                     {
                         tokens.Add(cadena);
                         MostrarDgv(dgvLex, tokens.Last() + "~", linea);
@@ -441,7 +445,7 @@ namespace Escaner_DML
                 //dgvCons.Rows.Add(contador, token.Remove(token.Length - 1), 62, valorConstante);
                 valorConstante++;
             }
-            else if (constantes.IsMatch(token))
+            else if (constantesTL.IsMatch(token))
             {
                 dgvLex.Rows.Add(contador, linea, token, 6, valorConstante);
                 //if (Regex.IsMatch(token, @"^\d+$"))
@@ -501,6 +505,8 @@ namespace Escaner_DML
             }
             else
             {
+                if (constantes.IsMatch(token)) return 62.ToString();
+                else if (constantesTL.IsMatch(token)) return 61.ToString();
                 return 4.ToString();
             }
         }
