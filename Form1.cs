@@ -14,6 +14,7 @@ namespace Escaner_DML
     public partial class Form1 : Form
     {
         Analisis Analisis;
+        Errores Errores;
         List<string> TablaLex;
         bool errorActivado = false;
 
@@ -38,10 +39,14 @@ namespace Escaner_DML
             //DgvIdentificadores.Rows.Clear();
             DgvLexica.Rows.Clear();
             Analisis = new Analisis(errorActivado);
-            TablaLex = Analisis.Analizador(txtEntrada, DgvLexica, txtError);
-            if (Analisis.errorActivado == false)
+            Errores = new Errores();
+            if (Errores.ErrorSimboloDesco(txtEntrada, txtError) == false)
             {
-                Analisis.Sintaxis(TablaLex, txtError);
+                TablaLex = Analisis.Analizador(txtEntrada, DgvLexica, txtError);
+                if (Analisis.errorActivado == false)
+                {
+                    Analisis.Sintaxis(TablaLex, txtError);
+                }
             }
         }
 

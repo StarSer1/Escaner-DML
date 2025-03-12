@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -90,7 +91,33 @@ namespace Escaner_DML
             }
             return false;
         }
+        public bool ErrorSimboloDesco(RichTextBox txt, TextBox txtError)
+        {
+            int lineaError = 0;
+            int primeraLineaError = -1;
+            bool errorB = false;
+            string pattern = @"[$%&/^|?¿]";
+            MatchCollection matches = Regex.Matches(txt.Text, pattern);
+            foreach (Match match in matches)
+            {
+                //txt.Select(match.Index, match.Length);
+                //txt.SelectionColor = Color.Red;
 
+                if (primeraLineaError == -1)
+                {
+                    lineaError = txt.GetLineFromCharIndex(match.Index);
+                    primeraLineaError = lineaError + 1;
+                }
+                txtError.BackColor = Color.FromArgb(255, 137, 137);
+                txtError.Text = "Error 1:101: Linea "+(lineaError+1)+" Simbolo Desconocido: " + match.Value;
+            }
+            if (matches.Count > 0)
+            {
+                errorB = true;
+                //error = true;
+            }
+            return errorB;
+        }
 
 
     }
