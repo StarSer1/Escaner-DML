@@ -37,6 +37,11 @@ namespace Escaner_DML
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
         
+        public void ErrorSintactico(TextBox txtError, int lineas)
+        {
+            txtError.Text = "Error 2:200: Linea " + lineas + " Error de sintaxis";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
         
         public void SinError(TextBox txtError, int lineas)
         {

@@ -327,22 +327,22 @@ namespace Escaner_DML
                                 Errores.ErrorIdentificador(texto, lineas);
                                 break;
                             }
-                            if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                            else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
                             {
                                 Errores.ErrorConstante(texto, lineas);
                                 break;
                             }
-                            if (operadores.IsMatch(tokens[apun - 1]))
+                            else if (operadores.IsMatch(tokens[apun - 1]))
                             {
                                 Errores.ErrorOperador(texto, lineas);
                                 break;
                             }
 
-                            if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                            else if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
                             {
                                 Errores.ErrorOperadorRelacional(texto, lineas);
                             }
-                            if (tokens[apun] == "(")
+                            else if (tokens[apun] == "(")
                             {
                                 if (!reservadas.IsMatch(tokens[apun - 1]))
                                 {
@@ -350,7 +350,7 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            if (4.ToString() == ConvertirToken(tokens[apun]))
+                            else if (4.ToString() == ConvertirToken(tokens[apun]))
                             {
                                 if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
                                 {
@@ -358,13 +358,18 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            if (relacionales.IsMatch(tokens[apun]))
+                            else if (relacionales.IsMatch(tokens[apun]))
                             {
                                 if (4.ToString() != ConvertirToken(tokens[apun + 1]))
                                 {
                                     Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
+                            }
+                            else
+                            {
+                                Errores.ErrorSintactico(texto, lineas);
+                                break;
                             }
                         }
                     }
@@ -387,13 +392,12 @@ namespace Escaner_DML
                                 Errores.ErrorIdentificador(texto, lineas);
                                 break;
                             }
-                            if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                            else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
                             {
                                 Errores.ErrorConstante(texto, lineas);
                                 break;
                             }
-
-                            if (reservadas.IsMatch(tokens[apun-1]))
+                            else if (reservadas.IsMatch(tokens[apun - 1]))
                             {
                                 if (reservadas.IsMatch(tokens[apun]))
                                 {
@@ -401,7 +405,7 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            if (tokens[apun-1] == ",")
+                            else if (tokens[apun - 1] == ",")
                             {
                                 if (4.ToString() != ConvertirToken(tokens[apun]))
                                 {
@@ -409,7 +413,7 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            if (relacionales.IsMatch(tokens[apun]))
+                            else if (relacionales.IsMatch(tokens[apun]))
                             {
                                 if (apun + 2 >= tokens.Count)
                                 {
@@ -422,13 +426,18 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun]))
+                            else if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun]))
                             {
                                 if (apun + 2 >= tokens.Count)
                                 {
                                     Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
+                            }
+                            else
+                            {
+                                Errores.ErrorSintactico(texto, lineas);
+                                break;
                             }
                         }
 
