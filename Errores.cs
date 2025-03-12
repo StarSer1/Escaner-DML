@@ -77,16 +77,12 @@ namespace Escaner_DML
             }
             return false;
         }
-        public bool ErroresComillas(DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError, int acum)
+        public bool ErroresComillas(TextBox txtError, int acum, int lineas)
         {
             if (acum % 2 != 0)
             {
-                dgvCons.Rows.Clear();
-                dgvIden.Rows.Clear();
-                dgvLex.Rows.Clear();
                 txtError.BackColor = Color.FromArgb(255, 137, 137);
-                txtError.Text = "Error 103: Faltan comillas";
-                return true;
+                txtError.Text = "Error 2:205: Linea " + lineas + " Se esperaba Delimitador"; return true;
             }
             else if (txtError.Text == "Sin Error")
             {

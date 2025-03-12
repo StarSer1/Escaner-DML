@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -248,6 +249,7 @@ namespace Escaner_DML
 
                     if (c == "'" || c == "’" || c == "‘")
                         acumuladorComillas++;
+                   
 
 
                     if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
@@ -284,10 +286,9 @@ namespace Escaner_DML
                     linea++;
             }
             //bool errorParentesis = Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
-            //bool errorComillas = Errores.ErroresComillas(dgvCons, dgvIden, dgvLex, txtError, acumuladorComillas);
             //if (errorComillas || errorParentesis)
-                //errorActivado = true;
-                //tokens = RemoverDuplicadosVacios(tokens);
+            //errorActivado = true;
+            //tokens = RemoverDuplicadosVacios(tokens);
                 return tokens;
         }
 
@@ -366,6 +367,10 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
+                            else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
+                            {
+                                texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador"; 
+                            }
                             else
                             {
                                 Errores.ErrorSintactico(texto, lineas);
@@ -433,6 +438,10 @@ namespace Escaner_DML
                                     Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
+                            }
+                            else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
+                            {
+                                texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
                             }
                             else
                             {

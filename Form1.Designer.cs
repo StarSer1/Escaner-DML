@@ -41,13 +41,13 @@
             this.label4 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.cmbEjemplo = new System.Windows.Forms.ComboBox();
             this.txtError = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.BtnClear = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.DgvLexica)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -179,6 +179,20 @@
             this.toolStripStatusLabel2.Size = new System.Drawing.Size(188, 17);
             this.toolStripStatusLabel2.Text = "Carlos Omar Celis Calzada";
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(245, 17);
+            this.toolStripStatusLabel1.Text = "David Alejandro De Los Santos Cruz";
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(206, 17);
+            this.toolStripStatusLabel3.Text = "Brandon Israel Nuñez Montoya";
+            // 
             // cmbEjemplo
             // 
             this.cmbEjemplo.FormattingEnabled = true;
@@ -234,20 +248,6 @@
             this.label1.Size = new System.Drawing.Size(73, 18);
             this.label1.TabIndex = 12;
             this.label1.Text = "Ejemplos";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(245, 17);
-            this.toolStripStatusLabel1.Text = "David Alejandro De Los Santos Cruz";
-            // 
-            // toolStripStatusLabel3
-            // 
-            this.toolStripStatusLabel3.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(206, 17);
-            this.toolStripStatusLabel3.Text = "Brandon Israel Nuñez Montoya";
             // 
             // Form1
             // 
