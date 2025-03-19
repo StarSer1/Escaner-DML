@@ -402,6 +402,19 @@ namespace Escaner_DML
                                 Errores.ErrorConstante(texto, lineas);
                                 break;
                             }
+                            else if (tokens[apun] == "(")
+                            {
+                                if (!reservadas.IsMatch(tokens[apun - 1]))
+                                {
+                                    Errores.ErrorPalabraReservada(texto, lineas);
+                                    break;
+                                }
+                            }
+                            else if (delimitadores.IsMatch(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                            {
+                                Errores.ErrorOperadorRelacional(texto, lineas);
+                                break;
+                            }
                             else if (reservadas.IsMatch(tokens[apun - 1]))
                             {
                                 if (reservadas.IsMatch(tokens[apun]))
@@ -442,6 +455,11 @@ namespace Escaner_DML
                             else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
                             {
                                 texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                            }
+                            else if (4.ToString() == ConvertirToken(tokens[apun]) && delimitadores.IsMatch(tokens[apun-1]))
+                            {
+                                Errores.ErrorPalabraReservada(texto, lineas);
+                                break;
                             }
                             else
                             {

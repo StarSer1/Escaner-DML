@@ -39,7 +39,7 @@ namespace Escaner_DML
         
         public void ErrorSintactico(TextBox txtError, int lineas)
         {
-            txtError.Text = "Error 2:200: Linea " + lineas + " Error de sintaxis";
+            txtError.Text = "Error 2:200: Linea " + lineas + " Error de Sintaxis";
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
         
