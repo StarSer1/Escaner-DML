@@ -33,27 +33,30 @@ namespace Escaner_DML
         Stack<string> pila = new Stack<string>();
         string[,] TablaSintac =
         {
-//             4     8             10           11    12    13    14    15    50    51    53    54    61    62    72    99
-            { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
-            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
-            { "304 303", null, null, null, null, null, null, null, null, null , null, null, null, null, null, null}, // 302 
-            { null, null, null, "99", null, null, null, null, "50 302", null, null, null, null, null, null,  "99"}, // 303
-            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, // 304
-            { null , "99", null, "99", null, "99", "99", "99", "99", "51 4", "99", null, null, null, null, "99" }, // 305
-            { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 306
-            {  null, null, null, null, "99", null, null, null, "50 306", null, "99", null, null, null, null, "99"},
-            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-            { "4", null, null, null, "99", null, null, null, "99", null, "99", null, null, null, null, "99"},
-            { null, null, null, null, "12 311", null, null, null, null, null, "99", null, null, null, null, "99" },
-            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, null, null, null, null, null, "317 311", "317 311", null, null, "99", null, null, null, null, "99" },
-            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null },
-            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { "304", null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null },
-            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null },
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
-            { null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null }
+//             4     8             10           11    12    13    14    15    50    51    52    53    54    61    62    72    99
+            { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
+            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
+            { "304 303", null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null}, // 302 
+            { null, null, null, "99", null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99"}, // 303
+            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, // 304
+            { null , "99", null, "99", null, "99", "99", "99", "99", "51 4", null, "99", null, null, null, null, "99" }, // 305
+            { "308 307 320", null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null}, // 306
+            {  null, null, null, null, "99", null, null, null, "50 306", null, null, "99", null, null, null, null, "99"},
+            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+            { "4", null, null, null, "99", null, null, null, "99", null, null, "99", null, null, null, null, "99"},
+            { null, null, null, null, "12 311", null, null, null, null, null, null, "99", null, null, null, null, "99" },
+            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, null, null, null, null, null, "317 311", "317 311", null, null, null, "99", null, null, null, null, "99" },
+            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null },
+            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { "304", null, null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null },
+            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null },
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null },
+            { null , null, null, null, "99", null, null, null, null, null, "52 300 53 321", null, null, null, null,null, null }, //320
+            { "4", null, null, null, null, null, null,  null,null,null,null, null,null,null,null,null,null} // 321
+            // 4    8     10    11    12
         };
                                                                                                                                             
         int contador = 1;
@@ -294,194 +297,204 @@ namespace Escaner_DML
 
         public void Sintaxis(List<string> tokens, TextBox texto)
         {
-            bool error = false;
-            int lineas = 1;
-            string KparaN = "";
-            pila.Push("199");
-            pila.Push("300");
-            List<string> tokensConN = tokens;
-            tokens = tokens.Where(s => s != "\n").ToList();
-            tokens.Add("$");
-            int apun = 0;
-            int apunN = 0;
-            string equis;
-            do
+            try
             {
-                string X = pila.Pop();
-                string K = tokens[apun];
-                if (apunN < tokensConN.Count())
-                    KparaN = tokensConN[apunN];
-                if (KparaN != "\n")
+                texto.BackColor = Color.White;
+                texto.Text = "";
+                bool error = false;
+                int lineas = 1;
+                string KparaN = "";
+                pila.Push("199");
+                pila.Push("300");
+                List<string> tokensConN = tokens;
+                tokens = tokens.Where(s => s != "\n").ToList();
+                tokens.Add("$");
+                int apun = 0;
+                int apunN = 0;
+                string equis;
+                do
                 {
-                    if (!X.StartsWith("3") || X == "199")
+                    string X = pila.Pop();
+                    string K = tokens[apun];
+                    if (apunN < tokensConN.Count())
+                        KparaN = tokensConN[apunN];
+                    if (KparaN != "\n")
                     {
-                        if (X == ConvertirToken(K))
+                        if (!X.StartsWith("3") || X == "199")
                         {
-                            apun++;
-                            apunN++;
-                        }
-                        else
-                        {
-                            error = true;
-                            if(reservadas.IsMatch(tokens[apun-1]) && tokens[apun].StartsWith("'")&& tokens[apun].EndsWith("'"))
+                            if (X == ConvertirToken(K))
                             {
-                                Errores.ErrorIdentificador(texto, lineas);
-                                break;
+                                apun++;
+                                apunN++;
                             }
-                            else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                            else
                             {
-                                Errores.ErrorConstante(texto, lineas);
-                                break;
-                            }
-                            else if (operadores.IsMatch(tokens[apun - 1]))
-                            {
-                                Errores.ErrorOperador(texto, lineas);
-                                break;
-                            }
-
-                            else if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
-                            {
-                                Errores.ErrorOperadorRelacional(texto, lineas);
-                            }
-                            else if (tokens[apun] == "(")
-                            {
-                                if (!reservadas.IsMatch(tokens[apun - 1]))
-                                {
-                                    Errores.ErrorPalabraReservada(texto, lineas);
-                                    break;
-                                }
-                            }
-                            else if (4.ToString() == ConvertirToken(tokens[apun]))
-                            {
-                                if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
-                                {
-                                    Errores.ErrorPalabraReservada(texto, lineas);
-                                    break;
-                                }
-                            }
-                            else if (relacionales.IsMatch(tokens[apun]))
-                            {
-                                if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                error = true;
+                                if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
                                 {
                                     Errores.ErrorIdentificador(texto, lineas);
                                     break;
                                 }
+                                else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                                {
+                                    Errores.ErrorConstante(texto, lineas);
+                                    break;
+                                }
+                                else if (operadores.IsMatch(tokens[apun - 1]))
+                                {
+                                    Errores.ErrorOperador(texto, lineas);
+                                    break;
+                                }
+
+                                else if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                                {
+                                    Errores.ErrorOperadorRelacional(texto, lineas);
+                                }
+                                else if (tokens[apun] == "(")
+                                {
+                                    if (!reservadas.IsMatch(tokens[apun - 1]))
+                                    {
+                                        Errores.ErrorPalabraReservada(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (4.ToString() == ConvertirToken(tokens[apun]))
+                                {
+                                    if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
+                                    {
+                                        Errores.ErrorPalabraReservada(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (relacionales.IsMatch(tokens[apun]))
+                                {
+                                    if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                    {
+                                        Errores.ErrorIdentificador(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
+                                {
+                                    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                }
+                                else
+                                {
+                                    Errores.ErrorSintactico(texto, lineas);
+                                    break;
+                                }
                             }
-                            else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
+                        }
+                        else
+                        {
+                            string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
+                            if (produccion != null)
                             {
-                                texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador"; 
+                                if (produccion != "99")
+                                {
+                                    produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
+                                }
+
                             }
                             else
                             {
-                                Errores.ErrorSintactico(texto, lineas);
-                                break;
+                                error = true;
+                                if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
+                                {
+                                    Errores.ErrorIdentificador(texto, lineas);
+                                    break;
+                                }
+                                else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                                {
+                                    Errores.ErrorConstante(texto, lineas);
+                                    break;
+                                }
+                                else if (tokens[apun] == "(")
+                                {
+                                    if (!reservadas.IsMatch(tokens[apun - 1]))
+                                    {
+                                        Errores.ErrorPalabraReservada(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (delimitadores.IsMatch(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                                {
+                                    Errores.ErrorOperadorRelacional(texto, lineas);
+                                    break;
+                                }
+                                else if (reservadas.IsMatch(tokens[apun - 1]))
+                                {
+                                    if (reservadas.IsMatch(tokens[apun]))
+                                    {
+                                        Errores.ErrorIdentificador(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (tokens[apun - 1] == ",")
+                                {
+                                    if (4.ToString() != ConvertirToken(tokens[apun]))
+                                    {
+                                        Errores.ErrorIdentificador(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (relacionales.IsMatch(tokens[apun]))
+                                {
+                                    if (apun + 2 >= tokens.Count)
+                                    {
+                                        Errores.ErrorIdentificador(texto, lineas);
+                                        break;
+                                    }
+                                    if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                    {
+                                        Errores.ErrorIdentificador(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun]))
+                                {
+                                    if (apun + 2 >= tokens.Count)
+                                    {
+                                        Errores.ErrorIdentificador(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
+                                {
+                                    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                }
+                                else if (4.ToString() == ConvertirToken(tokens[apun]) && delimitadores.IsMatch(tokens[apun - 1]))
+                                {
+                                    Errores.ErrorPalabraReservada(texto, lineas);
+                                    break;
+                                }
+                                else
+                                {
+                                    Errores.ErrorSintactico(texto, lineas);
+                                    break;
+                                }
                             }
+
                         }
                     }
                     else
                     {
-                        string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
-                        if (produccion != null)
-                        {
-                            if (produccion != "99")
-                            {
-                                produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
-                            }
-
-                        }
-                        else
-                        {
-                            error = true;
-                            if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
-                            {
-                                Errores.ErrorIdentificador(texto, lineas);
-                                break;
-                            }
-                            else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
-                            {
-                                Errores.ErrorConstante(texto, lineas);
-                                break;
-                            }
-                            else if (tokens[apun] == "(")
-                            {
-                                if (!reservadas.IsMatch(tokens[apun - 1]))
-                                {
-                                    Errores.ErrorPalabraReservada(texto, lineas);
-                                    break;
-                                }
-                            }
-                            else if (delimitadores.IsMatch(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
-                            {
-                                Errores.ErrorOperadorRelacional(texto, lineas);
-                                break;
-                            }
-                            else if (reservadas.IsMatch(tokens[apun - 1]))
-                            {
-                                if (reservadas.IsMatch(tokens[apun]))
-                                {
-                                    Errores.ErrorIdentificador(texto, lineas);
-                                    break;
-                                }
-                            }
-                            else if (tokens[apun - 1] == ",")
-                            {
-                                if (4.ToString() != ConvertirToken(tokens[apun]))
-                                {
-                                    Errores.ErrorIdentificador(texto, lineas);
-                                    break;
-                                }
-                            }
-                            else if (relacionales.IsMatch(tokens[apun]))
-                            {
-                                if (apun + 2 >= tokens.Count)
-                                {
-                                    Errores.ErrorIdentificador(texto, lineas);
-                                    break;
-                                }
-                                if (4.ToString() != ConvertirToken(tokens[apun + 1]))
-                                {
-                                    Errores.ErrorIdentificador(texto, lineas);
-                                    break;
-                                }
-                            }
-                            else if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun]))
-                            {
-                                if (apun + 2 >= tokens.Count)
-                                {
-                                    Errores.ErrorIdentificador(texto, lineas);
-                                    break;
-                                }
-                            }
-                            else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
-                            {
-                                texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
-                            }
-                            else if (4.ToString() == ConvertirToken(tokens[apun]) && delimitadores.IsMatch(tokens[apun-1]))
-                            {
-                                Errores.ErrorPalabraReservada(texto, lineas);
-                                break;
-                            }
-                            else
-                            {
-                                Errores.ErrorSintactico(texto, lineas);
-                                break;
-                            }
-                        }
-
+                        lineas++;
+                        apunN++;
+                        pila.Push(X);
                     }
+                    equis = X;
                 }
-                else
+                while (equis != "199");
+                if (error == false)
                 {
-                    lineas++;
-                    apunN++;
-                    pila.Push(X);
+                    Errores.SinError(texto, lineas);
                 }
-                equis = X;
-            }          
-            while (equis != "199");
-            if (error == false)
+                pila.Clear();
+            }
+            catch (Exception ex)
             {
-                Errores.SinError(texto, lineas);
+                MessageBox.Show(ex.Message);
             }
         }
         #region Utilidades
@@ -522,18 +535,6 @@ namespace Escaner_DML
             else
             {
                 bool encontrado = false;
-                // Recorrer el array por si lo encuentra
-                //for (int i = 0; i < dgvIden.Rows.Count; i++)
-                //{
-                //    if (dgvIden.Rows[i].Cells[0].Value != null && dgvIden.Rows[i].Cells[0].Value.ToString() == token)
-                //    {
-                //        if (dgvIden.Rows[i].Cells[2].Value != null)
-                //        {
-                //            dgvIden.Rows[i].Cells[2].Value += ", "+linea.ToString();
-                //        }
-                //        encontrado = true;
-                //    }
-                //}
 
                 for (int i = 0; i < dgvLex.Rows.Count; i++)
                 {
@@ -583,12 +584,13 @@ namespace Escaner_DML
             else if (token == "15") return 7;
             else if (token == "50") return 8;
             else if (token == "51") return 9;
-            else if (token == "53") return 10;
-            else if (token == "54") return 11;
-            else if (token == "61") return 12;
-            else if (token == "62") return 13;
-            else if (token == "72") return 14;
-            else if (token == "199") return 15;
+            else if (token == "52") return 10;
+            else if (token == "53") return 11;
+            else if (token == "54") return 12;
+            else if (token == "61") return 13;
+            else if (token == "62") return 14;
+            else if (token == "72") return 15;
+            else if (token == "199") return 16;
             else return 0;
         }
         public int EncontrarIndiceX(string regla)
@@ -613,6 +615,8 @@ namespace Escaner_DML
             else if (regla == "317") return 17;
             else if (regla == "318") return 18;
             else if (regla == "319") return 19;
+            else if (regla == "320") return 20;
+            else if (regla == "321") return 21;
             else return -1;
         }
         #endregion

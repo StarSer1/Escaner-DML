@@ -13,10 +13,9 @@ namespace Escaner_DML
 {
     public partial class Form1 : Form
     {
-        Analisis Analisis;
-        Errores Errores;
-        List<string> TablaLex;
-        bool errorActivado = false;
+        
+        
+        
 
         public Form1()
         {
@@ -33,18 +32,19 @@ namespace Escaner_DML
 
         private void BtnAnalizar_Click(object sender, EventArgs e)
         {
-            txtError.BackColor = Color.White;
-            txtError.Text = "";
-            //DgvConstantes.Rows.Clear();
-            //DgvIdentificadores.Rows.Clear();
+            bool errorActivado = false;
+            Analisis Analisis = new Analisis(errorActivado);
+            Errores Errores = new Errores();
             DgvLexica.Rows.Clear();
-            Analisis = new Analisis(errorActivado);
-            Errores = new Errores();
             if (Errores.ErrorSimboloDesco(txtEntrada, txtError) == false)
             {
-                TablaLex = Analisis.Analizador(txtEntrada, DgvLexica, txtError);
+                List<string> TablaLex = Analisis.Analizador(txtEntrada, DgvLexica, txtError);
                 if (Analisis.errorActivado == false)
                 {
+                    while (TablaLex.Last() == "\n")
+                    {
+                        TablaLex.RemoveAt(TablaLex.Count - 1);
+                    }
                     Analisis.Sintaxis(TablaLex, txtError);
                 }
             }
@@ -93,8 +93,8 @@ namespace Escaner_DML
             //DgvConstantes.Rows.Clear();
             //DgvIdentificadores.Rows.Clear();
             DgvLexica.Rows.Clear();
-            txtError.Text = string.Empty;
-            txtEntrada.Text = string.Empty;
+            txtError.Text = "";
+            txtEntrada.Text = "";
             txtError.BackColor = Color.White;
         }
     }
