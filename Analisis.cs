@@ -31,7 +31,7 @@ namespace Escaner_DML
 
 
         Stack<string> pila = new Stack<string>();
-        string[,] TablaSintac =
+        string[,] TablaSintacOG =
         {
 //             4     8             10           11    12    13    14    15    50    51    52    53    54    61    62    72    99
             { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
@@ -54,11 +54,65 @@ namespace Escaner_DML
             { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null },
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
             { null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null },
-            { null , null, null, null, "99", null, null, null, null, null, "52 300 53 321", null, null, null, null,null, null }, //320
-            { "4", null, null, null, null, null, null,  null,null,null,null, null,null,null,null,null,null} // 321
             // 4    8     10    11    12
         };
-                                                                                                                                            
+        string[,] TablaSintac =
+        {
+            // 4     8     10    11    12    13    14    15                         16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, "16 17 4 52 202 53 55 201", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //200
+            // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99"}, //201
+            //                     4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { "4 203 52 61 53 204 205", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //202
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, "18", "19", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //203
+            // 4     8     10    11    12    13    14    15    16    18    19       20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, "20 21", null, null, null, null, null, "99", null, null, null, null, null, null, null, null}, //204
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 206", null, null, "99", null, null, null, null, null}, //205
+            //  4     8     10    11    12    13    14    15    16    18    19    20     22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { "202", null, null, null, null, null, null, null, null, null, null, null, "207", null, null, null, null, null, null, null, null, null, null, null, null, null}, //206
+            // 4     8     10    11    12    13    14    15    16    18    19    20                      22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, "22 4 208 52 4 53 209", null, null, null, null, null, null, null, null, null, null, null, null, null}, //207
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22       24       25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, "24 23", "25 23", null, null, null, null, null, null, null, null, null, null, null}, //208
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25                  26    27        50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "26 4 52 4 53 210", null, "50 207", null, null, "99", null, null, null, null, null}, //209
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 207", null, null, "99", null, null, null, null, null}, //210
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26                             27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "27 28 4 29 52 212 53 55 215", null, null, null, null, null, null, null, null, null}, //211
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53         54         61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "213 214", "213 214", null, null, null}, //212
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53          54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 62 54", "61", null, null, null}, //213
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 212", null, null, "99", null, null, null, null, null}, //214
+            // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99"}, //215
+            { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
+            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
+            { "304 303", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null}, // 302 
+            { null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99"}, // 303
+            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, // 304
+            { null , "99", null, "99", null, "99", "99", "99", null, null, null, null, null, null, null, null, null, "99", "51 4", null, "99", null, null, null, null, "99" }, // 305
+            { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null}, // 306
+            {  null, null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "50 306", null, null, "99", null, null, null, null, "99"},
+            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+            { "4", null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, "99", null, null, null, null, "99"},
+            { null, null, null, null, "12 311", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" },
+            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, null, null, null, null, null, "317 311", "317 311", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" },
+            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { "304", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null },
+            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null }
+            // 4    8     10    11    12
+        };
+
         int contador = 1;
         int valorIdentificador = 401;
         int valorConstante = 600;
@@ -305,7 +359,12 @@ namespace Escaner_DML
                 int lineas = 1;
                 string KparaN = "";
                 pila.Push("199");
-                pila.Push("300");
+                if (tokens.First() == "INSERT")
+                    pila.Push("211");
+                else if (tokens.First() == "CREATE")
+                    pila.Push("200");
+                else if (tokens.First() == "SELECT")
+                    pila.Push("300");
                 List<string> tokensConN = tokens;
                 tokens = tokens.Where(s => s != "\n").ToList();
                 tokens.Add("$");
@@ -320,7 +379,7 @@ namespace Escaner_DML
                         KparaN = tokensConN[apunN];
                     if (KparaN != "\n")
                     {
-                        if (!X.StartsWith("3") || X == "199")
+                        if (!Regex.IsMatch(X, @"^[32]\d{2}$") || X == "199")
                         {
                             if (X == ConvertirToken(K))
                             {
@@ -582,41 +641,66 @@ namespace Escaner_DML
             else if (token == "13") return 5;
             else if (token == "14") return 6;
             else if (token == "15") return 7;
-            else if (token == "50") return 8;
-            else if (token == "51") return 9;
-            else if (token == "52") return 10;
-            else if (token == "53") return 11;
-            else if (token == "54") return 12;
-            else if (token == "61") return 13;
-            else if (token == "62") return 14;
-            else if (token == "72") return 15;
-            else if (token == "199") return 16;
+            else if (token == "16") return 8;
+            else if (token == "18") return 9;
+            else if (token == "19") return 10;
+            else if (token == "20") return 11;
+            else if (token == "22") return 12;
+            else if (token == "24") return 13;
+            else if (token == "25") return 14;
+            else if (token == "26") return 15;
+            else if (token == "27") return 16;
+            else if (token == "50") return 17;
+            else if (token == "51") return 18;
+            else if (token == "52") return 19;
+            else if (token == "53") return 20;
+            else if (token == "54") return 21;
+            else if (token == "61") return 22;
+            else if (token == "62") return 23;
+            else if (token == "72") return 24;
+            else if (token == "199") return 25;
             else return 0;
         }
         public int EncontrarIndiceX(string regla)
         {
-            if (regla == "300") return 0;
-            else if (regla == "301") return 1;
-            else if (regla == "302") return 2;
-            else if (regla == "303") return 3;
-            else if (regla == "304") return 4;
-            else if (regla == "305") return 5;
-            else if (regla == "306") return 6;
-            else if (regla == "307") return 7;
-            else if (regla == "308") return 8;
-            else if (regla == "309") return 9;
-            else if (regla == "310") return 10;
-            else if (regla == "311") return 11;
-            else if (regla == "312") return 12;
-            else if (regla == "313") return 13;
-            else if (regla == "314") return 14;
-            else if (regla == "315") return 15;
-            else if (regla == "316") return 16;
-            else if (regla == "317") return 17;
-            else if (regla == "318") return 18;
-            else if (regla == "319") return 19;
-            else if (regla == "320") return 20;
-            else if (regla == "321") return 21;
+            if (regla == "200") return 0;
+            else if (regla == "201") return 1;
+            else if (regla == "202") return 2;
+            else if (regla == "203") return 3;
+            else if (regla == "204") return 4;
+            else if (regla == "205") return 5;
+            else if (regla == "206") return 6;
+            else if (regla == "207") return 7;
+            else if (regla == "208") return 8;
+            else if (regla == "209") return 9;
+            else if (regla == "210") return 10;
+            else if (regla == "211") return 11;
+            else if (regla == "212") return 12;
+            else if (regla == "213") return 13;
+            else if (regla == "214") return 14;
+            else if (regla == "215") return 15;
+            else if (regla == "300") return 16;
+            else if (regla == "301") return 17;
+            else if (regla == "302") return 18;
+            else if (regla == "303") return 19;
+            else if (regla == "304") return 20;
+            else if (regla == "305") return 21;
+            else if (regla == "306") return 22;
+            else if (regla == "307") return 23;
+            else if (regla == "308") return 24;
+            else if (regla == "309") return 25;
+            else if (regla == "310") return 26;
+            else if (regla == "311") return 27;
+            else if (regla == "312") return 28;
+            else if (regla == "313") return 29;
+            else if (regla == "314") return 30;
+            else if (regla == "315") return 31;
+            else if (regla == "316") return 32;
+            else if (regla == "317") return 33;
+            else if (regla == "318") return 34;
+            else if (regla == "319") return 35;
+            else if (regla == "320") return 36;
+            else if (regla == "321") return 37;
             else return -1;
         }
         #endregion
