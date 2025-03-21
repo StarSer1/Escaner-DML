@@ -48,7 +48,11 @@ namespace Escaner_DML
             txtError.Text = "Sin Error";
             txtError.BackColor = Color.FromArgb(232, 255, 223);
         }
-
+        public void ErrorMaestro(TextBox txtError, int lineas, string palEsperada)
+        {
+            txtError.Text = "Error 2:200: Linea " + lineas + " Se esperaba: "+palEsperada;
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
         public bool ErrorParentesis (DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError, int acum)
         {
             if (acum < 0)

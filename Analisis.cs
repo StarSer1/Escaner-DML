@@ -389,59 +389,74 @@ namespace Escaner_DML
                             else
                             {
                                 error = true;
-                                if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
-                                {
-                                    Errores.ErrorIdentificador(texto, lineas);
-                                    break;
-                                }
-                                else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
-                                {
+                                string palFaltante = tablaSimbolos.FirstOrDefault(z => z.Value.ToString() == X).Key ?? "Identificador";
+                                if (reservadas.IsMatch(palFaltante))
+                                    Errores.ErrorPalabraReservada(texto, lineas);
+                                else if (constantesTL.IsMatch(palFaltante))
                                     Errores.ErrorConstante(texto, lineas);
-                                    break;
-                                }
-                                else if (operadores.IsMatch(tokens[apun - 1]))
-                                {
-                                    Errores.ErrorOperador(texto, lineas);
-                                    break;
-                                }
-
-                                else if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
-                                {
+                                else if (constantes.IsMatch(palFaltante))
+                                    Errores.ErrorConstante(texto, lineas);
+                                else if (relacionales.IsMatch(palFaltante))
                                     Errores.ErrorOperadorRelacional(texto, lineas);
-                                }
-                                else if (tokens[apun] == "(")
-                                {
-                                    if (!reservadas.IsMatch(tokens[apun - 1]))
-                                    {
-                                        Errores.ErrorPalabraReservada(texto, lineas);
-                                        break;
-                                    }
-                                }
-                                else if (4.ToString() == ConvertirToken(tokens[apun]))
-                                {
-                                    if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
-                                    {
-                                        Errores.ErrorPalabraReservada(texto, lineas);
-                                        break;
-                                    }
-                                }
-                                else if (relacionales.IsMatch(tokens[apun]))
-                                {
-                                    if (4.ToString() != ConvertirToken(tokens[apun + 1]))
-                                    {
-                                        Errores.ErrorIdentificador(texto, lineas);
-                                        break;
-                                    }
-                                }
-                                else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
-                                {
-                                    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
-                                }
+                                else if (delimitadores.IsMatch(palFaltante))
+                                    Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                else if (operadores.IsMatch(palFaltante))
+                                    Errores.ErrorMaestro(texto, lineas, palFaltante);
                                 else
-                                {
-                                    Errores.ErrorSintactico(texto, lineas);
-                                    break;
-                                }
+                                    Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                //if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
+                                //{
+                                //    Errores.ErrorIdentificador(texto, lineas);
+                                //    break;
+                                //}
+                                //else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                                //{
+                                //    Errores.ErrorConstante(texto, lineas);
+                                //    break;
+                                //}
+                                //else if (operadores.IsMatch(tokens[apun - 1]))
+                                //{
+                                //    Errores.ErrorOperador(texto, lineas);
+                                //    break;
+                                //}
+
+                                //else if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                                //{
+                                //    Errores.ErrorOperadorRelacional(texto, lineas);
+                                //}
+                                //else if (tokens[apun] == "(")
+                                //{
+                                //    if (!reservadas.IsMatch(tokens[apun - 1]))
+                                //    {
+                                //        Errores.ErrorPalabraReservada(texto, lineas);
+                                //        break;
+                                //    }
+                                //}
+                                //else if (4.ToString() == ConvertirToken(tokens[apun]))
+                                //{
+                                //    if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
+                                //    {
+                                //        Errores.ErrorPalabraReservada(texto, lineas);
+                                //        break;
+                                //    }
+                                //}
+                                //else if (relacionales.IsMatch(tokens[apun]))
+                                //{
+                                //    if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                //    {
+                                //        Errores.ErrorIdentificador(texto, lineas);
+                                //        break;
+                                //    }
+                                //}
+                                //else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
+                                //{
+                                //    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                //}
+                                //else
+                                //{
+                                //    Errores.ErrorSintactico(texto, lineas);
+                                //    break;
+                                //}
                             }
                         }
                         else
