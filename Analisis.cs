@@ -117,7 +117,9 @@ namespace Escaner_DML
         int valorIdentificador = 401;
         int valorConstante = 600;
         int acumuladorParentesisAbierto = 0;
-        int acumuladorComillas = 0;
+        int acumuladorComillas1 = 0;
+        int acumuladorComillas2 = 0;
+        int acumuladorComillas3 = 0;
         bool empezoComilla = false;
         Errores Errores = new Errores();
 
@@ -270,6 +272,9 @@ namespace Escaner_DML
                                     else if (c == ")")
                                         acumuladorParentesisAbierto--;
 
+                                 
+
+
                                     tokens.Add(cadena);
                                     if (cadena != "")
                                         MostrarDgv(dgvLex, tokens.Last(), linea);
@@ -304,9 +309,12 @@ namespace Escaner_DML
                     else if (c == ")")
                         acumuladorParentesisAbierto--;
 
-                    if (c == "'" || c == "’" || c == "‘")
-                        acumuladorComillas++;
-                   
+                    if (c == "’" || c == "‘")
+                        acumuladorComillas1++;
+
+                    if (c == "'")
+                        acumuladorComillas3++;
+
 
 
                     if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
@@ -353,6 +361,7 @@ namespace Escaner_DML
         {
             try
             {
+                acumuladorComillas2 = acumuladorComillas2 - 1;
                 texto.BackColor = Color.White;
                 texto.Text = "";
                 bool error = false;
@@ -394,16 +403,23 @@ namespace Escaner_DML
                                     Errores.ErrorPalabraReservada(texto, lineas);
                                 else if (constantesTL.IsMatch(palFaltante))
                                     Errores.ErrorConstante(texto, lineas);
+                                else if (palFaltante == "Identificador")
+                                    Errores.ErrorMaestro(texto, lineas, palFaltante);
                                 else if (constantes.IsMatch(palFaltante))
                                     Errores.ErrorConstante(texto, lineas);
                                 else if (relacionales.IsMatch(palFaltante))
                                     Errores.ErrorOperadorRelacional(texto, lineas);
-                                else if (delimitadores.IsMatch(palFaltante))
-                                    Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                else if (acumuladorComillas1 % 2 != 0)
+                                    Errores.ErroresComillas(texto, acumuladorComillas1, lineas);
+                                else if (acumuladorComillas3 % 2 != 0)
+                                    Errores.ErroresComillas(texto, acumuladorComillas3, lineas);
                                 else if (operadores.IsMatch(palFaltante))
                                     Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                else if (acumuladorParentesisAbierto % 2 != 0)
+                                    Errores.ErrorParentesisDDL(texto, lineas);
                                 else
-                                    Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                    Errores.ErrorSintactico(texto, lineas);
+                                break;
                                 //if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
                                 //{
                                 //    Errores.ErrorIdentificador(texto, lineas);
@@ -483,11 +499,47 @@ namespace Escaner_DML
                                     Errores.ErrorConstante(texto, lineas);
                                     break;
                                 }
+                                else if (tokens[apun-1] == "," && (constantes.IsMatch(tokens[apun-3]) || constantesTL.IsMatch(tokens[apun - 2])))
+                                {
+                                    if (tokens[apun] == ")")
+                                    {
+                                        Errores.ErrorConstante(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (constantes.IsMatch(tokens[apun - 2]) && constantes.IsMatch(tokens[apun + 1]))
+                                {
+                                        Errores.ErrorConstante(texto, lineas);
+                                        break;
+                                }
+                                else if (constantesTL.IsMatch(tokens[apun - 1]) && constantesTL.IsMatch(tokens[apun]))
+                                {
+                                    Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
+                                    break;
+                                }
                                 else if (tokens[apun] == "(")
                                 {
                                     if (!reservadas.IsMatch(tokens[apun - 1]))
                                     {
                                         Errores.ErrorPalabraReservada(texto, lineas);
+                                        break;
+                                    }
+                                }
+                                else if (Errores.ErroresComillas(texto, acumuladorComillas1, lineas))
+                                {
+                                    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                    break;
+                                }
+                                else if (Errores.ErroresComillas(texto, acumuladorComillas3, lineas))
+                                {
+                                    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                    break;
+                                }
+                                else if (tokens[apun - 1] == "NULL")
+                                {
+                                    if (tokens[apun] != "," || tokens[apun] != ";")
+                                    {
+                                        Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
                                         break;
                                     }
                                 }
@@ -533,14 +585,22 @@ namespace Escaner_DML
                                         break;
                                     }
                                 }
-                                else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
+                                else if (acumuladorParentesisAbierto % 2 != 0)
                                 {
-                                    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                    Errores.ErrorParentesisDDL(texto, lineas);
                                 }
                                 else if (4.ToString() == ConvertirToken(tokens[apun]) && delimitadores.IsMatch(tokens[apun - 1]))
                                 {
                                     Errores.ErrorPalabraReservada(texto, lineas);
                                     break;
+                                }
+                                else if (tokens[apun] == "INTO") 
+                                {
+                                    if (tokens[apun - 1] != "SELECT")
+                                    {
+                                        Errores.ErrorPalabraReservada(texto, lineas);
+                                        break;
+                                    }
                                 }
                                 else
                                 {

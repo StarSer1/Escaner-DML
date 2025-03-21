@@ -81,6 +81,28 @@ namespace Escaner_DML
             }
             return false;
         }
+        public bool ErrorParentesisDDL(TextBox txtError, int acum)
+        {
+            if (acum < 0)
+            {
+                txtError.BackColor = Color.FromArgb(255, 137, 137);
+                txtError.Text = "Error 101: Faltan parentesis abierto";
+                return true;
+            }
+            if (acum > 0)
+            {
+                txtError.BackColor = Color.FromArgb(255, 137, 137);
+                txtError.Text = "Error 102: Faltan parentesis cerrado";
+                return true;
+            }
+            if (acum == 0)
+            {
+                txtError.BackColor = Color.FromArgb(232, 255, 223);
+                txtError.Text = "Sin Error";
+                return false;
+            }
+            return false;
+        }
         public bool ErroresComillas(TextBox txtError, int acum, int lineas)
         {
             if (acum % 2 != 0)

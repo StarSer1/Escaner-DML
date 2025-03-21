@@ -56,10 +56,9 @@
             // 
             this.BtnAnalizar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
             this.BtnAnalizar.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnAnalizar.Location = new System.Drawing.Point(743, 539);
-            this.BtnAnalizar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.BtnAnalizar.Location = new System.Drawing.Point(557, 438);
             this.BtnAnalizar.Name = "BtnAnalizar";
-            this.BtnAnalizar.Size = new System.Drawing.Size(111, 38);
+            this.BtnAnalizar.Size = new System.Drawing.Size(83, 31);
             this.BtnAnalizar.TabIndex = 0;
             this.BtnAnalizar.Text = "Analizar";
             this.BtnAnalizar.UseVisualStyleBackColor = false;
@@ -69,10 +68,9 @@
             // 
             this.BtnSalir.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(188)))), ((int)(((byte)(188)))));
             this.BtnSalir.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnSalir.Location = new System.Drawing.Point(16, 539);
-            this.BtnSalir.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.BtnSalir.Location = new System.Drawing.Point(12, 438);
             this.BtnSalir.Name = "BtnSalir";
-            this.BtnSalir.Size = new System.Drawing.Size(111, 38);
+            this.BtnSalir.Size = new System.Drawing.Size(83, 31);
             this.BtnSalir.TabIndex = 1;
             this.BtnSalir.Text = "Salir";
             this.BtnSalir.UseVisualStyleBackColor = false;
@@ -87,12 +85,11 @@
             this.Column3,
             this.Column4,
             this.Column5});
-            this.DgvLexica.Location = new System.Drawing.Point(1032, 54);
-            this.DgvLexica.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DgvLexica.Location = new System.Drawing.Point(774, 44);
             this.DgvLexica.Name = "DgvLexica";
             this.DgvLexica.RowHeadersVisible = false;
             this.DgvLexica.RowHeadersWidth = 51;
-            this.DgvLexica.Size = new System.Drawing.Size(301, 542);
+            this.DgvLexica.Size = new System.Drawing.Size(226, 440);
             this.DgvLexica.TabIndex = 4;
             // 
             // Column1
@@ -137,19 +134,17 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(1027, 21);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(770, 17);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(155, 29);
+            this.label3.Size = new System.Drawing.Size(127, 22);
             this.label3.TabIndex = 5;
             this.label3.Text = "Tabla Léxica";
             // 
             // txtEntrada
             // 
-            this.txtEntrada.Location = new System.Drawing.Point(21, 101);
-            this.txtEntrada.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtEntrada.Location = new System.Drawing.Point(16, 82);
             this.txtEntrada.Name = "txtEntrada";
-            this.txtEntrada.Size = new System.Drawing.Size(831, 399);
+            this.txtEntrada.Size = new System.Drawing.Size(624, 325);
             this.txtEntrada.TabIndex = 6;
             this.txtEntrada.Text = "";
             // 
@@ -157,10 +152,9 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(16, 21);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(12, 17);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(102, 29);
+            this.label4.Size = new System.Drawing.Size(83, 22);
             this.label4.TabIndex = 5;
             this.label4.Text = "Entrada";
             // 
@@ -172,10 +166,9 @@
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 607);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 494);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(869, 28);
+            this.statusStrip1.Size = new System.Drawing.Size(652, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -183,57 +176,55 @@
             // 
             this.toolStripStatusLabel2.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(238, 22);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(188, 17);
             this.toolStripStatusLabel2.Text = "Carlos Omar Celis Calzada";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(317, 22);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(245, 17);
             this.toolStripStatusLabel1.Text = "David Alejandro De Los Santos Cruz";
             // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(267, 22);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(206, 17);
             this.toolStripStatusLabel3.Text = "Brandon Israel Nuñez Montoya";
             // 
             // cmbEjemplo
             // 
             this.cmbEjemplo.FormattingEnabled = true;
             this.cmbEjemplo.Items.AddRange(new object[] {
-            "Ejemplo 1.5.2",
-            "Ejemplo 1.5.3",
-            "Ejemplo 1.5.4",
-            "Ejemplo 1.5.5",
-            "Ejemplo 1.5.6",
-            "Ejemplo 1.5.7",
-            "Ejemplo 1.5.8"});
-            this.cmbEjemplo.Location = new System.Drawing.Point(113, 73);
-            this.cmbEjemplo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            "Ejemplo 3.4.1",
+            "Ejemplo 3.4.2",
+            "Ejemplo 3.4.3",
+            "Ejemplo 3.4.4",
+            "Ejemplo 3.4.5",
+            "Ejemplo 3.4.6",
+            "Ejemplo 3.4.7",
+            "Ejemplo 3.4.8"});
+            this.cmbEjemplo.Location = new System.Drawing.Point(85, 59);
             this.cmbEjemplo.Name = "cmbEjemplo";
-            this.cmbEjemplo.Size = new System.Drawing.Size(277, 24);
+            this.cmbEjemplo.Size = new System.Drawing.Size(209, 21);
             this.cmbEjemplo.TabIndex = 8;
             this.cmbEjemplo.SelectedIndexChanged += new System.EventHandler(this.cmbEjemplo_SelectedIndexChanged);
             // 
             // txtError
             // 
             this.txtError.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtError.Location = new System.Drawing.Point(113, 505);
-            this.txtError.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtError.Location = new System.Drawing.Point(85, 410);
             this.txtError.Name = "txtError";
-            this.txtError.Size = new System.Drawing.Size(739, 26);
+            this.txtError.Size = new System.Drawing.Size(555, 22);
             this.txtError.TabIndex = 9;
             // 
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(16, 505);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox1.Location = new System.Drawing.Point(12, 410);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(99, 26);
+            this.textBox1.Size = new System.Drawing.Size(75, 22);
             this.textBox1.TabIndex = 10;
             this.textBox1.Text = "Mensaje:";
             // 
@@ -241,10 +232,9 @@
             // 
             this.BtnClear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.BtnClear.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnClear.Location = new System.Drawing.Point(743, 59);
-            this.BtnClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.BtnClear.Location = new System.Drawing.Point(557, 48);
             this.BtnClear.Name = "BtnClear";
-            this.BtnClear.Size = new System.Drawing.Size(111, 38);
+            this.BtnClear.Size = new System.Drawing.Size(83, 31);
             this.BtnClear.TabIndex = 11;
             this.BtnClear.Text = "Limpiar";
             this.BtnClear.UseVisualStyleBackColor = false;
@@ -254,19 +244,18 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(16, 75);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(12, 61);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(96, 22);
+            this.label1.Size = new System.Drawing.Size(73, 18);
             this.label1.TabIndex = 12;
             this.label1.Text = "Ejemplos";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(236)))), ((int)(((byte)(210)))));
-            this.ClientSize = new System.Drawing.Size(869, 635);
+            this.ClientSize = new System.Drawing.Size(652, 516);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.BtnClear);
             this.Controls.Add(this.textBox1);
@@ -280,7 +269,6 @@
             this.Controls.Add(this.BtnSalir);
             this.Controls.Add(this.BtnAnalizar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";
