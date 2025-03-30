@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -114,6 +115,9 @@ namespace Escaner_DML
         };
 
         int contador = 1;
+        int noTabla = 1;
+        int noAtributo = 1;
+        int noRestriccion = 1;
         int valorIdentificador = 401;
         int valorConstante = 600;
         int acumuladorParentesisAbierto = 0;
@@ -122,6 +126,10 @@ namespace Escaner_DML
         int acumuladorComillas3 = 0;
         bool empezoComilla = false;
         Errores Errores = new Errores();
+
+        List<(int noTabla, string nombreTabla)> tablas = new List<(int, string)>();
+        List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud,int noNull)> atributos = new List<(int,int, string,string,int,int)>();
+        List<(int noTabla, int noRestriccion, int Tipo,string nombreRestriccion,int atributoAsociado,int Tabla, int atributo)> restricciones = new List<(int,int,int, string,int,int,int)>();
 
         Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
         {
@@ -148,7 +156,7 @@ namespace Escaner_DML
             {"$", 199 }
         };
         List<string> tokens = new List<string>();
-        public List<string> Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError)
+        public List<string> Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
         {
             string cadena = "";
             int linea = 1;
@@ -354,9 +362,97 @@ namespace Escaner_DML
             //if (errorComillas || errorParentesis)
             //errorActivado = true;
             //tokens = RemoverDuplicadosVacios(tokens);
+            LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion);
                 return tokens;
         }
+        public void LLENADOTABLASPAPU(DataGridView dtTab, DataGridView dtAtb, DataGridView dtRes)
+        {
+            List<string> tokens2 = new List<string>();
+            tokens2.AddRange(tokens);
+            tokens2.RemoveAll(elemento => elemento == "\n");
+            for (int i = 0; i < tokens2.Count; i++)
+            {
+                //TABLAS
+                if (i == 71)
+                {
 
+                }
+                if (tokens2[i] == "CREATE" && tokens2[i+1] == "TABLE")
+                {
+                    dtTab.Rows.Add(noTabla, tokens2[i + 2]);
+                    tablas.Add((noTabla, tokens2[i + 2]));
+                    noTabla++;
+                }
+                //ATRIBUTOS
+                else if (delimitadores.IsMatch(tokens2[i-1])&& tokens2[i]!= ")")
+                {
+                    if((tokens2[i + 1] == "CHAR" || tokens2[i + 1] == "NUMERIC") && (tokens2[i+2] =="(" && tokens2[i + 4] == ")"))
+                    {
+                        if (tokens2[i + 5] == "NOT" && tokens2[i + 6] == "NULL")
+                        {
+                            dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3],1);
+                            atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], Convert.ToInt32(tokens2[i + 3]), 1));
+                            noAtributo++;
+                        }
+                        else 
+                        {
+                            dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3],0);
+                            atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], int.Parse(tokens2[i + 3]), 0));
+                            noAtributo++;
+                        }
+                        
+                    }
+                    
+                }                //RESTRICCIONES
+                if (tokens2[i] =="CONSTRAINT")
+                {
+                    if ((tokens2[i+2] == "PRIMARY" || tokens2[i + 2] == "FOREIGN"))
+                    {
+                        if(tokens2[i + 2] == "PRIMARY")
+                        {
+                            string nombreAt = tokens2[i + 5];
+                            int? atributoAsociado = atributos
+                            .Where(a => a.noTabla == noTabla-1 && a.nombreAtributo == nombreAt)
+                            .Select(a => (int?)a.noAtributo) // Convertir a nullable para evitar valores por defecto
+                            .FirstOrDefault();
+                            if(atributoAsociado != null)
+                            {
+                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
+                                restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), 0, 0));
+                                noRestriccion++;
+                            }
+                            
+                        }
+                        else if (tokens2[i + 2] == "FOREIGN")
+                        {
+                            string nombreAt = tokens2[i + 5];
+
+                            int? atributoAsociado = atributos
+                            .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
+                            .Select(a => (int?)a.noAtributo) 
+                            .FirstOrDefault();
+
+                            int? noTablaDT = tablas
+                            .Where(t => t.nombreTabla == tokens2[i+8])
+                            .Select(t => (int?)t.noTabla) 
+                            .FirstOrDefault();
+
+                            int? noAtributo = atributos
+                            .Where(a => a.noTabla == noTablaDT && a.nombreAtributo == tokens2[i+10])
+                            .Select(a => (int?)a.noAtributo) 
+                            .FirstOrDefault();
+                            if(atributoAsociado != null && noTablaDT !=null && noAtributo != null)
+                            {
+                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
+                                restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo))));
+                                noRestriccion++;
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
         public void Sintaxis(List<string> tokens, TextBox texto)
         {
             try

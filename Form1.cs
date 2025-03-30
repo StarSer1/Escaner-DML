@@ -36,9 +36,12 @@ namespace Escaner_DML
             Analisis Analisis = new Analisis(errorActivado);
             Errores Errores = new Errores();
             DgvLexica.Rows.Clear();
+            DtTablas.Rows.Clear();
+            DtAtributos.Rows.Clear();
+            DtRestricciones.Rows.Clear();
             if (Errores.ErrorSimboloDesco(txtEntrada, txtError) == false)
             {
-                List<string> TablaLex = Analisis.Analizador(txtEntrada, DgvLexica, txtError);
+                List<string> TablaLex = Analisis.Analizador(txtEntrada, DgvLexica, txtError,DtTablas,DtAtributos,DtRestricciones);
                 if (Analisis.errorActivado == false)
                 {
                     while (TablaLex.Last() == "\n")
