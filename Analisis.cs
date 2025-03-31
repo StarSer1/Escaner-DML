@@ -127,7 +127,7 @@ namespace Escaner_DML
         bool empezoComilla = false;
         Errores Errores = new Errores();
 
-        List<(int noTabla, string nombreTabla)> tablas = new List<(int, string)>();
+        List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas = new List<(int, string, int, int)>();
         List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud,int noNull)> atributos = new List<(int,int, string,string,int,int)>();
         List<(int noTabla, int noRestriccion, int Tipo,string nombreRestriccion,int atributoAsociado,int Tabla, int atributo)> restricciones = new List<(int,int,int, string,int,int,int)>();
 
@@ -373,18 +373,15 @@ namespace Escaner_DML
             for (int i = 0; i < tokens2.Count; i++)
             {
                 //TABLAS
-                if (i == 71)
+                if (tokens2[i] == "CREATE" && tokens2[i + 1] == "TABLE")
                 {
 
-                }
-                if (tokens2[i] == "CREATE" && tokens2[i+1] == "TABLE")
-                {
-                    dtTab.Rows.Add(noTabla, tokens2[i + 2]);
-                    tablas.Add((noTabla, tokens2[i + 2]));
+                    dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
+                    tablas.Add((noTabla, tokens2[i + 2], 0, 0));
                     noTabla++;
                 }
                 //ATRIBUTOS
-                else if (delimitadores.IsMatch(tokens2[i-1])&& tokens2[i]!= ")")
+                else if (delimitadores.IsMatch(tokens2[i-1]) && (tokens2[i-1]!= ")" && tokens2[i] != ")"))
                 {
                     if((tokens2[i + 1] == "CHAR" || tokens2[i + 1] == "NUMERIC") && (tokens2[i+2] =="(" && tokens2[i + 4] == ")"))
                     {
@@ -403,7 +400,8 @@ namespace Escaner_DML
                         
                     }
                     
-                }                //RESTRICCIONES
+                }
+                //RESTRICCIONES
                 if (tokens2[i] =="CONSTRAINT")
                 {
                     if ((tokens2[i+2] == "PRIMARY" || tokens2[i + 2] == "FOREIGN"))
@@ -452,6 +450,26 @@ namespace Escaner_DML
                     }
                 }
             }
+            List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablasConConteo = new List<(int, string, int, int)>();
+
+            foreach (var tabla in tablas)
+            {
+                int contadorAtributos = atributos.Count(a => a.noTabla == tabla.noTabla);
+                int contadorRestricciones = restricciones.Count(r => r.noTabla == tabla.noTabla);
+
+                tablasConConteo.Add((tabla.noTabla, tabla.nombreTabla, contadorAtributos, contadorRestricciones));
+            }
+
+            tablas = tablasConConteo;
+
+            dtTab.Rows.Clear();
+
+            foreach (var tabla in tablas)
+            {
+                dtTab.Rows.Add(tabla.noTabla, tabla.nombreTabla, tabla.cantidadAtributos, tabla.cantidadRestricciones);
+            }
+
+
         }
         public void Sintaxis(List<string> tokens, TextBox texto)
         {
