@@ -24,10 +24,20 @@ namespace Escaner_DML
         Regex constantesTL = new Regex(@"\b\d+\b");
         Regex constantes = new Regex(@"'([^']*)'");
         public bool errorActivado = false;
+        List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas = new List<(int, string, int, int)>();
+        List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull)> atributos = new List<(int, int, string, string, int, int)>();
+        List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restricciones = new List<(int, int, int, string, int, int, int)>();
 
-        public Analisis(bool error)
+
+        public Analisis(bool error,
+            List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas2,
+            List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull)> atributos2,
+            List<(int noTabla, int noRestriccion, int tipo, string nombreRestriccion, int atributoAsociado, int tabla, int atributo)> restricciones2)
         {
             this.errorActivado = error;
+            this.tablas = tablas2;
+            this.atributos= atributos2;
+            this.restricciones = restricciones2;
         }
 
 
@@ -183,10 +193,7 @@ namespace Escaner_DML
         bool empezoComilla = false;
         Errores Errores = new Errores();
 
-        List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas = new List<(int, string, int, int)>();
-        List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud,int noNull)> atributos = new List<(int,int, string,string,int,int)>();
-        List<(int noTabla, int noRestriccion, int Tipo,string nombreRestriccion,int atributoAsociado,int Tabla, int atributo)> restricciones = new List<(int,int,int, string,int,int,int)>();
-
+        
         Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
         {
             // Palabras Reservadas (1)
@@ -418,10 +425,14 @@ namespace Escaner_DML
             //if (errorComillas || errorParentesis)
             //errorActivado = true;
             //tokens = RemoverDuplicadosVacios(tokens);
-            LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion);
+            //LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion,);
                 return tokens;
         }
-        public void LLENADOTABLASPAPU(DataGridView dtTab, DataGridView dtAtb, DataGridView dtRes)
+        public void LLENADOTABLASPAPU(
+            DataGridView dtTab,
+            DataGridView dtAtb, 
+            DataGridView dtRes, 
+            List<string> tokens)
         {
             List<string> tokens2 = new List<string>();
             tokens2.AddRange(tokens);
@@ -431,10 +442,13 @@ namespace Escaner_DML
                 //TABLAS
                 if (tokens2[i] == "CREATE" && tokens2[i + 1] == "TABLE")
                 {
-
+                    string tablaBuscar = tokens2[i + 2];
+                    bool existeTabla = tablas.Any(t => t.nombreTabla == tablaBuscar);
                     dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
                     tablas.Add((noTabla, tokens2[i + 2], 0, 0));
                     noTabla++;
+
+
                 }
                 //ATRIBUTOS
                 else if (delimitadores.IsMatch(tokens2[i - 1]) && (tokens2[i - 1] != ")" && tokens2[i] != ")"))

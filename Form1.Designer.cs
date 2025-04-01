@@ -71,6 +71,8 @@
             this.Column20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BtnInicializar = new System.Windows.Forms.Button();
+            this.BtnLimpiar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DgvLexica)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DtAtributos)).BeginInit();
@@ -438,6 +440,30 @@
             this.Column22.HeaderText = "No. Restricciones";
             this.Column22.Name = "Column22";
             // 
+            // BtnInicializar
+            // 
+            this.BtnInicializar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.BtnInicializar.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnInicializar.Location = new System.Drawing.Point(241, 438);
+            this.BtnInicializar.Name = "BtnInicializar";
+            this.BtnInicializar.Size = new System.Drawing.Size(123, 31);
+            this.BtnInicializar.TabIndex = 0;
+            this.BtnInicializar.Text = "Inicializar Tablas";
+            this.BtnInicializar.UseVisualStyleBackColor = false;
+            this.BtnInicializar.Click += new System.EventHandler(this.BtnInicializar_Click);
+            // 
+            // BtnLimpiar
+            // 
+            this.BtnLimpiar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.BtnLimpiar.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnLimpiar.Location = new System.Drawing.Point(124, 438);
+            this.BtnLimpiar.Name = "BtnLimpiar";
+            this.BtnLimpiar.Size = new System.Drawing.Size(111, 31);
+            this.BtnLimpiar.TabIndex = 0;
+            this.BtnLimpiar.Text = "Limpiar Tablas";
+            this.BtnLimpiar.UseVisualStyleBackColor = false;
+            this.BtnLimpiar.Click += new System.EventHandler(this.BtnLimpiar_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -461,6 +487,8 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.DgvLexica);
             this.Controls.Add(this.BtnSalir);
+            this.Controls.Add(this.BtnLimpiar);
+            this.Controls.Add(this.BtnInicializar);
             this.Controls.Add(this.BtnAnalizar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
@@ -525,6 +553,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column20;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column21;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column22;
+        private System.Windows.Forms.Button BtnInicializar;
+        private System.Windows.Forms.Button BtnLimpiar;
     }
 }
 
