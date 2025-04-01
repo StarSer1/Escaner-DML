@@ -57,7 +57,7 @@ namespace Escaner_DML
             { null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null },
             // 4    8     10    11    12
         };
-        string[,] TablaSintac =
+        string[,] TablaSintacOG2 =
         {
             // 4     8     10    11    12    13    14    15                         16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
             { null, null, null, null, null, null, null, null, "16 17 4 52 202 53 55 201", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //200
@@ -83,6 +83,62 @@ namespace Escaner_DML
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 207", null, null, "99", null, null, null, null, null}, //210
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26                             27    50    51    52    53    54    61    62    72    99
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "27 28 4 29 52 212 53 55 215", null, null, null, null, null, null, null, null, null}, //211
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53         54         61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "213 214", "213 214", null, null, null}, //212
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53          54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 62 54", "61", null, null, null}, //213
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 212", null, null, "99", null, null, null, null, null}, //214
+            // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99"}, //215
+            { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
+            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
+            { "304 303", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null}, // 302 
+            { null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99"}, // 303
+            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, // 304
+            { null , "99", null, "99", null, "99", "99", "99", null, null, null, null, null, null, null, null, null, "99", "51 4", null, "99", null, null, null, null, "99" }, // 305
+            { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null}, // 306
+            {  null, null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "50 306", null, null, "99", null, null, null, null, "99"},
+            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+            { "4", null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, "99", null, null, null, null, "99"},
+            { null, null, null, null, "12 311", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" },
+            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, null, null, null, null, null, "317 311", "317 311", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" },
+            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { "304", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null },
+            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null }
+            // 4    8     10    11    12
+        };
+        string[,] TablaSintac =
+        {
+            // 4     8     10    11    12    13    14    15                         16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, "16 17 4 700 52 202 53 55 201", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //200
+            // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99"}, //201
+            //                     4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { "4 701 203 52 61 53 204 205", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //202
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, "18", "19", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //203
+            // 4     8     10    11    12    13    14    15    16    18    19       20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, "20 21", null, null, null, null, null, "99", null, null, null, null, null, null, null, null}, //204
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 206", null, null, "99", null, null, null, null, null}, //205
+            //  4     8     10    11    12    13    14    15    16    18    19    20     22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { "202", null, null, null, null, null, null, null, null, null, null, null, "207", null, null, null, null, null, null, null, null, null, null, null, null, null}, //206
+            // 4     8     10    11    12    13    14    15    16    18    19    20                      22    24    25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, "22 4 703 208 52 4 702 53 209", null, null, null, null, null, null, null, null, null, null, null, null, null}, //207
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22       24       25    26    27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, "24 23", "25 23", null, null, null, null, null, null, null, null, null, null, null}, //208
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25                  26    27        50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "26 4 52 4 53 210", null, "50 207", null, null, "99", null, null, null, null, null}, //209
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 207", null, null, "99", null, null, null, null, null}, //210
+            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26                             27    50    51    52    53    54    61    62    72    99
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "27 28 4 29 52 212 53 705 55 215", null, null, null, null, null, null, null, null, null}, //211
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53         54         61    62    72    99
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "213 214", "213 214", null, null, null}, //212
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53          54    61    62    72    99
@@ -381,39 +437,39 @@ namespace Escaner_DML
                     noTabla++;
                 }
                 //ATRIBUTOS
-                else if (delimitadores.IsMatch(tokens2[i-1]) && (tokens2[i-1]!= ")" && tokens2[i] != ")"))
+                else if (delimitadores.IsMatch(tokens2[i - 1]) && (tokens2[i - 1] != ")" && tokens2[i] != ")"))
                 {
-                    if((tokens2[i + 1] == "CHAR" || tokens2[i + 1] == "NUMERIC") && (tokens2[i+2] =="(" && tokens2[i + 4] == ")"))
+                    if ((tokens2[i + 1] == "CHAR" || tokens2[i + 1] == "NUMERIC") && (tokens2[i + 2] == "(" && tokens2[i + 4] == ")"))
                     {
                         if (tokens2[i + 5] == "NOT" && tokens2[i + 6] == "NULL")
                         {
-                            dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3],1);
+                            dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 1);
                             atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], Convert.ToInt32(tokens2[i + 3]), 1));
                             noAtributo++;
                         }
-                        else 
+                        else
                         {
-                            dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3],0);
+                            dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 0);
                             atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], int.Parse(tokens2[i + 3]), 0));
                             noAtributo++;
                         }
-                        
+
                     }
-                    
+
                 }
                 //RESTRICCIONES
-                if (tokens2[i] =="CONSTRAINT")
+                if (tokens2[i] == "CONSTRAINT")
                 {
-                    if ((tokens2[i+2] == "PRIMARY" || tokens2[i + 2] == "FOREIGN"))
+                    if ((tokens2[i + 2] == "PRIMARY" || tokens2[i + 2] == "FOREIGN"))
                     {
-                        if(tokens2[i + 2] == "PRIMARY")
+                        if (tokens2[i + 2] == "PRIMARY")
                         {
                             string nombreAt = tokens2[i + 5];
                             int? atributoAsociado = atributos
-                            .Where(a => a.noTabla == noTabla-1 && a.nombreAtributo == nombreAt)
+                            .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
                             .Select(a => (int?)a.noAtributo) // Convertir a nullable para evitar valores por defecto
                             .FirstOrDefault();
-                            if(atributoAsociado != null)
+                            if (atributoAsociado != null)
                             {
                                 dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
                                 restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
@@ -421,11 +477,11 @@ namespace Escaner_DML
                             }
                             else
                             {
-                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
-                                restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
+                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], "N/A", "-", "-");
+                                restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], -1, -1, -1));
                                 noRestriccion++;
                             }
-                            
+
                         }
                         else if (tokens2[i + 2] == "FOREIGN")
                         {
@@ -433,19 +489,19 @@ namespace Escaner_DML
 
                             int? atributoAsociado = atributos
                             .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
-                            .Select(a => (int?)a.noAtributo) 
+                            .Select(a => (int?)a.noAtributo)
                             .FirstOrDefault();
 
                             int? noTablaDT = tablas
-                            .Where(t => t.nombreTabla == tokens2[i+8])
-                            .Select(t => (int?)t.noTabla) 
+                            .Where(t => t.nombreTabla == tokens2[i + 8])
+                            .Select(t => (int?)t.noTabla)
                             .FirstOrDefault();
 
                             int? noAtributo = atributos
-                            .Where(a => a.noTabla == noTablaDT && a.nombreAtributo == tokens2[i+10])
-                            .Select(a => (int?)a.noAtributo) 
+                            .Where(a => a.noTabla == noTablaDT && a.nombreAtributo == tokens2[i + 10])
+                            .Select(a => (int?)a.noAtributo)
                             .FirstOrDefault();
-                            if(atributoAsociado != null && noTablaDT !=null && noAtributo != null)
+                            if (atributoAsociado != null && noTablaDT != null && noAtributo != null)
                             {
                                 dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
                                 restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo))));
@@ -453,11 +509,11 @@ namespace Escaner_DML
                             }
                             else
                             {
-                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, "N/A", "N/A");
-                                restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
+                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], "N/A", "N/A", "N/A");
+                                restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], -1, -1, -1));
                                 noRestriccion++;
                             }
-                            
+
                         }
                     }
                 }
@@ -506,244 +562,298 @@ namespace Escaner_DML
                 int apun = 0;
                 int apunN = 0;
                 string equis;
+                bool errorSintactico = false;
+                string K = "";
+                int numeroTablaChecker = 0;
                 do
                 {
                     string X = pila.Pop();
-                    string K = tokens[apun];
-                    if (apunN < tokensConN.Count())
-                        KparaN = tokensConN[apunN];
-                    if (KparaN != "\n")
+                    if (Regex.IsMatch(X, @"^7\d{2}$"))
                     {
-                        if (!Regex.IsMatch(X, @"^[32]\d{2}$") || X == "199")
+                        if (X == "700")
+                            errorSintactico = Validar_NombreTabla(K, out errorSintactico, ref numeroTablaChecker);
+                        if (errorSintactico == true)
                         {
-                            if (X == ConvertirToken(K))
-                            {
-                                apun++;
-                                apunN++;
-                            }
-                            else
-                            {
-                                error = true;
-                                string palFaltante = tablaSimbolos.FirstOrDefault(z => z.Value.ToString() == X).Key ?? "Identificador";
-                                if (reservadas.IsMatch(palFaltante))
-                                    Errores.ErrorPalabraReservada(texto, lineas);
-                                else if (constantesTL.IsMatch(palFaltante))
-                                    Errores.ErrorConstante(texto, lineas);
-                                else if (palFaltante == "Identificador")
-                                    Errores.ErrorMaestro(texto, lineas, palFaltante);
-                                else if (constantes.IsMatch(palFaltante))
-                                    Errores.ErrorConstante(texto, lineas);
-                                else if (relacionales.IsMatch(palFaltante))
-                                    Errores.ErrorOperadorRelacional(texto, lineas);
-                                else if (acumuladorComillas1 % 2 != 0)
-                                    Errores.ErroresComillas(texto, acumuladorComillas1, lineas);
-                                else if (acumuladorComillas3 % 2 != 0)
-                                    Errores.ErroresComillas(texto, acumuladorComillas3, lineas);
-                                else if (operadores.IsMatch(palFaltante))
-                                    Errores.ErrorMaestro(texto, lineas, palFaltante);
-                                else if (acumuladorParentesisAbierto % 2 != 0)
-                                    Errores.ErrorParentesisDDL(texto, lineas);
-                                else
-                                    Errores.ErrorSintactico(texto, lineas);
-                                break;
-                                //if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
-                                //{
-                                //    Errores.ErrorIdentificador(texto, lineas);
-                                //    break;
-                                //}
-                                //else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
-                                //{
-                                //    Errores.ErrorConstante(texto, lineas);
-                                //    break;
-                                //}
-                                //else if (operadores.IsMatch(tokens[apun - 1]))
-                                //{
-                                //    Errores.ErrorOperador(texto, lineas);
-                                //    break;
-                                //}
-
-                                //else if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
-                                //{
-                                //    Errores.ErrorOperadorRelacional(texto, lineas);
-                                //}
-                                //else if (tokens[apun] == "(")
-                                //{
-                                //    if (!reservadas.IsMatch(tokens[apun - 1]))
-                                //    {
-                                //        Errores.ErrorPalabraReservada(texto, lineas);
-                                //        break;
-                                //    }
-                                //}
-                                //else if (4.ToString() == ConvertirToken(tokens[apun]))
-                                //{
-                                //    if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
-                                //    {
-                                //        Errores.ErrorPalabraReservada(texto, lineas);
-                                //        break;
-                                //    }
-                                //}
-                                //else if (relacionales.IsMatch(tokens[apun]))
-                                //{
-                                //    if (4.ToString() != ConvertirToken(tokens[apun + 1]))
-                                //    {
-                                //        Errores.ErrorIdentificador(texto, lineas);
-                                //        break;
-                                //    }
-                                //}
-                                //else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
-                                //{
-                                //    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
-                                //}
-                                //else
-                                //{
-                                //    Errores.ErrorSintactico(texto, lineas);
-                                //    break;
-                                //}
-                            }
+                            MessageBox.Show("3:306: Linea " + lineas + " El nombre del atributo '" + K + "' esta duplicado");
+                            break;
                         }
-                        else
+                        if (X == "701")
+                            errorSintactico = Validar_NombreAtributo(K, out errorSintactico);
+                        if (errorSintactico == true)
                         {
-                            string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
-                            if (produccion != null)
-                            {
-                                if (produccion != "99")
-                                {
-                                    produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
-                                }
+                            MessageBox.Show("3:302: Linea " + lineas + " El nombre del atributo '" + K + "' se especifica más de una vez");
+                            break;
+                        }
+                        if (X == "702")
+                            errorSintactico = Validar_ExistirAtributo(K, out errorSintactico, numeroTablaChecker);
+                        if (errorSintactico == true)
+                        {
 
+                            MessageBox.Show("3:303: Linea " +lineas+" El nombre del atributo '"+K+"' no existe en la tabla '"+ tablas.FirstOrDefault(t => t.noTabla == numeroTablaChecker).nombreTabla+"'");
+                            break;
+                        }
+                        if (X == "703")
+                            errorSintactico = Validar_DupRestriccion(K, out errorSintactico);
+                        if (errorSintactico == true)
+                        {
+                            MessageBox.Show("3:304: Linea " + lineas + " El nombre de la restriccion '" + K + "' ya se encuentra registrado en la base de datos '");
+                            break;
+                        }
+                        if (X == "704")
+                            errorSintactico = Validar_AtributoNoValido(K, out errorSintactico, numeroTablaChecker);
+                        if (errorSintactico == true)
+                        {
+                            MessageBox.Show("3:305: Linea " + lineas + " Se hace referencia al atributo '" + K + "' no valido en la tabla '" + tablas.FirstOrDefault(t => t.noTabla == numeroTablaChecker).nombreTabla + "'");
+                            break;
+                        }
+                        if (X == "705")
+                            errorSintactico = Validar_CantidadAtributos(K, out errorSintactico, numeroTablaChecker, apunN);
+                        if (errorSintactico == true)
+                        {
+                            MessageBox.Show("3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla");
+                            break;
+                        }
+                        //apunN++;
+                    }
+                    else
+                    {
+                        K = tokens[apun];
+                        if (apunN < tokensConN.Count())
+                            KparaN = tokensConN[apunN];
+                        if (KparaN != "\n")
+                        {
+                            if (!Regex.IsMatch(X, @"^[32]\d{2}$") || X == "199")
+                            {
+                                if (X == ConvertirToken(K))
+                                {
+                                    apun++;
+                                    apunN++;
+                                }
+                                else
+                                {
+                                    error = true;
+                                    string palFaltante = tablaSimbolos.FirstOrDefault(z => z.Value.ToString() == X).Key ?? "Identificador";
+                                    if (reservadas.IsMatch(palFaltante))
+                                        Errores.ErrorPalabraReservada(texto, lineas);
+                                    else if (constantesTL.IsMatch(palFaltante))
+                                        Errores.ErrorConstante(texto, lineas);
+                                    else if (palFaltante == "Identificador")
+                                        Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                    else if (constantes.IsMatch(palFaltante))
+                                        Errores.ErrorConstante(texto, lineas);
+                                    else if (relacionales.IsMatch(palFaltante))
+                                        Errores.ErrorOperadorRelacional(texto, lineas);
+                                    else if (acumuladorComillas1 % 2 != 0)
+                                        Errores.ErroresComillas(texto, acumuladorComillas1, lineas);
+                                    else if (acumuladorComillas3 % 2 != 0)
+                                        Errores.ErroresComillas(texto, acumuladorComillas3, lineas);
+                                    else if (operadores.IsMatch(palFaltante))
+                                        Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                    else if (acumuladorParentesisAbierto % 2 != 0)
+                                        Errores.ErrorParentesisDDL(texto, lineas);
+                                    else
+                                        Errores.ErrorSintactico(texto, lineas);
+                                    break;
+                                    //if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
+                                    //{
+                                    //    Errores.ErrorIdentificador(texto, lineas);
+                                    //    break;
+                                    //}
+                                    //else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                                    //{
+                                    //    Errores.ErrorConstante(texto, lineas);
+                                    //    break;
+                                    //}
+                                    //else if (operadores.IsMatch(tokens[apun - 1]))
+                                    //{
+                                    //    Errores.ErrorOperador(texto, lineas);
+                                    //    break;
+                                    //}
+
+                                    //else if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                                    //{
+                                    //    Errores.ErrorOperadorRelacional(texto, lineas);
+                                    //}
+                                    //else if (tokens[apun] == "(")
+                                    //{
+                                    //    if (!reservadas.IsMatch(tokens[apun - 1]))
+                                    //    {
+                                    //        Errores.ErrorPalabraReservada(texto, lineas);
+                                    //        break;
+                                    //    }
+                                    //}
+                                    //else if (4.ToString() == ConvertirToken(tokens[apun]))
+                                    //{
+                                    //    if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
+                                    //    {
+                                    //        Errores.ErrorPalabraReservada(texto, lineas);
+                                    //        break;
+                                    //    }
+                                    //}
+                                    //else if (relacionales.IsMatch(tokens[apun]))
+                                    //{
+                                    //    if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                    //    {
+                                    //        Errores.ErrorIdentificador(texto, lineas);
+                                    //        break;
+                                    //    }
+                                    //}
+                                    //else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
+                                    //{
+                                    //    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                    //}
+                                    //else
+                                    //{
+                                    //    Errores.ErrorSintactico(texto, lineas);
+                                    //    break;
+                                    //}
+                                }
                             }
                             else
                             {
-                                error = true;
-                                if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
+                                string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
+                                if (produccion != null)
                                 {
-                                    Errores.ErrorIdentificador(texto, lineas);
-                                    break;
+                                    if (produccion != "99")
+                                    {
+                                        produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
+                                    }
+
                                 }
-                                else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                                else
                                 {
-                                    Errores.ErrorConstante(texto, lineas);
-                                    break;
-                                }
-                                else if (tokens[apun-1] == "," && (constantes.IsMatch(tokens[apun-3]) || constantesTL.IsMatch(tokens[apun - 2])))
-                                {
-                                    if (tokens[apun] == ")")
+                                    error = true;
+                                    if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
+                                    {
+                                        Errores.ErrorIdentificador(texto, lineas);
+                                        break;
+                                    }
+                                    else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
                                     {
                                         Errores.ErrorConstante(texto, lineas);
                                         break;
                                     }
-                                }
-                                else if (constantes.IsMatch(tokens[apun - 2]) && constantes.IsMatch(tokens[apun + 1]))
-                                {
+                                    else if (tokens[apun - 1] == "," && (constantes.IsMatch(tokens[apun - 3]) || constantesTL.IsMatch(tokens[apun - 2])))
+                                    {
+                                        if (tokens[apun] == ")")
+                                        {
+                                            Errores.ErrorConstante(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (constantes.IsMatch(tokens[apun - 2]) && constantes.IsMatch(tokens[apun + 1]))
+                                    {
                                         Errores.ErrorConstante(texto, lineas);
                                         break;
-                                }
-                                else if (constantesTL.IsMatch(tokens[apun - 1]) && constantesTL.IsMatch(tokens[apun]))
-                                {
-                                    Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
-                                    break;
-                                }
-                                else if (tokens[apun] == "(")
-                                {
-                                    if (!reservadas.IsMatch(tokens[apun - 1]))
-                                    {
-                                        Errores.ErrorPalabraReservada(texto, lineas);
-                                        break;
                                     }
-                                }
-                                else if (Errores.ErroresComillas(texto, acumuladorComillas1, lineas))
-                                {
-                                    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
-                                    break;
-                                }
-                                else if (Errores.ErroresComillas(texto, acumuladorComillas3, lineas))
-                                {
-                                    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
-                                    break;
-                                }
-                                else if (tokens[apun - 1] == "NULL")
-                                {
-                                    if (tokens[apun] != "," || tokens[apun] != ";")
+                                    else if (constantesTL.IsMatch(tokens[apun - 1]) && constantesTL.IsMatch(tokens[apun]))
                                     {
                                         Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
                                         break;
                                     }
-                                }
-                                else if (delimitadores.IsMatch(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
-                                {
-                                    Errores.ErrorOperadorRelacional(texto, lineas);
-                                    break;
-                                }
-                                else if (reservadas.IsMatch(tokens[apun - 1]))
-                                {
-                                    if (reservadas.IsMatch(tokens[apun]))
+                                    else if (tokens[apun] == "(")
                                     {
-                                        Errores.ErrorIdentificador(texto, lineas);
+                                        if (!reservadas.IsMatch(tokens[apun - 1]))
+                                        {
+                                            Errores.ErrorPalabraReservada(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (Errores.ErroresComillas(texto, acumuladorComillas1, lineas))
+                                    {
+                                        texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
                                         break;
                                     }
-                                }
-                                else if (tokens[apun - 1] == ",")
-                                {
-                                    if (4.ToString() != ConvertirToken(tokens[apun]))
+                                    else if (Errores.ErroresComillas(texto, acumuladorComillas3, lineas))
                                     {
-                                        Errores.ErrorIdentificador(texto, lineas);
+                                        texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
                                         break;
                                     }
-                                }
-                                else if (relacionales.IsMatch(tokens[apun]))
-                                {
-                                    if (apun + 2 >= tokens.Count)
+                                    else if (tokens[apun - 1] == "NULL")
                                     {
-                                        Errores.ErrorIdentificador(texto, lineas);
+                                        if (tokens[apun] != "," || tokens[apun] != ";")
+                                        {
+                                            Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (delimitadores.IsMatch(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                                    {
+                                        Errores.ErrorOperadorRelacional(texto, lineas);
                                         break;
                                     }
-                                    if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                    else if (reservadas.IsMatch(tokens[apun - 1]))
                                     {
-                                        Errores.ErrorIdentificador(texto, lineas);
-                                        break;
+                                        if (reservadas.IsMatch(tokens[apun]))
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
                                     }
-                                }
-                                else if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun]))
-                                {
-                                    if (apun + 2 >= tokens.Count)
+                                    else if (tokens[apun - 1] == ",")
                                     {
-                                        Errores.ErrorIdentificador(texto, lineas);
-                                        break;
+                                        if (4.ToString() != ConvertirToken(tokens[apun]))
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
                                     }
-                                }
-                                else if (acumuladorParentesisAbierto % 2 != 0)
-                                {
-                                    Errores.ErrorParentesisDDL(texto, lineas);
-                                }
-                                else if (4.ToString() == ConvertirToken(tokens[apun]) && delimitadores.IsMatch(tokens[apun - 1]))
-                                {
-                                    Errores.ErrorPalabraReservada(texto, lineas);
-                                    break;
-                                }
-                                else if (tokens[apun] == "INTO") 
-                                {
-                                    if (tokens[apun - 1] != "SELECT")
+                                    else if (relacionales.IsMatch(tokens[apun]))
+                                    {
+                                        if (apun + 2 >= tokens.Count)
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
+                                        if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun]))
+                                    {
+                                        if (apun + 2 >= tokens.Count)
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (acumuladorParentesisAbierto % 2 != 0)
+                                    {
+                                        Errores.ErrorParentesisDDL(texto, lineas);
+                                    }
+                                    else if (4.ToString() == ConvertirToken(tokens[apun]) && delimitadores.IsMatch(tokens[apun - 1]))
                                     {
                                         Errores.ErrorPalabraReservada(texto, lineas);
                                         break;
                                     }
+                                    else if (tokens[apun] == "INTO")
+                                    {
+                                        if (tokens[apun - 1] != "SELECT")
+                                        {
+                                            Errores.ErrorPalabraReservada(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Errores.ErrorSintactico(texto, lineas);
+                                        break;
+                                    }
                                 }
-                                else
-                                {
-                                    Errores.ErrorSintactico(texto, lineas);
-                                    break;
-                                }
-                            }
 
+                            }
+                        }
+
+                        else
+                        {
+                            lineas++;
+                            apunN++;
+                            pila.Push(X);
                         }
                     }
-                    else
-                    {
-                        lineas++;
-                        apunN++;
-                        pila.Push(X);
-                    }
-                    equis = X;
+                        equis = X;
                 }
                 while (equis != "199");
                 if (error == false)
@@ -758,6 +868,116 @@ namespace Escaner_DML
             }
         }
         #region Utilidades
+        public bool Validar_NombreTabla(string nombreTabla, out bool salida, ref int numTabChecker)
+        {
+            // Contar cuántas veces aparece el nombre en la lista
+            int count = tablas.Count(t => t.nombreTabla == nombreTabla);
+
+            // Buscar la primera coincidencia y actualizar numTabChecker
+            var registro = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+            if (!registro.Equals(default))
+            {
+                numTabChecker = registro.noTabla;
+            }
+
+            salida = count > 1; // Si aparece más de una vez, es verdadero
+            return salida;
+        }
+        public bool Validar_NombreAtributo(string nombreAtributo, out bool salida)
+        {
+            // ENTRO D# 1era VEZ
+            salida = false;
+            int encontradoNoTabla = 0;
+            for (int i = 0; i < atributos.Count; i++) // 1
+            {
+                if (atributos[i].nombreAtributo == nombreAtributo) //SIMON
+                {
+                    encontradoNoTabla = atributos[i].noTabla; // 1
+                    int preI = i; // 0
+                    i++; // 1
+                    while (i < atributos.Count && atributos[i].noTabla == encontradoNoTabla)
+                    {
+                        if (atributos[i].nombreAtributo == nombreAtributo)
+                        {
+                            salida = true; // error
+                            return salida;
+                        }
+                        else
+                            i++;
+                        if (i > atributos.Count)
+                            break;
+                    }
+                    i = preI;
+                }
+            }
+            return salida;
+            
+        }
+        public bool Validar_ExistirAtributo(string nombreAtributo, out bool salida, int numTabCheck)
+        {
+            int i = 0;
+            while (i< atributos.Count && atributos[i].noTabla == numTabCheck)
+            {
+                if (atributos[i].nombreAtributo == nombreAtributo)
+                    return salida = false;
+                i++;
+            }
+            return salida = true;
+        }
+        public bool Validar_DupRestriccion(string nombreRestriccion, out bool salida)
+        {
+            int count = restricciones.Count(t => t.nombreRestriccion == nombreRestriccion);
+
+            salida = count > 1; // Si aparece más de una vez, es verdadero
+
+            return salida;
+        }
+        public bool Validar_AtributoNoValido(string nombreAtributo, out bool salida, int numTabCheck)
+        {
+            int i = 0;
+            while (i < atributos.Count && atributos[i].noTabla == numTabCheck)
+            {
+                if (atributos[i].nombreAtributo == nombreAtributo)
+                    return salida = false;
+                i++;
+            }
+            return salida = true;
+        }
+        public bool Validar_CantidadAtributos(string nombreAtributo, out bool salida, int numTabCheck, int indice)
+        {
+            salida = false;
+            List<string> tempTokens = new List<string>();
+
+            // Validar que el índice sea válido
+            if (indice < 0 || indice >= tokens.Count)
+                return false;
+
+            // Recorrer hacia atrás desde el índice dado
+            for (int i = indice - 2; i >= 0; i--)
+            {
+                if (tokens[i] == "(")
+                    break; // Detenerse si encuentra "("
+
+                tempTokens.Insert(0, tokens[i]); // Insertar al inicio para mantener el orden
+            }
+
+            // Contar elementos reales en la lista
+            int count = tempTokens.Count(t => t == ",") + 1;
+
+            // Buscar la tabla correspondiente en la lista 'tablas'
+            var tabla = tablas.FirstOrDefault(t => t.noTabla == numTabCheck);
+
+            // Verificar si la tabla fue encontrada
+            if (tabla.Equals(default))
+                return false;
+
+            // Comparar el número de atributos
+            if (count == tabla.cantidadAtributos)
+            {
+                return salida = false;
+            }
+            return true;
+        }
         public void MostrarDgv(DataGridView dgvLex, string token, int linea)
         {
             tablaSimbolos.TryGetValue(token, out int valor);
