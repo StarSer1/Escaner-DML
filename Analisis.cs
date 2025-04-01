@@ -138,7 +138,7 @@ namespace Escaner_DML
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 207", null, null, "99", null, null, null, null, null}, //210
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26                             27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "27 28 4 29 52 212 53 705 55 215", null, null, null, null, null, null, null, null, null}, //211
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "27 28 4 706 29 52 212 53 705 55 215", null, null, null, null, null, null, null, null, null}, //211
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53         54         61    62    72    99
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "213 214", "213 214", null, null, null}, //212
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53          54    61    62    72    99
@@ -613,6 +613,13 @@ namespace Escaner_DML
                             MessageBox.Show("3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla");
                             break;
                         }
+                        if (X == "706")
+                            errorSintactico = Validar_ExistirTabla(K, out errorSintactico, numeroTablaChecker);
+                        if (errorSintactico == true)
+                        {
+                            MessageBox.Show("3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla");
+                            break;
+                        }
                         //apunN++;
                     }
                     else
@@ -977,6 +984,41 @@ namespace Escaner_DML
                 return salida = false;
             }
             return true;
+        }
+        public bool Validar_ExistirTabla(string nombreTabla, out bool salida, int numTabChecker)
+        {
+            // Contar cuántas veces aparece el nombre en la lista
+            int count = tablas.Count(t => t.nombreTabla == nombreTabla);
+
+            // Buscar la primera coincidencia y actualizar numTabChecker
+            var registro = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+            if (!registro.Equals(default))
+            {
+                numTabChecker = registro.noTabla;
+            }
+
+            salida = count == 1; // Si aparece más de una vez, es verdadero
+            return salida;
+        }
+        public bool Validar_CantidadBytes(out bool salida, int numTabChecker, int indice)
+        {
+            salida = false;
+            List<string> tempTokens = new List<string>();
+
+            // Validar que el índice sea válido
+            if (indice < 0 || indice >= tokens.Count)
+                return false;
+
+            // Recorrer hacia atrás desde el índice dado
+            for (int i = indice - 2; i >= 0; i--)
+            {
+                if (tokens[i] == "(")
+                    break; // Detenerse si encuentra "("
+
+                if (tokens[i] != ",") // Solo agregamos elementos que NO sean comas
+                    tempTokens.Insert(0, tokens[i]); // Insertar al inicio para mantener el orden
+            }
+            return salida;
         }
         public void MostrarDgv(DataGridView dgvLex, string token, int linea)
         {
