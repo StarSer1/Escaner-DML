@@ -922,7 +922,17 @@ namespace Escaner_DML
         }
         public bool Validar_ExistirAtributo(string nombreAtributo, out bool salida, int numTabCheck)
         {
-            int i = 0;
+            int i = -1; // Valor por defecto si no se encuentra
+
+            // Iterar sobre la lista de atributos
+            foreach (var atributo in atributos)
+            {
+                if (atributo.noTabla == numTabCheck && atributo.nombreAtributo == nombreAtributo)
+                {
+                    i = atributo.noAtributo - 1;
+                }
+            }
+
             while (i< atributos.Count && atributos[i].noTabla == numTabCheck)
             {
                 if (atributos[i].nombreAtributo == nombreAtributo)
@@ -997,7 +1007,7 @@ namespace Escaner_DML
                 numTabChecker = registro.noTabla;
             }
 
-            salida = count == 1; // Si aparece más de una vez, es verdadero
+            salida = count != 1; // Si aparece más de una vez, es verdadero
             return salida;
         }
         public bool Validar_CantidadBytes(out bool salida, int numTabChecker, int indice)
