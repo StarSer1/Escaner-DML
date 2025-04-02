@@ -53,6 +53,47 @@ namespace Escaner_DML
             txtError.Text = "Error 2:200: Linea " + lineas + " Se esperaba: "+palEsperada;
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
+        public void nombreAtributoDuplicado(TextBox txtError, int lineas, string atributo)
+        {
+            txtError.Text = "Error 3:306: Linea " + lineas + " El nombre del atributo " + atributo + "esta duplicado";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarNombreAtributo(TextBox txtError, int lineas, string atributo)
+        {
+            txtError.Text = "3:302: Linea " + lineas + " El nombre del atributo '" + atributo + "' se especifica más de una vez";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarExistirAtributo(TextBox txtError, int lineas, string atributo, ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas, int numeroTablasChecker)
+        {
+            txtError.Text = "3:303: Linea " + lineas + " El nombre del atributo '" + atributo + "' no existe en la tabla '" + tablas.FirstOrDefault(t => t.noTabla == numeroTablasChecker).nombreTabla + "'";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarAtributoNoValido(TextBox txtError, int lineas, string atributo, ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas, int numeroTablasChecker)
+        {
+            txtError.Text = "3:305: Linea " + lineas + " Se hace referencia al atributo '" + atributo + "' no valido en la tabla '" + tablas.FirstOrDefault(t => t.noTabla == numeroTablasChecker).nombreTabla + "'";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarDupRestriccion(TextBox txtError, int lineas, string restriccion)
+        {
+            txtError.Text = "3:304: Linea " + lineas + " El nombre de la restriccion '" + restriccion + "' ya se encuentra registrado en la base de datos '";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarCantidadAtributos(TextBox txtError, int lineas)
+        {
+            txtError.Text = "3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarExistirTabla(TextBox txtError, int lineas)
+        {
+            txtError.Text = "3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarCantidadBytes(TextBox txtError, int lineas)
+        {
+            txtError.Text = "3:308: Linea " + lineas + " Los datos de la cadena o binarios se truncarían";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+
         public bool ErrorParentesis (DataGridView dgvCons, DataGridView dgvIden, DataGridView dgvLex, TextBox txtError, int acum)
         {
             if (acum < 0)

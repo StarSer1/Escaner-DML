@@ -553,7 +553,7 @@ namespace Escaner_DML
 
 
         }
-        public void Sintaxis(List<string> tokens, TextBox texto)
+        public bool Sintaxis(List<string> tokens, TextBox texto)
         {
             try
             {
@@ -588,57 +588,64 @@ namespace Escaner_DML
                             errorSintactico = Validar_NombreTabla(K, out errorSintactico, ref numeroTablaChecker);
                         if (errorSintactico == true)
                         {
-                            MessageBox.Show("3:306: Linea " + lineas + " El nombre del atributo '" + K + "' esta duplicado");
+                            Errores.nombreAtributoDuplicado(texto,lineas, K);
+                            error = true;
                             break;
                         }
                         if (X == "701")
                             errorSintactico = Validar_NombreAtributo(K, out errorSintactico);
                         if (errorSintactico == true)
                         {
-                            MessageBox.Show("3:302: Linea " + lineas + " El nombre del atributo '" + K + "' se especifica más de una vez");
+                            Errores.validarNombreAtributo(texto, lineas, K);
+                            error = true;
                             break;
                         }
                         if (X == "702")
                             errorSintactico = Validar_ExistirAtributo(K, out errorSintactico, numeroTablaChecker);
                         if (errorSintactico == true)
                         {
-
-                            MessageBox.Show("3:303: Linea " +lineas+" El nombre del atributo '"+K+"' no existe en la tabla '"+ tablas.FirstOrDefault(t => t.noTabla == numeroTablaChecker).nombreTabla+"'");
+                            Errores.validarExistirAtributo(texto, lineas, K, ref tablas, numeroTablaChecker);
+                            error = true;
                             break;
                         }
                         if (X == "703")
                             errorSintactico = Validar_DupRestriccion(K, out errorSintactico);
                         if (errorSintactico == true)
                         {
-                            MessageBox.Show("3:304: Linea " + lineas + " El nombre de la restriccion '" + K + "' ya se encuentra registrado en la base de datos '");
+                            Errores.validarDupRestriccion(texto, lineas, K);
+                            error = true;
                             break;
                         }
                         if (X == "704")
                             errorSintactico = Validar_AtributoNoValido(K, out errorSintactico, numeroTablaChecker);
                         if (errorSintactico == true)
                         {
-                            MessageBox.Show("3:305: Linea " + lineas + " Se hace referencia al atributo '" + K + "' no valido en la tabla '" + tablas.FirstOrDefault(t => t.noTabla == numeroTablaChecker).nombreTabla + "'");
+                            Errores.validarAtributoNoValido(texto, lineas, K, ref tablas, numeroTablaChecker);
+                            error = true;
                             break;
                         }
                         if (X == "705")
                             errorSintactico = Validar_CantidadAtributos(K, out errorSintactico, numeroTablaChecker, apunN);
                         if (errorSintactico == true)
                         {
-                            MessageBox.Show("3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla");
+                            Errores.validarCantidadAtributos(texto, lineas);
+                            error = true;
                             break;
                         }
                         if (X == "706")
                             errorSintactico = Validar_ExistirTabla(K, out errorSintactico, numeroTablaChecker);
                         if (errorSintactico == true)
                         {
-                            MessageBox.Show("3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla");
+                            Errores.validarExistirTabla(texto, lineas);
+                            error = true;
                             break;
                         }
                         if (X == "707")
                             errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
                         if (errorSintactico == true)
                         {
-                            MessageBox.Show("3:308: Linea " + lineas + " Los datos de la cadena o binarios se truncarían");
+                            Errores.validarCantidadBytes(texto, lineas);
+                            error = true;
                             break;
                         }
                         //apunN++;
@@ -867,6 +874,7 @@ namespace Escaner_DML
                                     else
                                     {
                                         Errores.ErrorSintactico(texto, lineas);
+
                                         break;
                                     }
                                 }
@@ -881,6 +889,7 @@ namespace Escaner_DML
                             pila.Push(X);
                         }
                     }
+
                         equis = X;
                 }
                 while (equis != "199");
@@ -889,10 +898,12 @@ namespace Escaner_DML
                     Errores.SinError(texto, lineas);
                 }
                 pila.Clear();
+                return error;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                return true;
             }
         }
         #region Utilidades
@@ -943,18 +954,8 @@ namespace Escaner_DML
         }
         public bool Validar_ExistirAtributo(string nombreAtributo, out bool salida, int numTabCheck)
         {
-            int i = -1; // Valor por defecto si no se encuentra
-
-            // Iterar sobre la lista de atributos
-            foreach (var atributo in atributos)
-            {
-                if (atributo.noTabla == numTabCheck && atributo.nombreAtributo == nombreAtributo)
-                {
-                    i = atributo.noAtributo - 1;
-                }
-            }
-
-            while (i< atributos.Count && atributos[i].noTabla == numTabCheck)
+            int i = 0;
+            while (i < atributos.Count && atributos[i].noTabla == numTabCheck)
             {
                 if (atributos[i].nombreAtributo == nombreAtributo)
                     return salida = false;
@@ -1052,21 +1053,44 @@ namespace Escaner_DML
 
             // 2. Ir hacia adelante desde la coma (si estaba en una coma al inicio)
             i = indice + 1;
-            while (i < tokens.Count && tokens[i] != ")" && tokens[i-1] != ")")
+            while (i < tokens.Count && tokens[i] != ")" && tokens[i - 1] != ")")
             {
                 if (tokens[i] != ",") // Omitir comas
                     resultado.Add(tokens[i]); // Insertar al final para mantener el orden
                 i++;
             }
 
-            //Eliminar todas las comillas simples ("'") de la lista antes de retornar
+            // Eliminar todas las comillas simples ("'") de la lista antes de retornar
             resultado.RemoveAll(item => item == "'");
 
-            int? atributoAsociado = atributos
-                            .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAtributo)
-                            .Select(a => (int?)a.noAtributo)
-                            .FirstOrDefault();
+            // Buscar el índice del "nombreAtributo" dentro de "resultado"
+            int indiceAtributo = resultado.IndexOf(nombreAtributo) + 1; // +1 porque los noAtributo suelen empezar en 1
 
+            if (indiceAtributo > 0) // Si se encontró (Index +1 sería > 0)
+            {
+                var atributoEncontrado = atributos.FirstOrDefault(a =>
+                    a.noTabla == numTabChecker &&
+                    a.noAtributo == indiceAtributo);
+
+                if (atributoEncontrado != default)
+                {
+                    Console.WriteLine($"Atributo encontrado en tabla {numTabChecker}: " +
+                                     $"Nombre={atributoEncontrado.nombreAtributo}, " +
+                                     $"Tipo={atributoEncontrado.tipo}, " +
+                                     $"Longitud={atributoEncontrado.longitud}");
+
+                    // Nueva validación de longitud
+                    int longitudNombreAtributo = resultado[indiceAtributo-1].Length - 2;
+                    if (longitudNombreAtributo <= atributoEncontrado.longitud)
+                    {
+                        salida = false;
+                    }
+                    else
+                    {
+                        salida = true;
+                    }
+                }
+            }
             return salida;
         }
 

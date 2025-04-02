@@ -57,6 +57,12 @@ namespace Escaner_DML
             DtTablas.Rows.Clear();
             DtAtributos.Rows.Clear();
             DtRestricciones.Rows.Clear();
+            tablas.Clear();
+            atributos.Clear();
+            restricciones.Clear();
+            DgvLexica.Rows.Clear();
+            txtError.Text = "";
+            txtError.BackColor = Color.White;
         }
 
         private void BtnInicializar_Click(object sender, EventArgs e)
