@@ -17,6 +17,8 @@ namespace Escaner_DML
         List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull)> atributos = new List<(int, int, string, string, int, int)>();
         List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restricciones = new List<(int, int, int, string, int, int, int)>();
 
+        
+
         List<string> tokens = new List<string>();
 
         public Form1()
@@ -35,20 +37,42 @@ namespace Escaner_DML
         private void BtnAnalizar_Click(object sender, EventArgs e)
         {
             bool errorActivado = false;
-            Analisis Analisis = new Analisis(errorActivado,tablas,atributos,restricciones);
+            // Crear copias profundas de las listas
+            List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablasTemp =
+                tablas.Select(t => (t.noTabla, t.nombreTabla, t.cantidadAtributos, t.cantidadRestricciones)).ToList();
+
+            List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull)> atributosTemp =
+                atributos.Select(a => (a.noTabla, a.noAtributo, a.nombreAtributo, a.tipo, a.longitud, a.noNull)).ToList();
+
+            List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restriccionesTemp =
+                restricciones.Select(r => (r.noTabla, r.noRestriccion, r.Tipo, r.nombreRestriccion, r.atributoAsociado, r.Tabla, r.atributo)).ToList();
+
+            Analisis Analisis = new Analisis(errorActivado, tablas, atributos, restricciones);
             Errores Errores = new Errores();
-            DgvLexica.Rows.Clear();            
+            DgvLexica.Rows.Clear();
+
             if (Errores.ErrorSimboloDesco(txtEntrada, txtError) == false)
             {
-                tokens = Analisis.Analizador(txtEntrada, DgvLexica, txtError,DtTablas,DtAtributos,DtRestricciones);
-                Analisis.LLENADOTABLASPAPU(DtTablas, DtAtributos, DtRestricciones, tokens);
+                tokens = Analisis.Analizador(txtEntrada, DgvLexica, txtError, DtTablas, DtAtributos, DtRestricciones);
+
+                // Ahora las copias temporales no se verán afectadas por los cambios en las originales
+
                 if (Analisis.errorActivado == false)
                 {
+                    Analisis.LLENADOTABLASPAPU(DtTablas, DtAtributos, DtRestricciones, tokens);
                     while (tokens.Last() == "\n")
                     {
                         tokens.RemoveAt(tokens.Count - 1);
                     }
-                    Analisis.Sintaxis(tokens, txtError);
+
+                    errorActivado = Analisis.Sintaxis(tokens, txtError);
+                    if (errorActivado == true)
+                    {
+                        tablas = tablasTemp;
+                        atributos = atributosTemp;
+                        restricciones = restriccionesTemp;
+                     }
+                    
                 }
             }
         }
