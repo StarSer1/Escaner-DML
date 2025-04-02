@@ -144,7 +144,7 @@ namespace Escaner_DML
             // 4     8     10    11    12    13    14    15    16    18    19    20    22       24       25    26    27    50    51    52    53    54    61    62    72    99
             { null, null, null, null, null, null, null, null, null, null, null, null, null, "24 23", "25 23", null, null, null, null, null, null, null, null, null, null, null}, //208
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25                  26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "26 4 52 4 53 210", null, "50 207", null, null, "99", null, null, null, null, null}, //209
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "26 4 709 52 4 708 53 210", null, "50 207", null, null, "99", null, null, null, null, null}, //209
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 207", null, null, "99", null, null, null, null, null}, //210
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26                             27    50    51    52    53    54    61    62    72    99
@@ -611,6 +611,7 @@ namespace Escaner_DML
                 bool errorSintactico = false;
                 string K = "";
                 int numeroTablaChecker = 0;
+                int numeroTablaCheckerRef = 0;
                 do
                 {
                     string X = pila.Pop();
@@ -677,6 +678,24 @@ namespace Escaner_DML
                         if (errorSintactico == true)
                         {
                             Errores.validarCantidadBytes(texto, lineas);
+                            error = true;
+                            break;
+                        }
+                        if (X == "708")
+                            errorSintactico = Validar_TablaContAtrib(out errorSintactico, numeroTablaCheckerRef, K);
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarAtributoNoValido(texto, lineas, K, ref tablas, numeroTablaCheckerRef);
+                            error = true;
+                            break;
+                        }
+                        if (X == "709")
+                        {
+                            errorSintactico = Validar_ExistirTablaParaRef(K, out errorSintactico, ref numeroTablaCheckerRef);
+                        }
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarExistirTabla(texto, lineas);
                             error = true;
                             break;
                         }
@@ -954,6 +973,27 @@ namespace Escaner_DML
             salida = count > 1; // Si aparece más de una vez, es verdadero
             return salida;
         }
+        public bool Validar_TablaContAtrib(out bool salida, int numTabCheck, string nombreAtributo)
+        {
+            int i = -1; // Valor por defecto si no se encuentra
+
+            // Iterar sobre la lista de atributos
+            foreach (var atributo in atributos)
+            {
+                if (atributo.noTabla == numTabCheck && atributo.nombreAtributo == nombreAtributo)
+                {
+                    i = atributo.noAtributo - 1;
+                }
+            }
+
+            while (i >= 0 && i < atributos.Count && atributos[i].noTabla == numTabCheck)
+            {
+                if (atributos[i].nombreAtributo == nombreAtributo)
+                    return salida = false;
+                i++;
+            }
+            return salida = true;
+        }
         public bool Validar_NombreAtributo(string nombreAtributo, out bool salida)
         {
             // ENTRO D# 1era VEZ
@@ -1061,6 +1101,21 @@ namespace Escaner_DML
             return true;
         }
         public bool Validar_ExistirTabla(string nombreTabla, out bool salida, ref int numTabChecker)
+        {
+            // Contar cuántas veces aparece el nombre en la lista
+            int count = tablas.Count(t => t.nombreTabla == nombreTabla);
+
+            // Buscar la primera coincidencia y actualizar numTabChecker
+            var registro = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+            if (!registro.Equals(default))
+            {
+                numTabChecker = registro.noTabla;
+            }
+
+            salida = count != 1; // Si aparece más de una vez, es verdadero
+            return salida;
+        }
+        public bool Validar_ExistirTablaParaRef(string nombreTabla, out bool salida, ref int numTabChecker)
         {
             // Contar cuántas veces aparece el nombre en la lista
             int count = tablas.Count(t => t.nombreTabla == nombreTabla);

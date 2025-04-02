@@ -75,7 +75,7 @@ namespace Escaner_DML
         }
         public void validarDupRestriccion(TextBox txtError, int lineas, string restriccion)
         {
-            txtError.Text = "3:304: Linea " + lineas + " El nombre de la restriccion '" + restriccion + "' ya se encuentra registrado en la base de datos '";
+            txtError.Text = "3:304: Linea " + lineas + " El nombre de la restriccion '" + restriccion + "' ya se encuentra registrado en la base de datos";
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
         public void validarCantidadAtributos(TextBox txtError, int lineas)

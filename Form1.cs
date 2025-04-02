@@ -62,6 +62,8 @@ namespace Escaner_DML
                     if (Analisis.errorActivado == false)
                     {
                         Analisis.LLENADOTABLASPAPU(DtTablas, DtAtributos, DtRestricciones, tokens);
+                        try
+                        {
                         while (tokens.Last() == "\n")
                         {
                             tokens.RemoveAt(tokens.Count - 1);
@@ -74,6 +76,9 @@ namespace Escaner_DML
                             atributos = atributosTemp;
                             restricciones = restriccionesTemp;
                         }
+
+                        }catch
+                        { }
 
                     }
                 }
