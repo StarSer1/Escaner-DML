@@ -56,6 +56,7 @@
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label5 = new System.Windows.Forms.Label();
             this.DtRestricciones = new System.Windows.Forms.DataGridView();
             this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -73,7 +74,6 @@
             this.Column22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BtnInicializar = new System.Windows.Forms.Button();
             this.BtnLimpiar = new System.Windows.Forms.Button();
-            this.Column23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.DgvLexica)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DtAtributos)).BeginInit();
@@ -85,7 +85,7 @@
             // 
             this.BtnAnalizar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
             this.BtnAnalizar.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnAnalizar.Location = new System.Drawing.Point(370, 438);
+            this.BtnAnalizar.Location = new System.Drawing.Point(592, 438);
             this.BtnAnalizar.Name = "BtnAnalizar";
             this.BtnAnalizar.Size = new System.Drawing.Size(83, 31);
             this.BtnAnalizar.TabIndex = 0;
@@ -114,7 +114,7 @@
             this.Column3,
             this.Column4,
             this.Column5});
-            this.DgvLexica.Location = new System.Drawing.Point(468, 45);
+            this.DgvLexica.Location = new System.Drawing.Point(701, 45);
             this.DgvLexica.Name = "DgvLexica";
             this.DgvLexica.RowHeadersVisible = false;
             this.DgvLexica.RowHeadersWidth = 51;
@@ -163,7 +163,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(464, 18);
+            this.label3.Location = new System.Drawing.Point(697, 18);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(127, 22);
             this.label3.TabIndex = 5;
@@ -173,7 +173,7 @@
             // 
             this.txtEntrada.Location = new System.Drawing.Point(16, 82);
             this.txtEntrada.Name = "txtEntrada";
-            this.txtEntrada.Size = new System.Drawing.Size(437, 325);
+            this.txtEntrada.Size = new System.Drawing.Size(659, 325);
             this.txtEntrada.TabIndex = 6;
             this.txtEntrada.Text = "";
             // 
@@ -195,9 +195,9 @@
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 904);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 473);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1199, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(691, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -226,14 +226,14 @@
             // 
             this.cmbEjemplo.FormattingEnabled = true;
             this.cmbEjemplo.Items.AddRange(new object[] {
-            "Ejemplo 3.4.1",
-            "Ejemplo 3.4.2",
-            "Ejemplo 3.4.3",
-            "Ejemplo 3.4.4",
-            "Ejemplo 3.4.5",
-            "Ejemplo 3.4.6",
-            "Ejemplo 3.4.7",
-            "Ejemplo 3.4.8"});
+            "Thanos",
+            "Ejemplo 4.3.1",
+            "Ejemplo 4.3.2",
+            "Ejemplo 4.3.3",
+            "Ejemplo 4.3.4",
+            "Ejemplo 4.3.5",
+            "Ejemplo 4.3.6",
+            "Ejemplo 4.3.7"});
             this.cmbEjemplo.Location = new System.Drawing.Point(85, 59);
             this.cmbEjemplo.Name = "cmbEjemplo";
             this.cmbEjemplo.Size = new System.Drawing.Size(209, 21);
@@ -245,7 +245,7 @@
             this.txtError.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtError.Location = new System.Drawing.Point(85, 410);
             this.txtError.Name = "txtError";
-            this.txtError.Size = new System.Drawing.Size(368, 22);
+            this.txtError.Size = new System.Drawing.Size(590, 22);
             this.txtError.TabIndex = 9;
             // 
             // textBox1
@@ -261,7 +261,7 @@
             // 
             this.BtnClear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.BtnClear.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnClear.Location = new System.Drawing.Point(370, 45);
+            this.BtnClear.Location = new System.Drawing.Point(592, 45);
             this.BtnClear.Name = "BtnClear";
             this.BtnClear.Size = new System.Drawing.Size(83, 31);
             this.BtnClear.TabIndex = 11;
@@ -336,6 +336,11 @@
             this.Column11.HeaderText = "No Nulo";
             this.Column11.Name = "Column11";
             // 
+            // Column23
+            // 
+            this.Column23.HeaderText = "No. Atributo Tabla";
+            this.Column23.Name = "Column23";
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -402,7 +407,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(714, 20);
+            this.label6.Location = new System.Drawing.Point(969, 18);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(72, 22);
             this.label6.TabIndex = 16;
@@ -417,9 +422,9 @@
             this.Column20,
             this.Column21,
             this.Column22});
-            this.DtTablas.Location = new System.Drawing.Point(720, 45);
+            this.DtTablas.Location = new System.Drawing.Point(973, 45);
             this.DtTablas.Name = "DtTablas";
-            this.DtTablas.Size = new System.Drawing.Size(425, 424);
+            this.DtTablas.Size = new System.Drawing.Size(220, 424);
             this.DtTablas.TabIndex = 17;
             // 
             // Column19
@@ -446,11 +451,11 @@
             // 
             this.BtnInicializar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.BtnInicializar.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnInicializar.Location = new System.Drawing.Point(241, 438);
+            this.BtnInicializar.Location = new System.Drawing.Point(422, 438);
             this.BtnInicializar.Name = "BtnInicializar";
             this.BtnInicializar.Size = new System.Drawing.Size(123, 31);
             this.BtnInicializar.TabIndex = 0;
-            this.BtnInicializar.Text = "Inicializar Tablas";
+            this.BtnInicializar.Text = "Actualizar Tablas";
             this.BtnInicializar.UseVisualStyleBackColor = false;
             this.BtnInicializar.Click += new System.EventHandler(this.BtnInicializar_Click);
             // 
@@ -458,25 +463,20 @@
             // 
             this.BtnLimpiar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.BtnLimpiar.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnLimpiar.Location = new System.Drawing.Point(124, 438);
+            this.BtnLimpiar.Location = new System.Drawing.Point(195, 438);
             this.BtnLimpiar.Name = "BtnLimpiar";
-            this.BtnLimpiar.Size = new System.Drawing.Size(111, 31);
+            this.BtnLimpiar.Size = new System.Drawing.Size(123, 31);
             this.BtnLimpiar.TabIndex = 0;
-            this.BtnLimpiar.Text = "Limpiar Tablas";
+            this.BtnLimpiar.Text = "Inicializar Tablas";
             this.BtnLimpiar.UseVisualStyleBackColor = false;
             this.BtnLimpiar.Click += new System.EventHandler(this.BtnLimpiar_Click);
-            // 
-            // Column23
-            // 
-            this.Column23.HeaderText = "No. Atributo Tabla";
-            this.Column23.Name = "Column23";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(236)))), ((int)(((byte)(210)))));
-            this.ClientSize = new System.Drawing.Size(1199, 926);
+            this.ClientSize = new System.Drawing.Size(691, 495);
             this.Controls.Add(this.DtTablas);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.DtRestricciones);

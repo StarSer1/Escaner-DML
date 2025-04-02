@@ -55,7 +55,7 @@ namespace Escaner_DML
         }
         public void nombreAtributoDuplicado(TextBox txtError, int lineas, string atributo)
         {
-            txtError.Text = "Error 3:306: Linea " + lineas + " El nombre del atributo " + atributo + "esta duplicado";
+            txtError.Text = "Error 3:306: Linea " + lineas + " El nombre del atributo " + atributo + " esta duplicado";
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
         public void validarNombreAtributo(TextBox txtError, int lineas, string atributo)
@@ -85,7 +85,7 @@ namespace Escaner_DML
         }
         public void validarExistirTabla(TextBox txtError, int lineas)
         {
-            txtError.Text = "3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla";
+            txtError.Text = "3:309: Linea " + lineas + " La tabla a la que se hace referencia no existe";
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
         public void validarCantidadBytes(TextBox txtError, int lineas)

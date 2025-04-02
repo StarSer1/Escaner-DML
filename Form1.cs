@@ -36,43 +36,46 @@ namespace Escaner_DML
 
         private void BtnAnalizar_Click(object sender, EventArgs e)
         {
-            bool errorActivado = false;
-            // Crear copias profundas de las listas
-            List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablasTemp =
-                tablas.Select(t => (t.noTabla, t.nombreTabla, t.cantidadAtributos, t.cantidadRestricciones)).ToList();
-
-            List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTemp)> atributosTemp =
-                atributos.Select(a => (a.noTabla, a.noAtributo, a.nombreAtributo, a.tipo, a.longitud, a.noNull , a.noAtributoTabla)).ToList();
-
-            List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restriccionesTemp =
-                restricciones.Select(r => (r.noTabla, r.noRestriccion, r.Tipo, r.nombreRestriccion, r.atributoAsociado, r.Tabla, r.atributo)).ToList();
-
-            Analisis Analisis = new Analisis(errorActivado, tablas, atributos, restricciones);
-            Errores Errores = new Errores();
-            DgvLexica.Rows.Clear();
-
-            if (Errores.ErrorSimboloDesco(txtEntrada, txtError) == false)
+            if (txtEntrada.Text != "")
             {
-                tokens = Analisis.Analizador(txtEntrada, DgvLexica, txtError, DtTablas, DtAtributos, DtRestricciones);
+                bool errorActivado = false;
+                // Crear copias profundas de las listas
+                List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablasTemp =
+                    tablas.Select(t => (t.noTabla, t.nombreTabla, t.cantidadAtributos, t.cantidadRestricciones)).ToList();
 
-                // Ahora las copias temporales no se verán afectadas por los cambios en las originales
+                List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTemp)> atributosTemp =
+                    atributos.Select(a => (a.noTabla, a.noAtributo, a.nombreAtributo, a.tipo, a.longitud, a.noNull, a.noAtributoTabla)).ToList();
 
-                if (Analisis.errorActivado == false)
+                List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restriccionesTemp =
+                    restricciones.Select(r => (r.noTabla, r.noRestriccion, r.Tipo, r.nombreRestriccion, r.atributoAsociado, r.Tabla, r.atributo)).ToList();
+
+                Analisis Analisis = new Analisis(errorActivado, tablas, atributos, restricciones);
+                Errores Errores = new Errores();
+                DgvLexica.Rows.Clear();
+
+                if (Errores.ErrorSimboloDesco(txtEntrada, txtError) == false)
                 {
-                    Analisis.LLENADOTABLASPAPU(DtTablas, DtAtributos, DtRestricciones, tokens);
-                    while (tokens.Last() == "\n")
-                    {
-                        tokens.RemoveAt(tokens.Count - 1);
-                    }
+                    tokens = Analisis.Analizador(txtEntrada, DgvLexica, txtError, DtTablas, DtAtributos, DtRestricciones);
 
-                    errorActivado = Analisis.Sintaxis(tokens, txtError);
-                    if (errorActivado == true)
+                    // Ahora las copias temporales no se verán afectadas por los cambios en las originales
+
+                    if (Analisis.errorActivado == false)
                     {
-                        tablas = tablasTemp;
-                        atributos = atributosTemp;
-                        restricciones = restriccionesTemp;
-                     }
-                    
+                        Analisis.LLENADOTABLASPAPU(DtTablas, DtAtributos, DtRestricciones, tokens);
+                        while (tokens.Last() == "\n")
+                        {
+                            tokens.RemoveAt(tokens.Count - 1);
+                        }
+
+                        errorActivado = Analisis.Sintaxis(tokens, txtError);
+                        if (errorActivado == true)
+                        {
+                            tablas = tablasTemp;
+                            atributos = atributosTemp;
+                            restricciones = restriccionesTemp;
+                        }
+
+                    }
                 }
             }
         }
@@ -113,31 +116,31 @@ namespace Escaner_DML
             }
             if (cmbEjemplo.SelectedIndex == 1)
             {
-                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS( \r\nD&  \r\nCHAR(2) NOT NULL, \r\nDNOMBRE \r\nNUMERIC(6) NOT NULL \r\nCONSTRAINT PK_DEPARTAMENTOS PRIMARY KEY (D#))";
+                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS(\r\nD# CHAR(2) NOT NULL,\r\nDNOMBRE CHAR(6) NOT NULL\r\nCONSTRAINT PK_DEPARTAMENTOS PRIMARY KEY (D#))\r\nCREATE TABLE DEPARTAMENTOS(\r\nC# CHAR(2) NOT NULL,\r\nCNOMBRE CHAR(3) NOT NULL,\r\nVIGENCIA CHAR(4) NOT NULL,\r\nSEMESTRES CHAR(2) NOT NULL,\r\nD# CHAR(2) NOT NULL,\r\nCONSTRAINT PK_CARRERAS PRIMARY KEY (C#),\r\nCONSTRAINT FK_CARRERAS FOREIGN KEY (D#)REFERENCES DEPARTAMENTOS(D#))";
             }
             if (cmbEjemplo.SelectedIndex == 2)
             {
-                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS( \r\nD# \r\nCHAR(2) NOT NULL, \r\nDNOMBRE NUMERICO(6) NOT NULL \r\nCONSTRAINT PK_DEPARTAMENTOS PRIMARY KEY (D#))";
+                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS(\r\nD# CHAR(2) NOT NULL,\r\nDNOMBRE CHAR(6) NOT NULL,\r\nD# CHAR(2) NOT NULL)";
             }
             if (cmbEjemplo.SelectedIndex == 3)
             {
-                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS( \r\nD# CHAR(2) NOT NULL, \r\nDNOMBRE NUMERIC(6) NOT NULL \r\nCONSTRAINT PK_DEPARTAMENTOS PRIMARY KEY (D#)";
+                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS(\r\nD# CHAR(2) NOT NULL,\r\nDNOMBRE CHAR(6) NOT NULL,\r\nCONSTRAINT PK_DEPARTAMENTOS PRIMARY KEY (B#))";
             }
             if (cmbEjemplo.SelectedIndex == 4)
             {
-                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS( \r\nD# CHAR(2) NOT NULL, \r\nDNOMBRE NUMERICO(6) NOT NULL \r\nCONSTRAINT PK_DEPARTAMENTOS PRIMARY KEY ())";
+                txtEntrada.Text = "CREATE TABLE MATERIAS(\r\nM# CHAR(2) NOT NULL,\r\nMNOMBRE CHAR(6) NOT NULL,\r\nCREDITOS CHAR(2) NOT NULL,\r\nCONSTRAINT PK_MATERIAS PRIMARY KEY (M#),\r\nCONSTRAINT FK_MATERIAS FOREIGN KEY (C#) REFERENCES CARRERAS(C#))";
             }
             if (cmbEjemplo.SelectedIndex == 5)
             {
-                txtEntrada.Text = "INSERT INTO INSCRITOS VALUES ('R01','A1','M1','P3','M','2010I',60); \r\nINSERT INTO INSCRITOS VALUES ('R02','A1','M5','P4','M','2011I',75); \r\nINSERT INTO INSCRITOS VALUES ('R03','A1','M2','P3','V','2010I',78); \r\nINSERT INTO INSCRITOS VALUES ('R04','A1','M5','P4','M','2011II',80); \r\nINSERT INSCRITOS VALUES ('R05','A2','M3','P6','V','2010I',86); \r\nINSERT INTO INSCRITOS VALUES ('R06','A2','M4','P7','V','2010I',90); \r\nINSERT INTO INSCRITOS VALUES ('R07','A3','M1','P2','M','2011I',70); \r\nINSERT INTO INSCRITOS VALUES ('R08','A3','M5','P9','V','2011II',82);";
+                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS(\r\nD# CHAR(2) NOT NULL,\r\nDNOMBRE CHAR(6) NOT NULL,\r\nCONSTRAINT PK_DEPARTAMENTOS PRIMARY KEY (D#));\r\nCREATE TABLE CARRERAS(\r\nC# CHAR(2) NOT NULL,\r\nCNOMBRE CHAR(3) NOT NULL,\r\nVIGENCIA CHAR(4) NOT NULL,\r\nSEMESTRES CHAR(2) NOT NULL,\r\nD# CHAR(2) NOT NULL,\r\nCONSTRAINT PK_CARRERAS PRIMARY KEY (C#),\r\nCONSTRAINT PK_CARRERAS FOREIGN KEY (D#) REFERENCES DEPARTAMENTOS(D#));";
             }
             if (cmbEjemplo.SelectedIndex == 6)
             {
-                txtEntrada.Text = "INSERT INTO INSCRITOS VALUES ('R01','A1','M1','P3','M','2010I',60); \r\nINSERT INTO INSCRITOS VALUES ('R02','A1','M5','P4','M','2011I',75); \r\nINSERT INTO INSCRITOS VALUES ('R03','A1','M2','P3','V','2010I',78); \r\nINSERT INTO INSCRITOS VALUES ('R04','A1','M5','P4','M','2011II',80); \r\nINSERT INTO INSCRITOS VALUES ('R05','A2','M3','P6','V','2010I',86); \r\nINSERT INTO INSCRITOS VALUES ('R06','A2','M4','P7','V','2010I',90); \r\nINSERT INTO INSCRITOS VALUES ('R07','A3','M1' 'P2','M','2011I',70); \r\nINSERT INTO INSCRITOS VALUES ('R08','A3','M5','P9','V','2011II',82);";
+                txtEntrada.Text = "CREATE TABLE PROFESORES(\r\nP# CHAR(2) NOT NULL,\r\nPNOMBRE CHAR(20) NOT NULL,\r\nEDAD NUMERIC(2) NOT NULL,\r\nSEXO CHAR(1)NOT NULL,\r\nESP CHAR(4) NOT NULL,\r\nGRADO CHAR(3) NOT NULL,\r\nD# CHAR(2) NOT NULL,\r\nCONSTRAINT PK_PROFESORES PRIMARY KEY (P#),\r\nCONSTRAINT FK_PROFESORES FOREIGN KEY (D#) REFERENCES DEPARTAMENTOS(D#));\r\nINSERT INTO PROFESORES VALUES ('P1','ARQUIMIDES',65,'M','QUIM','MAE','D3');\r\nINSERT INTO PROFESORES VALUES ('P2','TURING ALAN',43,'M','COMP','DOC','D1');\r\nINSERT INTO PROFESORES VALUES ('P3','EINSTEIN ALBERT',58,'M','GENI','DOC','D1');\r\nINSERT INTO PROFESORES VALUES ('P4','DA VINCI','60','M')\r\nINSERT INTO PROFESORES VALUES ('P5','CURIE MARIE',45,'F','QUIM','LIC','D3');\r\nINSERT INTO PROFESORES VALUES ('P6','HAWKING WILLIAM',52,'M','FISI','DOC','D4');\r\nINSERT INTO PROFESORES VALUES ('P7','VON NEWMAN JOHN',47,'M','COMP','MAE','D1');\r\nINSERT INTO PROFESORES VALUES ('P8','NEWTON ISAAC',36,'M','FISI','LIC','D3');";
             }
             if (cmbEjemplo.SelectedIndex == 7)
             {
-                txtEntrada.Text = "INSERT INTO INSCRITOS VALUES ('R01','A1','M1','P3','M','2010I',60); \r\nINSERT INTO INSCRITOS VALUES ('R02','A1','M5','P4','M','2011I',75); \r\nINSERT INTO INSCRITOS VALUES ('R03','A1','M2','P3','V','2010I',); \r\nINSERT INTO INSCRITOS VALUES ('R04','A1','M5','P4','M','2011II',80); \r\nINSERT INTO INSCRITOS VALUES ('R05','A2','M3','P6','V','2010I',86); \r\nINSERT INTO INSCRITOS VALUES ('R06','A2','M4','P7','V','2010I',90); \r\nINSERT INTO INSCRITOS VALUES ('R07','A3','M1' 'P2','M','2011I',70); \r\nINSERT INTO INSCRITOS VALUES ('R08','A3','M5','P9','V','2011II',82);";
+                txtEntrada.Text = "CREATE TABLE DEPARTAMENTOS(\r\nD# CHAR(2) NOT NULL,\r\nDNOMBRE CHAR(6) NOT NULL,\r\nCONSTRAINT PK_DEPARTAMENTOS PRIMARY KEY (D#));\r\nINSERT INTO DEPARTAMENTOS VALUES ('D1','CIECOM');\r\nINSERT INTO DEPARTAMENTOS VALUES ('D2','CIETIE');\r\nINSERT INTO DEPARTAMENTOS VALUES ('D3','CIEING');\r\nINSERT INTO DEPARTAMENTOS VALUES ('D4','CIEECO');\r\nINSERT INTO DEPARTAMENTOS VALUES ('D5','CIEBAS');\r\nINSERT INTO DEPARTAMENTOS VALUES ('D6','CIENCIAS COMPUTACIONALES');";
             }
 
         }

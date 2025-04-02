@@ -429,11 +429,12 @@ namespace Escaner_DML
                 return tokens;
         }
         public void LLENADOTABLASPAPU(
-            DataGridView dtTab,
-            DataGridView dtAtb, 
-            DataGridView dtRes, 
-            List<string> tokens)
+    DataGridView dtTab,
+    DataGridView dtAtb,
+    DataGridView dtRes,
+    List<string> tokens)
         {
+
             List<string> tokens2 = new List<string>();
             int noTablaTemp = 2;
             int noAtributoTemp = 0;
@@ -441,117 +442,125 @@ namespace Escaner_DML
             tokens2.RemoveAll(elemento => elemento == "\n");
             for (int i = 0; i < tokens2.Count; i++)
             {
-                //TABLAS
-                if (tokens2[i] == "CREATE" && tokens2[i + 1] == "TABLE")
+                try
                 {
-                    string tablaBuscar = tokens2[i + 2];
-                    bool existeTabla = tablas.Any(t => t.nombreTabla == tablaBuscar);
-                    dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
-                    tablas.Add((noTabla, tokens2[i + 2], 0, 0));
-                    noTabla++;
-                    
-
-
-                }
-                //ATRIBUTOS
-                else if (delimitadores.IsMatch(tokens2[i - 1]) && (tokens2[i - 1] != ")" && tokens2[i] != ")"))
-                {
-                    if ((tokens2[i + 1] == "CHAR" || tokens2[i + 1] == "NUMERIC") && (tokens2[i + 2] == "(" && tokens2[i + 4] == ")"))
+                    //TABLAS
+                    if (tokens2[i] == "CREATE" && tokens2[i + 1] == "TABLE")
                     {
-                        if (tokens2[i + 5] == "NOT" && tokens2[i + 6] == "NULL")
+                        string tablaBuscar = tokens2[i + 2];
+                        bool existeTabla = tablas.Any(t => t.nombreTabla == tablaBuscar);
+                        dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
+                        tablas.Add((noTabla, tokens2[i + 2], 0, 0));
+                        noTabla++;
+
+
+
+                    }
+                    //ATRIBUTOS
+                    else if (delimitadores.IsMatch(tokens2[i - 1]) && (tokens2[i - 1] != ")" && tokens2[i] != ")"))
+                    {
+                        if ((tokens2[i + 1] == "CHAR" || tokens2[i + 1] == "NUMERIC") && (tokens2[i + 2] == "(" && tokens2[i + 4] == ")"))
                         {
-                            if (noTablaTemp == noTabla)
+                            if (tokens2[i + 5] == "NOT" && tokens2[i + 6] == "NULL")
                             {
-                                noAtributoTemp++;
+                                if (noTablaTemp == noTabla)
+                                {
+                                    noAtributoTemp++;
+                                }
+                                else
+                                {
+                                    noAtributoTemp = 1;
+                                    noTablaTemp = noTabla;
+                                }
+                                dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 1, noAtributoTemp);
+                                atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], Convert.ToInt32(tokens2[i + 3]), 1, noAtributoTemp));
+                                noAtributo++;
                             }
                             else
                             {
-                                noAtributoTemp = 1;
-                                noTablaTemp = noTabla;
+                                if (noTablaTemp == noTabla)
+                                {
+                                    noAtributoTemp++;
+                                }
+                                else
+                                {
+                                    noAtributoTemp = 1;
+                                    noTablaTemp = noTabla;
+                                }
+                                dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 0, noAtributoTemp);
+                                atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], int.Parse(tokens2[i + 3]), 0, noAtributoTemp));
+                                noAtributo++;
                             }
-                            dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 1,noAtributoTemp);
-                            atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], Convert.ToInt32(tokens2[i + 3]), 1, noAtributoTemp));
-                            noAtributo++;
-                        }
-                        else
-                        {
-                            if (noTablaTemp == noTabla)
-                            {
-                                noAtributoTemp++;
-                            }
-                            else
-                            {
-                                noAtributoTemp = 1;
-                                noTablaTemp = noTabla;
-                            }
-                            dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 0, noAtributoTemp);
-                            atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], int.Parse(tokens2[i + 3]), 0, noAtributoTemp));
-                            noAtributo++;
+
                         }
 
                     }
-
-                }
-                //RESTRICCIONES
-                if (tokens2[i] == "CONSTRAINT")
-                {
-                    if ((tokens2[i + 2] == "PRIMARY" || tokens2[i + 2] == "FOREIGN"))
+                    //RESTRICCIONES
+                    if (tokens2[i] == "CONSTRAINT")
                     {
-                        if (tokens2[i + 2] == "PRIMARY")
+                        if ((tokens2[i + 2] == "PRIMARY" || tokens2[i + 2] == "FOREIGN"))
                         {
-                            string nombreAt = tokens2[i + 5];
-                            int? atributoAsociado = atributos
-                            .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
-                            .Select(a => (int?)a.noAtributo) // Convertir a nullable para evitar valores por defecto
-                            .FirstOrDefault();
-                            if (atributoAsociado != null)
+                            if (tokens2[i + 2] == "PRIMARY")
                             {
-                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
-                                restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
-                                noRestriccion++;
+                                string nombreAt = tokens2[i + 5];
+                                int? atributoAsociado = atributos
+                                .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
+                                .Select(a => (int?)a.noAtributo) // Convertir a nullable para evitar valores por defecto
+                                .FirstOrDefault();
+                                if (atributoAsociado != null)
+                                {
+                                    dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
+                                    restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
+                                    noRestriccion++;
+                                }
+                                else
+                                {
+                                    dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], "N/A", "-", "-");
+                                    restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], -1, -1, -1));
+                                    noRestriccion++;
+                                }
+
                             }
-                            else
+                            else if (tokens2[i + 2] == "FOREIGN")
                             {
-                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], "N/A", "-", "-");
-                                restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], -1, -1, -1));
-                                noRestriccion++;
+                                string nombreAt = tokens2[i + 5];
+
+                                int? atributoAsociado = atributos
+                                .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
+                                .Select(a => (int?)a.noAtributo)
+                                .FirstOrDefault();
+
+                                int? noTablaDT = tablas
+                                .Where(t => t.nombreTabla == tokens2[i + 8])
+                                .Select(t => (int?)t.noTabla)
+                                .FirstOrDefault();
+
+                                int? noAtributo = atributos
+                                .Where(a => a.noTabla == noTablaDT && a.nombreAtributo == tokens2[i + 10])
+                                .Select(a => (int?)a.noAtributo)
+                                .FirstOrDefault();
+                                if (atributoAsociado != null && noTablaDT != null && noAtributo != null)
+                                {
+                                    dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
+                                    restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo))));
+                                    noRestriccion++;
+                                }
+                                else
+                                {
+                                    dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], "N/A", "N/A", "N/A");
+                                    restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], -1, -1, -1));
+                                    noRestriccion++;
+                                }
+
                             }
-
-                        }
-                        else if (tokens2[i + 2] == "FOREIGN")
-                        {
-                            string nombreAt = tokens2[i + 5];
-
-                            int? atributoAsociado = atributos
-                            .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
-                            .Select(a => (int?)a.noAtributo)
-                            .FirstOrDefault();
-
-                            int? noTablaDT = tablas
-                            .Where(t => t.nombreTabla == tokens2[i + 8])
-                            .Select(t => (int?)t.noTabla)
-                            .FirstOrDefault();
-
-                            int? noAtributo = atributos
-                            .Where(a => a.noTabla == noTablaDT && a.nombreAtributo == tokens2[i + 10])
-                            .Select(a => (int?)a.noAtributo)
-                            .FirstOrDefault();
-                            if (atributoAsociado != null && noTablaDT != null && noAtributo != null)
-                            {
-                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
-                                restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo))));
-                                noRestriccion++;
-                            }
-                            else
-                            {
-                                dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], "N/A", "N/A", "N/A");
-                                restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], -1, -1, -1));
-                                noRestriccion++;
-                            }
-
                         }
                     }
                 }
+                catch
+                {
+
+                }
+
             }
             List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablasConConteo = new List<(int, string, int, int)>();
 
@@ -571,6 +580,7 @@ namespace Escaner_DML
             {
                 dtTab.Rows.Add(tabla.noTabla, tabla.nombreTabla, tabla.cantidadAtributos, tabla.cantidadRestricciones);
             }
+
 
 
 
@@ -623,7 +633,7 @@ namespace Escaner_DML
                             break;
                         }
                         if (X == "702")
-                            errorSintactico = Validar_ExistirAtributo(K, out errorSintactico, numeroTablaChecker);
+                            errorSintactico = Validar_ExistirAtributo(K, out errorSintactico, ref numeroTablaChecker);
                         if (errorSintactico == true)
                         {
                             Errores.validarExistirAtributo(texto, lineas, K, ref tablas, numeroTablaChecker);
@@ -639,7 +649,7 @@ namespace Escaner_DML
                             break;
                         }
                         if (X == "704")
-                            errorSintactico = Validar_AtributoNoValido(K, out errorSintactico, numeroTablaChecker);
+                            errorSintactico = Validar_AtributoNoValido(K, out errorSintactico, ref numeroTablaChecker);
                         if (errorSintactico == true)
                         {
                             Errores.validarAtributoNoValido(texto, lineas, K, ref tablas, numeroTablaChecker);
@@ -647,7 +657,7 @@ namespace Escaner_DML
                             break;
                         }
                         if (X == "705")
-                            errorSintactico = Validar_CantidadAtributos(K, out errorSintactico, numeroTablaChecker, apunN);
+                            errorSintactico = Validar_CantidadAtributos(K, out errorSintactico, ref numeroTablaChecker, apunN);
                         if (errorSintactico == true)
                         {
                             Errores.validarCantidadAtributos(texto, lineas);
@@ -655,7 +665,7 @@ namespace Escaner_DML
                             break;
                         }
                         if (X == "706")
-                            errorSintactico = Validar_ExistirTabla(K, out errorSintactico, numeroTablaChecker);
+                            errorSintactico = Validar_ExistirTabla(K, out errorSintactico, ref numeroTablaChecker);
                         if (errorSintactico == true)
                         {
                             Errores.validarExistirTabla(texto, lineas);
@@ -974,7 +984,7 @@ namespace Escaner_DML
             return salida;
             
         }
-        public bool Validar_ExistirAtributo(string nombreAtributo, out bool salida, int numTabCheck)
+        public bool Validar_ExistirAtributo(string nombreAtributo, out bool salida, ref int numTabCheck)
         {
             int i = -1; // Valor por defecto si no se encuentra
 
@@ -1003,7 +1013,7 @@ namespace Escaner_DML
 
             return salida;
         }
-        public bool Validar_AtributoNoValido(string nombreAtributo, out bool salida, int numTabCheck)
+        public bool Validar_AtributoNoValido(string nombreAtributo, out bool salida, ref int numTabCheck)
         {
             int i = 0;
             while (i < atributos.Count && atributos[i].noTabla == numTabCheck)
@@ -1014,9 +1024,10 @@ namespace Escaner_DML
             }
             return salida = true;
         }
-        public bool Validar_CantidadAtributos(string nombreAtributo, out bool salida, int numTabCheck, int indice)
+        public bool Validar_CantidadAtributos(string nombreAtributo, out bool salida, ref int numTabCheck, int indice)
         {
             salida = false;
+            int numTablaBusqueda = numTabCheck;
             List<string> tempTokens = new List<string>();
 
             // Validar que el índice sea válido
@@ -1036,7 +1047,7 @@ namespace Escaner_DML
             int count = tempTokens.Count(t => t == ",") + 1;
 
             // Buscar la tabla correspondiente en la lista 'tablas'
-            var tabla = tablas.FirstOrDefault(t => t.noTabla == numTabCheck);
+            var tabla = tablas.FirstOrDefault(t => t.noTabla == numTablaBusqueda);
 
             // Verificar si la tabla fue encontrada
             if (tabla.Equals(default))
@@ -1049,7 +1060,7 @@ namespace Escaner_DML
             }
             return true;
         }
-        public bool Validar_ExistirTabla(string nombreTabla, out bool salida, int numTabChecker)
+        public bool Validar_ExistirTabla(string nombreTabla, out bool salida, ref int numTabChecker)
         {
             // Contar cuántas veces aparece el nombre en la lista
             int count = tablas.Count(t => t.nombreTabla == nombreTabla);
@@ -1102,7 +1113,7 @@ namespace Escaner_DML
             {
                 var atributoEncontrado = atributos.FirstOrDefault(a =>
                     a.noTabla == numTabChecker &&
-                    a.noAtributo == indiceAtributo);
+                    a.noAtributoTabla == indiceAtributo);
 
                 if (atributoEncontrado != default)
                 {
