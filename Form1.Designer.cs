@@ -73,6 +73,7 @@
             this.Column22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BtnInicializar = new System.Windows.Forms.Button();
             this.BtnLimpiar = new System.Windows.Forms.Button();
+            this.Column23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.DgvLexica)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DtAtributos)).BeginInit();
@@ -196,7 +197,7 @@
             this.toolStripStatusLabel3});
             this.statusStrip1.Location = new System.Drawing.Point(0, 904);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1091, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1199, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -298,10 +299,11 @@
             this.Column8,
             this.Column9,
             this.Column10,
-            this.Column11});
+            this.Column11,
+            this.Column23});
             this.DtAtributos.Location = new System.Drawing.Point(12, 524);
             this.DtAtributos.Name = "DtAtributos";
-            this.DtAtributos.Size = new System.Drawing.Size(508, 351);
+            this.DtAtributos.Size = new System.Drawing.Size(609, 351);
             this.DtAtributos.TabIndex = 13;
             // 
             // Column6
@@ -338,7 +340,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(544, 499);
+            this.label5.Location = new System.Drawing.Point(649, 499);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(137, 22);
             this.label5.TabIndex = 14;
@@ -356,7 +358,7 @@
             this.Column16,
             this.Column17,
             this.Column18});
-            this.DtRestricciones.Location = new System.Drawing.Point(548, 524);
+            this.DtRestricciones.Location = new System.Drawing.Point(653, 524);
             this.DtRestricciones.Name = "DtRestricciones";
             this.DtRestricciones.Size = new System.Drawing.Size(518, 351);
             this.DtRestricciones.TabIndex = 15;
@@ -417,7 +419,7 @@
             this.Column22});
             this.DtTablas.Location = new System.Drawing.Point(720, 45);
             this.DtTablas.Name = "DtTablas";
-            this.DtTablas.Size = new System.Drawing.Size(346, 424);
+            this.DtTablas.Size = new System.Drawing.Size(425, 424);
             this.DtTablas.TabIndex = 17;
             // 
             // Column19
@@ -464,12 +466,17 @@
             this.BtnLimpiar.UseVisualStyleBackColor = false;
             this.BtnLimpiar.Click += new System.EventHandler(this.BtnLimpiar_Click);
             // 
+            // Column23
+            // 
+            this.Column23.HeaderText = "No. Atributo Tabla";
+            this.Column23.Name = "Column23";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(236)))), ((int)(((byte)(210)))));
-            this.ClientSize = new System.Drawing.Size(1091, 926);
+            this.ClientSize = new System.Drawing.Size(1199, 926);
             this.Controls.Add(this.DtTablas);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.DtRestricciones);
@@ -555,6 +562,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column22;
         private System.Windows.Forms.Button BtnInicializar;
         private System.Windows.Forms.Button BtnLimpiar;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column23;
     }
 }
 

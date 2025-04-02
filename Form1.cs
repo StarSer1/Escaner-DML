@@ -14,7 +14,7 @@ namespace Escaner_DML
     public partial class Form1 : Form
     {
         List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas = new List<(int, string, int, int)>();
-        List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull)> atributos = new List<(int, int, string, string, int, int)>();
+        List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos = new List<(int, int, string, string, int, int,int)>();
         List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restricciones = new List<(int, int, int, string, int, int, int)>();
 
         
@@ -41,8 +41,8 @@ namespace Escaner_DML
             List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablasTemp =
                 tablas.Select(t => (t.noTabla, t.nombreTabla, t.cantidadAtributos, t.cantidadRestricciones)).ToList();
 
-            List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull)> atributosTemp =
-                atributos.Select(a => (a.noTabla, a.noAtributo, a.nombreAtributo, a.tipo, a.longitud, a.noNull)).ToList();
+            List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTemp)> atributosTemp =
+                atributos.Select(a => (a.noTabla, a.noAtributo, a.nombreAtributo, a.tipo, a.longitud, a.noNull , a.noAtributoTabla)).ToList();
 
             List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restriccionesTemp =
                 restricciones.Select(r => (r.noTabla, r.noRestriccion, r.Tipo, r.nombreRestriccion, r.atributoAsociado, r.Tabla, r.atributo)).ToList();
