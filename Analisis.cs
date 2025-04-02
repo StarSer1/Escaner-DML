@@ -142,7 +142,7 @@ namespace Escaner_DML
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53         54         61    62    72    99
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "213 214", "213 214", null, null, null}, //212
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53          54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 62 54", "61", null, null, null}, //213
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 62 54 707", "61", null, null, null}, //213
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
             { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 212", null, null, "99", null, null, null, null, null}, //214
             // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
@@ -620,6 +620,13 @@ namespace Escaner_DML
                             MessageBox.Show("3:307: Linea " + lineas + " Los valores especificados, no corresponden a la definicion de la tabla");
                             break;
                         }
+                        if (X == "707")
+                            errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
+                        if (errorSintactico == true)
+                        {
+                            MessageBox.Show("3:308: Linea " + lineas + " Los datos de la cadena o binarios se truncarían");
+                            break;
+                        }
                         //apunN++;
                     }
                     else
@@ -1010,26 +1017,45 @@ namespace Escaner_DML
             salida = count != 1; // Si aparece más de una vez, es verdadero
             return salida;
         }
-        public bool Validar_CantidadBytes(out bool salida, int numTabChecker, int indice)
+        public bool Validar_CantidadBytes(out bool salida, int numTabChecker, int indice, string nombreAtributo)
         {
             salida = false;
-            List<string> tempTokens = new List<string>();
+            List<string> resultado = new List<string>();
 
             // Validar que el índice sea válido
             if (indice < 0 || indice >= tokens.Count)
-                return false;
+                return salida = false;
 
-            // Recorrer hacia atrás desde el índice dado
-            for (int i = indice - 2; i >= 0; i--)
+            int i = indice;
+
+            // 1. Ir hacia atrás hasta encontrar "("
+            while (i >= 0 && tokens[i] != "(")
             {
-                if (tokens[i] == "(")
-                    break; // Detenerse si encuentra "("
-
-                if (tokens[i] != ",") // Solo agregamos elementos que NO sean comas
-                    tempTokens.Insert(0, tokens[i]); // Insertar al inicio para mantener el orden
+                if (tokens[i] != "," && tokens[i] != ")") // Omitir comas
+                    resultado.Insert(0, tokens[i]); // Insertar al inicio para mantener el orden
+                i--;
             }
+
+            // 2. Ir hacia adelante desde la coma (si estaba en una coma al inicio)
+            i = indice + 1;
+            while (i < tokens.Count && tokens[i] != ")" && tokens[i-1] != ")")
+            {
+                if (tokens[i] != ",") // Omitir comas
+                    resultado.Add(tokens[i]); // Insertar al final para mantener el orden
+                i++;
+            }
+
+            //Eliminar todas las comillas simples ("'") de la lista antes de retornar
+            resultado.RemoveAll(item => item == "'");
+
+            int? atributoAsociado = atributos
+                            .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAtributo)
+                            .Select(a => (int?)a.noAtributo)
+                            .FirstOrDefault();
+
             return salida;
         }
+
         public void MostrarDgv(DataGridView dgvLex, string token, int linea)
         {
             tablaSimbolos.TryGetValue(token, out int valor);
