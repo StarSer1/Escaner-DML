@@ -38,6 +38,18 @@ namespace Escaner_DML
         {
             if (txtEntrada.Text != "")
             {
+                string textoOriginal = txtEntrada.Text;
+
+                // Paso 1: Eliminar saltos de línea y unir todo en una sola línea
+                string textoEnUnaLinea = string.Join(" ", textoOriginal
+                    .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(linea => linea.Trim()));
+
+                // Paso 2: Insertar salto de línea antes de cada '('
+                string resultado = textoEnUnaLinea.Replace("(", "\n(");
+
+                txtEntrada.Text = resultado;
+
                 bool errorActivado = false;
                 // Crear copias profundas de las listas
                 List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablasTemp =
@@ -83,7 +95,9 @@ namespace Escaner_DML
 
                     }
                 }
+                txtEntrada.Text = textoOriginal;
             }
+
         }
         private void BtnLimpiar_Click(object sender, EventArgs e)
         {

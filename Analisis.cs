@@ -475,11 +475,11 @@ namespace Escaner_DML
                                 }
                                 listaWhere.Add(("", tokens2[i], tipo, linea));
                             }
-                            else if (tokens2[i + 1] == "IN")
-                            {
-                                listaWhere.Add(("", tokens2[i], "", linea));
-                                i += 2;
-                            }
+                            //else if (tokens2[i + 1] == "IN")
+                            //{
+                            //    listaWhere.Add(("", tokens2[i], "", linea));
+                            //    i += 2;
+                            //}
                         }
                         if (tokens2[i] == "WHERE")
                         {
@@ -872,6 +872,36 @@ namespace Escaner_DML
                                 break;
                             }
 
+                        }
+                        if (X == "808") // Código para validación de subconsultas
+                        {
+                            (string errorMsg, int linea) errorInfo;
+                            bool valido = Validar_TipoDatoEnComparacion(
+                                out errorInfo,
+                                ref listaWhere,
+                                ref atributos
+                            );
+
+                            if (!valido)
+                            {
+                                error = true;
+
+                                // errorInfo.error == "Error de tipo en la comparación: MNOMBRE no es del mismo tipo..."
+                                var match = System.Text.RegularExpressions.Regex.Match(
+                                    errorInfo.errorMsg,
+                                    @":\s*(\w+)"
+                                );
+                                string atributoInvalido = match.Success
+                                    ? match.Groups[1].Value
+                                    : errorInfo.errorMsg; // fallback
+
+                                Errores.validarAtributoSubconsultaInvalido(
+                                    txtError: texto,
+                                    lineas: errorInfo.linea,
+                                    atributo: atributoInvalido
+                                );
+                                break;
+                            }
                         }
                         //apunN++;
                     }
@@ -1330,6 +1360,28 @@ namespace Escaner_DML
             }
             return salida;
         }
+        public bool Validar_TipoDatoEnComparacion(out (string error, int linea) errorInfo, ref List<(string tabla, string atributo, string tipo, int linea)> listaWhere, ref List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos)
+        {
+            errorInfo = ("", -1);
+
+            for (int i = 0; i < listaWhere.Count; i++)
+            {
+                var izquierda = listaWhere[i];
+
+                if (izquierda.tipo == "atributo")
+                {
+                    var atributoIzq = atributos.FirstOrDefault(a => a.nombreAtributo == izquierda.atributo);
+                    if (izquierda.tipo != atributoIzq.tipo)
+                    {
+                        errorInfo = ($"Error de tipo en la comparación: {izquierda.atributo} no es del mismo tipo que el valor a la derecha.", izquierda.linea);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         public bool Validar_IdentificadorEnWhere(
  out string identificadorInvalido,
  ref List<(string tabla, string atributo, string tipo, int linea)> listaWhere,
