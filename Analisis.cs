@@ -125,58 +125,59 @@ namespace Escaner_DML
         };
         string[,] TablaSintac =
         {
-            // 4     8     10    11    12    13    14    15                         16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, "16 17 4 700 52 202 53 55 201", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //200
+            // 4     8     10    11    12    13    14    15                         16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99, 30
+            { null, null, null, null, null, null, null, null, "16 17 4 700 52 202 53 55 201", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //200
             // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99"}, //201
+            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99", null}, //201
             //                     4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { "4 701 203 52 61 53 204 205", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //202
+            { "4 701 203 52 61 53 204 205", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //202
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, "18", "19", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //203
+            { null, null, null, null, null, null, null, null, null, "18", "19", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //203
             // 4     8     10    11    12    13    14    15    16    18    19       20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, "20 21", null, null, null, null, null, "99", null, null, null, null, null, null, null, null}, //204
+            { null, null, null, null, null, null, null, null, null, null, null, "20 21", null, null, null, null, null, "99", null, null, null, null, null, null, null, null, null}, //204
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 206", null, null, "99", null, null, null, null, null}, //205
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 206", null, null, "99", null, null, null, null, null, null}, //205
             //  4     8     10    11    12    13    14    15    16    18    19    20     22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { "202", null, null, null, null, null, null, null, null, null, null, null, "207", null, null, null, null, null, null, null, null, null, null, null, null, null}, //206
+            { "202", null, null, null, null, null, null, null, null, null, null, null, "207", null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //206
             // 4     8     10    11    12    13    14    15    16    18    19    20                      22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, "22 4 703 208 52 4 702 53 209", null, null, null, null, null, null, null, null, null, null, null, null, null}, //207
+            { null, null, null, null, null, null, null, null, null, null, null, null, "22 4 703 208 52 4 702 53 209", null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //207
             // 4     8     10    11    12    13    14    15    16    18    19    20    22       24       25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, "24 23", "25 23", null, null, null, null, null, null, null, null, null, null, null}, //208
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, "24 23", "25 23", null, null, null, null, null, null, null, null, null, null, null, null}, //208
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25                  26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "26 4 709 52 4 708 53 210", null, "50 207", null, null, "99", null, null, null, null, null}, //209
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "26 4 709 52 4 708 53 210", null, "50 207", null, null, "99", null, null, null, null, null, null}, //209
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 207", null, null, "99", null, null, null, null, null}, //210
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 207", null, null, "99", null, null, null, null, null, null}, //210
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26                             27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "27 28 4 706 29 52 212 53 705 55 215", null, null, null, null, null, null, null, null, null}, //211
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "27 28 4 706 29 52 212 53 705 55 215", null, null, null, null, null, null, null, null, null, null}, //211
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53         54         61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "213 214", "213 214", null, null, null}, //212
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "213 214", "213 214", null, null, null, null}, //212
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53          54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 62 54 707", "61", null, null, null}, //213
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 62 54 707", "61", null, null, null, null}, //213
             // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 212", null, null, "99", null, null, null, null, null}, //214
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 212", null, null, "99", null, null, null, null, null, null}, //214
             // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99"}, //215
-            { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
-            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
-            { "304 303", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null}, // 302 
-            { null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99"}, // 303
-            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, // 304
-            { null , "99", null, "99", null, "99", "99", "99", null, null, null, null, null, null, null, null, null, "99", "51 4", null, "99", null, null, null, null, "99" }, // 305
-            { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null}, // 306
-            {  null, null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "50 306", null, null, "99", null, null, null, null, "99"},
-            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-            { "4", null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, "99", null, null, null, null, "99"},
-            { null, null, null, null, "12 311", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" },
-            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, null, null, null, null, null, "317 311", "317 311", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" },
-            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { "304", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null },
-            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null }
+            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99", null}, //215
+            { null, null, "10 320 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
+            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null , null}, // 301
+            { "304 303", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null, null}, // 302 
+            { null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99", null}, // 303
+            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null}, // 304
+            { null , "99", null, "99", null, "99", "99", "99", null, null, null, null, null, null, null, null, null, "99", "51 4", null, "99", null, null, null, null, "99" , null}, // 305
+            { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null, null}, // 306
+            {  null, null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "50 306", null, null, "99", null, null, null, null, "99", null},
+            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+            { "4", null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, "99", null, null, null, null, "99", null},
+            { null, null, null, null, "12 311", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" , null},
+            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
+            { null, null, null, null, null, null, "317 311", "317 311", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" , null},
+            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
+            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
+            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+            { "304", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null , null},
+            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null , null},
+            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null , null},
+            { "99",  null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,"30"} // 320
             // 4    8     10    11    12
         };
 
@@ -202,6 +203,7 @@ namespace Escaner_DML
             { "CHAR", 18 }, { "NUMERIC", 19 }, { "NOT", 20 }, { "NULL", 21 },
             { "CONSTRAINT", 22 }, { "KEY", 23 }, { "PRIMARY", 24 }, { "FOREIGN", 25 },
             { "REFERENCES", 26 }, { "INSERT", 27 }, { "INTO", 28 }, { "VALUES", 29 },
+            { "DISTINCT", 30 },
 
             // Delimitadores (5)
             { ",", 50 }, { ".", 51 }, { "(", 52 }, { ")", 53 }, { "'", 54 }, {";", 55},
@@ -428,133 +430,234 @@ namespace Escaner_DML
             //LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion,);
                 return tokens;
         }
+        List<(string atributo, int linea)> listaSelect = new List<(string atributo, int linea)>();
+        List<(string tabla, string alias, int linea)> listaFrom = new List<(string tabla, string alias, int linea)>();
+        List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
+        public void LlenadoSelects(List<string> tokens)
+        {
+            bool comenzoSelect = false;
+            bool comenzoFrom = false;
+            bool comenzoWhere = false;
+            int linea = 1;
+
+            List<string> tokens2 = new List<string>();
+
+            tokens2.AddRange(tokens);
+            tokens2.RemoveAll(elemento => elemento == "'");
+            for (int i = 0; i < tokens2.Count; i++)
+            {
+                try
+                {
+                    if (tokens2[i] != "\n")
+                    {
+                        if (comenzoWhere)
+                        {
+                            if (tokens2[i + 1] == ".")
+                            {
+                                string tipo = "";
+                                if (tokens2[i - 1] != "=")
+                                {
+                                    if (constantesTL.IsMatch(tokens2[i + 4]))
+                                        tipo = "num";
+                                    else if (constantes.IsMatch(tokens2[i + 4]))
+                                        tipo = "string";
+                                    else
+                                        tipo = "atributo";
+                                }
+                                listaWhere.Add((tokens2[i], tokens2[i + 2], tipo, linea));
+                                i += 2;
+                            }
+                            else if (tokens2[i + 1] == "=")
+                            {
+                                string tipo = "";
+                                if (tokens2[i - 1] != "=")
+                                {
+                                    if (constantesTL.IsMatch(tokens2[i + 2]))
+                                        tipo = "num";
+                                    else if (constantes.IsMatch(tokens2[i + 2]))
+                                        tipo = "string";
+                                    else
+                                        tipo = "atributo";
+                                }
+                                listaWhere.Add(("", tokens2[i], tipo, linea));
+                            }
+                        }
+                        if (tokens2[i] == "WHERE")
+                        {
+                            comenzoSelect = false;
+                            comenzoFrom = false;
+                            comenzoWhere = true;
+                        }
+                        if (comenzoFrom)
+                        {
+                            if (!delimitadores.IsMatch(tokens2[i]))
+                            {
+                                string tempAlias = "";
+                                if (!delimitadores.IsMatch(tokens2[i + 1]) && !reservadas.IsMatch(tokens2[i + 1]) && tokens2[i + 1] != "\n")
+                                    tempAlias = tokens2[i + 1];
+                                listaFrom.Add((tokens2[i], tempAlias, linea));
+                                if (tempAlias != "") i++;
+                            }
+                        }
+                        if (tokens2[i] == "FROM")
+                        {
+                            comenzoSelect = false;
+                            comenzoFrom = true;
+                        }
+                        if (comenzoSelect)
+                        {
+                            if (tokens[i] != "DISTINCT")
+                            {
+                                if (!delimitadores.IsMatch(tokens2[i]))
+                                {
+                                    listaSelect.Add((tokens2[i], linea));
+                                }
+                            }
+                        }
+
+                        if (tokens2[i] == "SELECT")
+                        {
+                            comenzoSelect = true;
+                        }
+                    }
+                    else
+                        linea++;
+                }
+                catch
+                {
+
+                }
+            }
+        }
         public void LLENADOTABLASPAPU(
     DataGridView dtTab,
     DataGridView dtAtb,
     DataGridView dtRes,
     List<string> tokens)
         {
-
             List<string> tokens2 = new List<string>();
+            
             int noTablaTemp = 2;
             int noAtributoTemp = 0;
+            
             tokens2.AddRange(tokens);
             tokens2.RemoveAll(elemento => elemento == "\n");
             for (int i = 0; i < tokens2.Count; i++)
             {
                 try
                 {
-                    //TABLAS
-                    if (tokens2[i] == "CREATE" && tokens2[i + 1] == "TABLE")
-                    {
-                        string tablaBuscar = tokens2[i + 2];
-                        bool existeTabla = tablas.Any(t => t.nombreTabla == tablaBuscar);
-                        dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
-                        tablas.Add((noTabla, tokens2[i + 2], 0, 0));
-                        noTabla++;
-
-
-
-                    }
-                    //ATRIBUTOS
-                    else if (delimitadores.IsMatch(tokens2[i - 1]) && (tokens2[i - 1] != ")" && tokens2[i] != ")"))
-                    {
-                        if ((tokens2[i + 1] == "CHAR" || tokens2[i + 1] == "NUMERIC") && (tokens2[i + 2] == "(" && tokens2[i + 4] == ")"))
+                        //TABLAS
+                        if (tokens2[i] == "CREATE" && tokens2[i + 1] == "TABLE")
                         {
-                            if (tokens2[i + 5] == "NOT" && tokens2[i + 6] == "NULL")
+                            string tablaBuscar = tokens2[i + 2];
+                            bool existeTabla = tablas.Any(t => t.nombreTabla == tablaBuscar);
+                            dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
+                            tablas.Add((noTabla, tokens2[i + 2], 0, 0));
+                            noTabla++;
+
+
+
+                        }
+                        //ATRIBUTOS
+                        else if (delimitadores.IsMatch(tokens2[i - 1]) && (tokens2[i - 1] != ")" && tokens2[i] != ")"))
+                        {
+                            if ((tokens2[i + 1] == "CHAR" || tokens2[i + 1] == "NUMERIC") && (tokens2[i + 2] == "(" && tokens2[i + 4] == ")"))
                             {
-                                if (noTablaTemp == noTabla)
+                                if (tokens2[i + 5] == "NOT" && tokens2[i + 6] == "NULL")
                                 {
-                                    noAtributoTemp++;
+                                    if (noTablaTemp == noTabla)
+                                    {
+                                        noAtributoTemp++;
+                                    }
+                                    else
+                                    {
+                                        noAtributoTemp = 1;
+                                        noTablaTemp = noTabla;
+                                    }
+                                    dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 1, noAtributoTemp);
+                                    atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], Convert.ToInt32(tokens2[i + 3]), 1, noAtributoTemp));
+                                    noAtributo++;
                                 }
                                 else
                                 {
-                                    noAtributoTemp = 1;
-                                    noTablaTemp = noTabla;
+                                    if (noTablaTemp == noTabla)
+                                    {
+                                        noAtributoTemp++;
+                                    }
+                                    else
+                                    {
+                                        noAtributoTemp = 1;
+                                        noTablaTemp = noTabla;
+                                    }
+                                    dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 0, noAtributoTemp);
+                                    atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], int.Parse(tokens2[i + 3]), 0, noAtributoTemp));
+                                    noAtributo++;
                                 }
-                                dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 1, noAtributoTemp);
-                                atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], Convert.ToInt32(tokens2[i + 3]), 1, noAtributoTemp));
-                                noAtributo++;
-                            }
-                            else
-                            {
-                                if (noTablaTemp == noTabla)
-                                {
-                                    noAtributoTemp++;
-                                }
-                                else
-                                {
-                                    noAtributoTemp = 1;
-                                    noTablaTemp = noTabla;
-                                }
-                                dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 0, noAtributoTemp);
-                                atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], int.Parse(tokens2[i + 3]), 0, noAtributoTemp));
-                                noAtributo++;
+
                             }
 
                         }
-
-                    }
-                    //RESTRICCIONES
-                    if (tokens2[i] == "CONSTRAINT")
-                    {
-                        if ((tokens2[i + 2] == "PRIMARY" || tokens2[i + 2] == "FOREIGN"))
+                        //RESTRICCIONES
+                        if (tokens2[i] == "CONSTRAINT")
                         {
-                            if (tokens2[i + 2] == "PRIMARY")
+                            if ((tokens2[i + 2] == "PRIMARY" || tokens2[i + 2] == "FOREIGN"))
                             {
-                                string nombreAt = tokens2[i + 5];
-                                int? atributoAsociado = atributos
-                                .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
-                                .Select(a => (int?)a.noAtributo) // Convertir a nullable para evitar valores por defecto
-                                .FirstOrDefault();
-                                if (atributoAsociado != null)
+                                if (tokens2[i + 2] == "PRIMARY")
                                 {
-                                    dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
-                                    restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
-                                    noRestriccion++;
+                                    string nombreAt = tokens2[i + 5];
+                                    int? atributoAsociado = atributos
+                                    .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
+                                    .Select(a => (int?)a.noAtributo) // Convertir a nullable para evitar valores por defecto
+                                    .FirstOrDefault();
+                                    if (atributoAsociado != null)
+                                    {
+                                        dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
+                                        restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
+                                        noRestriccion++;
+                                    }
+                                    else
+                                    {
+                                        dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], "N/A", "-", "-");
+                                        restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], -1, -1, -1));
+                                        noRestriccion++;
+                                    }
+
                                 }
-                                else
+                                else if (tokens2[i + 2] == "FOREIGN")
                                 {
-                                    dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], "N/A", "-", "-");
-                                    restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], -1, -1, -1));
-                                    noRestriccion++;
+                                    string nombreAt = tokens2[i + 5];
+
+                                    int? atributoAsociado = atributos
+                                    .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
+                                    .Select(a => (int?)a.noAtributo)
+                                    .FirstOrDefault();
+
+                                    int? noTablaDT = tablas
+                                    .Where(t => t.nombreTabla == tokens2[i + 8])
+                                    .Select(t => (int?)t.noTabla)
+                                    .FirstOrDefault();
+
+                                    int? noAtributo = atributos
+                                    .Where(a => a.noTabla == noTablaDT && a.nombreAtributo == tokens2[i + 10])
+                                    .Select(a => (int?)a.noAtributo)
+                                    .FirstOrDefault();
+                                    if (atributoAsociado != null && noTablaDT != null && noAtributo != null)
+                                    {
+                                        dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
+                                        restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo))));
+                                        noRestriccion++;
+                                    }
+                                    else
+                                    {
+                                        dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], "N/A", "N/A", "N/A");
+                                        restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], -1, -1, -1));
+                                        noRestriccion++;
+                                    }
+
                                 }
-
-                            }
-                            else if (tokens2[i + 2] == "FOREIGN")
-                            {
-                                string nombreAt = tokens2[i + 5];
-
-                                int? atributoAsociado = atributos
-                                .Where(a => a.noTabla == noTabla - 1 && a.nombreAtributo == nombreAt)
-                                .Select(a => (int?)a.noAtributo)
-                                .FirstOrDefault();
-
-                                int? noTablaDT = tablas
-                                .Where(t => t.nombreTabla == tokens2[i + 8])
-                                .Select(t => (int?)t.noTabla)
-                                .FirstOrDefault();
-
-                                int? noAtributo = atributos
-                                .Where(a => a.noTabla == noTablaDT && a.nombreAtributo == tokens2[i + 10])
-                                .Select(a => (int?)a.noAtributo)
-                                .FirstOrDefault();
-                                if (atributoAsociado != null && noTablaDT != null && noAtributo != null)
-                                {
-                                    dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
-                                    restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo))));
-                                    noRestriccion++;
-                                }
-                                else
-                                {
-                                    dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], "N/A", "N/A", "N/A");
-                                    restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], -1, -1, -1));
-                                    noRestriccion++;
-                                }
-
                             }
                         }
-                    }
+                       
                 }
                 catch
                 {
@@ -1294,6 +1397,7 @@ namespace Escaner_DML
             else if (token == "62") return 23;
             else if (token == "72") return 24;
             else if (token == "199") return 25;
+            else if (token == "30") return 26;
             else return 0;
         }
         public int EncontrarIndiceX(string regla)

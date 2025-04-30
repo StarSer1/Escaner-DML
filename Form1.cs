@@ -62,6 +62,7 @@ namespace Escaner_DML
                     if (Analisis.errorActivado == false)
                     {
                         Analisis.LLENADOTABLASPAPU(DtTablas, DtAtributos, DtRestricciones, tokens);
+                        Analisis.LlenadoSelects(tokens);
                         try
                         {
                         while (tokens.Last() == "\n")
