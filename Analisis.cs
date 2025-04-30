@@ -167,7 +167,7 @@ namespace Escaner_DML
             { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
             { null, null, null, null, null, null, "317 311", "317 311", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" , null},
             { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
-            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
+            { null, "315 316 808", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
             { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
             { "304", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null , null},
             { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
@@ -452,9 +452,9 @@ namespace Escaner_DML
                                 if (tokens2[i - 1] != "=" && tokens2[i+3] != "IN")
                                 {
                                     if (constantesTL.IsMatch(tokens2[i + 4]))
-                                        tipo = "num";
+                                        tipo = "NUMERIC";
                                     else if (constantes.IsMatch(tokens2[i + 4]))
-                                        tipo = "string";
+                                        tipo = "CHAR";
                                     else
                                         tipo = "atributo";
                                 }
@@ -467,9 +467,9 @@ namespace Escaner_DML
                                 if (tokens2[i - 1] != "=")
                                 {
                                     if (constantesTL.IsMatch(tokens2[i + 2]))
-                                        tipo = "num";
+                                        tipo = "NUMERIC";
                                     else if (constantes.IsMatch(tokens2[i + 2]))
-                                        tipo = "string";
+                                        tipo = "CHAR";
                                     else
                                         tipo = "atributo";
                                 }
@@ -509,7 +509,13 @@ namespace Escaner_DML
                             {
                                 if (!delimitadores.IsMatch(tokens2[i]))
                                 {
-                                    listaSelect.Add((tokens2[i], linea));
+                                    if (tokens2[i + 1] == ".")
+                                    {
+                                        listaSelect.Add((tokens2[i], tokens2[i + 2], linea));
+                                        i += 2;
+                                    }
+                                    else
+                                        listaSelect.Add(("", tokens2[i], linea));
                                 }
                             }
                         }
@@ -822,6 +828,8 @@ namespace Escaner_DML
                                 
                             }
 
+
+
                             List<string> atributosNoEncontrados = nombrePerteneceATabla();
 
                             if (atributosNoEncontrados.Any())
@@ -833,12 +841,24 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            //OTRO ERROR
                             
+
+
 
                         }
                         if(X == "801")
                         {
+                            if (tokens[apun - 2] == ".")
+                            {
+                                bool errrrror = ValidarAtributoEnTabla(tokens[apun-3]+"."+K);
+                                if (errrrror == false)
+                                {
+                                    Errores.validarIdentificadorInvalido(texto, lineas, K);
+                                    error = true;
+                                    break;
+                                }
+                            }
+
                             List<string> erroresWhereINv = ObtenerAtributosWhereInvalidosConAlias();
 
                                                       
@@ -851,6 +871,8 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
+
+
                         }
                         if (X == "803")
                         {
@@ -902,6 +924,28 @@ namespace Escaner_DML
                                 );
                                 break;
                             }
+                            bool errorsisimo = Validar_TipoDatoEnComparacionDos(out errorInfo, ref listaWhere, ref atributos);
+                            if (!errorsisimo)
+                            {
+                                error = true;
+
+                                // errorInfo.error == "Error de tipo en la comparación: MNOMBRE no es del mismo tipo..."
+                                var match = System.Text.RegularExpressions.Regex.Match(
+                                    errorInfo.errorMsg,
+                                    @":\s*(\w+)"
+                                );
+                                string atributoInvalido = match.Success
+                                    ? match.Groups[1].Value
+                                    : errorInfo.errorMsg; // fallback
+
+                                Errores.validarAtributoSubconsultaInvalido(
+                                    txtError: texto,
+                                    lineas: errorInfo.linea,
+                                    atributo: atributoInvalido
+                                );
+                                break;
+                            }
+
                         }
                         //apunN++;
                     }
@@ -1167,14 +1211,42 @@ namespace Escaner_DML
         List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restricciones = new List<(int, int, int, string, int, int, int)>();
         
         List<(string tabla, string alias, int linea)> listaFrom = new List<(string tabla, string alias, int linea)>();
-        List<(string atributo, int linea)> listaSelect = new List<(string atributo, int linea)>();
+        List<(string tabla, string atributo, int linea)> listaSelect = new List<(string tabla, string atributo, int linea)>();
         List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
+
+        public bool ValidarAtributoEnTabla(string atributoCalificado)
+        {
+            // Separar tabla y atributo
+            if (!atributoCalificado.Contains('.')) return false;
+
+            var partes = atributoCalificado.Split('.');
+            if (partes.Length != 2) return false;
+
+            string nombreTabla = partes[0];
+            string nombreAtributo = partes[1];
+
+            // 1. Verificar si la tabla está en listaFrom
+            bool tablaEnFrom = listaFrom.Any(f => f.tabla == nombreTabla);
+            if (!tablaEnFrom) return false;
+
+            // 2. Obtener noTabla
+            var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+            if (tabla == default) return false;
+
+            // 3. Verificar si el atributo pertenece a esa tabla
+            bool atributoExiste = atributos.Any(a =>
+                a.noTabla == tabla.noTabla &&
+                a.nombreAtributo == nombreAtributo);
+
+            return atributoExiste;
+        }
+
 
         public List<string> nombrePerteneceATabla()
         {
             List<string> errores = new List<string>();
 
-            foreach (var (atributoCompleto, linea) in listaSelect)
+            foreach (var (tablaZ, atributoCompleto, linea) in listaSelect)
             {
                 var partes = atributoCompleto.Split('.');
 
@@ -1248,7 +1320,7 @@ namespace Escaner_DML
             {
                 int linea = grupo.Key;
 
-                foreach (var (atributoCompleto, _) in grupo)
+                foreach (var (tablaZ, atributoCompleto, _) in grupo)
                 {
                     string nombreAtributo = atributoCompleto;
                     int cantidadApariciones = 0;
@@ -1261,12 +1333,16 @@ namespace Escaner_DML
                         var tabla = tablas.FirstOrDefault(t => t.nombreTabla == from.tabla);
                         if (tabla == default) continue;
 
-                        bool existe = atributos.Any(a =>
-                            a.noTabla == tabla.noTabla &&
-                            a.nombreAtributo == nombreAtributo);
+                        // Verificar duplicidad solo dentro de la tabla especificada en tablaZ
+                        if (string.IsNullOrEmpty(tablaZ) || from.tabla == tablaZ)
+                        {
+                            bool existe = atributos.Any(a =>
+                                a.noTabla == tabla.noTabla &&
+                                a.nombreAtributo == nombreAtributo);
 
-                        if (existe)
-                            cantidadApariciones++;
+                            if (existe)
+                                cantidadApariciones++;
+                        }
                     }
 
                     if (cantidadApariciones > 1 && !atributosAmbiguos.Contains(nombreAtributo))
@@ -1367,8 +1443,12 @@ namespace Escaner_DML
             for (int i = 0; i < listaWhere.Count; i++)
             {
                 var izquierda = listaWhere[i];
-
-                if (izquierda.tipo == "atributo")
+                var derecha = listaWhere[i];
+                if (i+1< listaWhere.Count)
+                {
+                    derecha = listaWhere[i+1];
+                }
+                if (izquierda.tipo == "atributo" && derecha.tipo != "")
                 {
                     var atributoIzq = atributos.FirstOrDefault(a => a.nombreAtributo == izquierda.atributo);
                     if (izquierda.tipo != atributoIzq.tipo)
@@ -1381,11 +1461,38 @@ namespace Escaner_DML
 
             return true;
         }
+        public bool Validar_TipoDatoEnComparacionDos(out (string error, int linea) errorInfo, ref List<(string tabla, string atributo, string tipo, int linea)> listaWhere, ref List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos)
+        {
+            errorInfo = ("", -1);
+
+            for (int i = 0; i < listaWhere.Count; i++)
+            {
+                var izquierda = listaWhere[i];
+                var derecha = listaWhere[i];
+                if (i + 1 < listaWhere.Count)
+                {
+                    derecha = listaWhere[i + 1];
+                }
+                var atributoIzq = atributos.FirstOrDefault(a => a.nombreAtributo == izquierda.atributo);
+                if (derecha.tipo != "" && izquierda.tipo != "")
+                {
+                    if (izquierda.tipo != atributoIzq.tipo)
+                    {
+                        errorInfo = ($"Error de tipo en la comparación: {izquierda.atributo} no es del mismo tipo que el valor a la derecha.", izquierda.linea);
+                        return false;
+                    }
+
+                }
+            }
+
+            return true;
+        }
+
 
         public bool Validar_IdentificadorEnWhere(
- out string identificadorInvalido,
- ref List<(string tabla, string atributo, string tipo, int linea)> listaWhere,
- ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas)
+out string identificadorInvalido,
+ref List<(string tabla, string atributo, string tipo, int linea)> listaWhere,
+ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas)
         {
             identificadorInvalido = null;
 

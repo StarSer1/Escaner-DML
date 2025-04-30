@@ -127,7 +127,7 @@ namespace Escaner_DML
         }
         public void validarAtributoSubconsultaInvalido(TextBox txtError, int lineas, string atributo)
         {
-            txtError.Text = $"Error 3:312 Línea {lineas:D2} El nombre del atributo {atributo} no es válido.";
+            txtError.Text = $"Error 3:312 Línea {lineas:D2} El atributo {atributo} no es válido.";
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
 

@@ -195,9 +195,9 @@
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel3});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 827);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 475);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1226, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(694, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -227,13 +227,15 @@
             this.cmbEjemplo.FormattingEnabled = true;
             this.cmbEjemplo.Items.AddRange(new object[] {
             "Thanos",
-            "Ejemplo 4.3.1",
-            "Ejemplo 4.3.2",
-            "Ejemplo 4.3.3",
-            "Ejemplo 4.3.4",
-            "Ejemplo 4.3.5",
-            "Ejemplo 4.3.6",
-            "Ejemplo 4.3.7"});
+            "Ejemplo 5.2.1",
+            "Ejemplo 5.2.2",
+            "Ejemplo 5.2.3",
+            "Ejemplo 5.2.4",
+            "Ejemplo 5.2.5",
+            "Ejemplo 5.2.6",
+            "Ejemplo 5.2.7",
+            "Ejemplo 5.2.8",
+            "Ejemplo 5.2.9"});
             this.cmbEjemplo.Location = new System.Drawing.Point(85, 59);
             this.cmbEjemplo.Name = "cmbEjemplo";
             this.cmbEjemplo.Size = new System.Drawing.Size(209, 21);
@@ -476,7 +478,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(236)))), ((int)(((byte)(210)))));
-            this.ClientSize = new System.Drawing.Size(1226, 849);
+            this.ClientSize = new System.Drawing.Size(694, 497);
             this.Controls.Add(this.DtTablas);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.DtRestricciones);
