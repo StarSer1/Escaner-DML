@@ -158,10 +158,10 @@ namespace Escaner_DML
             { "304 303", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null, null}, // 302 
             { null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99", null}, // 303
             { "4 800 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null}, // 304
-            { null , "99", null, "99", null, "99", "99", "99", null, null, null, null, null, null, null, null, null, "99", "51 4", null, "99", null, null, null, null, "99" , null}, // 305
+            { null , "99", null, "99", null, "99", "99", "99", null, null, null, null, null, null, null, null, null, "99", "51 4 801", null, "99", null, null, null, null, "99" , null}, // 305
             { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null, null}, // 306
             {  null, null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "50 306", null, null, "99", null, null, null, null, "99", null},
-            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+            { "4 803 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
             { "4", null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, "99", null, null, null, null, "99", null},
             { null, null, null, null, "12 311", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" , null},
             { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null},
@@ -804,10 +804,73 @@ namespace Escaner_DML
                         }
                         if(X == "800")
                         {
-                            nombrePerteneceATabla();
+                            List<string> ambiguos = ObtenerAtributosAmbiguos();
+
+                            if (ambiguos.Any())
+                            {
+                                if (tokens[apun - 2] != "(")
+                                {
+                                    foreach (var atributo in ambiguos)
+                                    {
+                                        Errores.validarAmbiguedad(texto, atributo, lineas);
+                                        error = true;
+                                        break;
+                                    }
+                                }
+
+
+                                
+                            }
+
+                            List<string> atributosNoEncontrados = nombrePerteneceATabla();
+
+                            if (atributosNoEncontrados.Any())
+                            {
+                                foreach (var atributo in atributosNoEncontrados)
+                                {
+                                    Errores.validarNombreEnTabla(texto,atributo,lineas);
+                                    error = true;
+                                    break;
+                                }
+                            }
+                            //OTRO ERROR
+                            
+
                         }
                         if(X == "801")
                         {
+                            List<string> erroresWhereINv = ObtenerAtributosWhereInvalidosConAlias();
+
+                                                      
+                            if (erroresWhereINv.Any())
+                            {
+                                foreach (var atributo in erroresWhereINv)
+                                {
+                                    Errores.validarTablaNoValidaAlias(texto, atributo, lineas);
+                                    error = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (X == "803")
+                        {
+                            string tablaMala = "";
+                            bool errorWrok = Validar_NombresTablasEnConsulta(out tablaMala, ref listaFrom);
+                            if (errorWrok == false)
+                            {
+                                error = true;
+                                Errores.validarTablaNoValida(texto, lineas, tablaMala);
+                                break;
+                            }
+
+                            string identificadorInvalido;
+                            bool errorAlex = Validar_IdentificadorEnWhere(out identificadorInvalido, ref listaWhere, ref tablas);
+                            if (errorAlex == false)
+                            {
+                                error = true;
+                                Errores.validarIdentificadorInvalido(texto, lineas, identificadorInvalido);
+                                break;
+                            }
 
                         }
                         //apunN++;
@@ -1077,44 +1140,232 @@ namespace Escaner_DML
         List<(string atributo, int linea)> listaSelect = new List<(string atributo, int linea)>();
         List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
 
-        public void nombrePerteneceATabla()
+        public List<string> nombrePerteneceATabla()
         {
+            List<string> errores = new List<string>();
+
             foreach (var (atributoCompleto, linea) in listaSelect)
             {
                 var partes = atributoCompleto.Split('.');
 
-                if (partes.Length != 2)
+                if (partes.Length == 2)
                 {
-                    MessageBox.Show($"Línea {linea}: El atributo '{atributoCompleto}' debe estar en formato alias.atributo");
-                    continue;
+                    // Caso: alias.atributo
+                    string alias = partes[0];
+                    string nombreAtributo = partes[1];
+
+                    // Buscar a qué tabla corresponde el alias
+                    var fromMatch = listaFrom.FirstOrDefault(f => f.alias == alias);
+                    if (fromMatch == default)
+                    {
+                        errores.Add($"Línea {linea}: Alias '{alias}' no encontrado en FROM.");
+                        continue;
+                    }
+
+                    // Verificar si esa tabla existe
+                    var tabla = tablas.FirstOrDefault(t => t.nombreTabla == fromMatch.tabla);
+                    if (tabla == default)
+                    {
+                        errores.Add($"Línea {linea}: Tabla '{fromMatch.tabla}' referida por alias '{alias}' no encontrada.");
+                        continue;
+                    }
+
+                    // Verificar si el atributo está en esa tabla
+                    bool existe = atributos.Any(a =>
+                        a.noTabla == tabla.noTabla &&
+                        a.nombreAtributo == nombreAtributo);
+
+                    if (!existe)
+                        errores.Add($"Línea {linea}: El atributo '{nombreAtributo}' no se encuentra en la tabla '{tabla.nombreTabla}' referida como '{alias}'.");
                 }
-
-                string alias = partes[0];
-                string nombreAtributo = partes[1];
-
-                // Verificar que el alias exista en listaFrom
-                var entradaFrom = listaFrom.FirstOrDefault(f => f.alias == alias);
-                if (entradaFrom == default)
+                else if (partes.Length == 1)
                 {
-                    MessageBox.Show($"Línea {linea}: Alias '{alias}' no está definido en FROM.");
-                    continue;
+                    // Caso: solo nombre de atributo (sin alias)
+                    string nombreAtributo = partes[0];
+
+                    // Verificar si el atributo existe en alguna de las tablas del FROM
+                    bool existe = listaFrom.Any(from =>
+                    {
+                        var tabla = tablas.FirstOrDefault(t => t.nombreTabla == from.tabla);
+                        if (tabla == default) return false;
+
+                        return atributos.Any(a =>
+                            a.noTabla == tabla.noTabla &&
+                            a.nombreAtributo == nombreAtributo);
+                    });
+
+                    if (!existe)
+                        errores.Add($"Línea {linea}: El atributo '{nombreAtributo}' no se encontró en ninguna tabla");
                 }
-
-                // Verificar que la tabla exista
-                var tabla = tablas.FirstOrDefault(t => t.Item2 == entradaFrom.tabla);
-                if (tabla == default)
+                else
                 {
-                    MessageBox.Show($"Línea {linea}: La tabla '{entradaFrom.tabla}' asociada al alias '{alias}' no existe.");
-                    continue;
-                }
-
-                // Verificar que el atributo exista en la tabla
-                bool atributoExiste = atributos.Any(a => a.Item1 == tabla.Item1 && a.Item3 == nombreAtributo);
-                if (!atributoExiste)
-                {
-                    MessageBox.Show($"Línea {linea}: El atributo '{nombreAtributo}' no existe en la tabla '{entradaFrom.tabla}'.");
+                    errores.Add($"Línea {linea}: El atributo '{atributoCompleto}' tiene un formato inválido.");
                 }
             }
+
+            return errores;
+        }
+        public List<string> ObtenerAtributosAmbiguos()
+        {
+            List<string> atributosAmbiguos = new List<string>();
+
+            foreach (var (atributoCompleto, _) in listaSelect)
+            {
+                var partes = atributoCompleto.Split('.');
+
+                if (partes.Length == 1)
+                {
+                    // Atributo sin alias
+                    string nombreAtributo = partes[0];
+                    int cantidadApariciones = 0;
+
+                    foreach (var from in listaFrom)
+                    {
+                        var tabla = tablas.FirstOrDefault(t => t.nombreTabla == from.tabla);
+                        if (tabla == default) continue;
+
+                        bool existe = atributos.Any(a =>
+                            a.noTabla == tabla.noTabla &&
+                            a.nombreAtributo == nombreAtributo);
+
+                        if (existe)
+                            cantidadApariciones++;
+                    }
+
+                    if (cantidadApariciones > 1)
+                        atributosAmbiguos.Add(nombreAtributo);
+                }
+                // Si viene con alias (ej. a.nombre), no es ambiguo
+            }
+
+            return atributosAmbiguos;
+        }
+        public List<string> ObtenerAtributosWhereInvalidos()
+        {
+            List<string> atributosInvalidos = new List<string>();
+
+            foreach (var (tablaWhere, atributoWhere, tipo, linea) in listaWhere)
+            {
+                // Buscar la tabla por nombre
+                var tabla = tablas.FirstOrDefault(t => t.nombreTabla == tablaWhere);
+                if (tabla == default)
+                {
+                    atributosInvalidos.Add($"3:311 Línea {linea}: La tabla '{tablaWhere}' no existe.");
+                    continue;
+                }
+
+                // Verificar si el atributo está en esa tabla
+                bool existe = atributos.Any(a =>
+                    a.noTabla == tabla.noTabla &&
+                    a.nombreAtributo == atributoWhere);
+
+                if (!existe)
+                {
+                    atributosInvalidos.Add($"3:311 Línea {linea}: El atributo '{atributoWhere}' no se encuentra en la tabla '{tablaWhere}'.");
+                }
+            }
+
+            return atributosInvalidos;
+        }
+        public List<string> ObtenerAtributosWhereInvalidosConAlias()
+        {
+            List<string> errores = new List<string>();
+
+            foreach (var (tablaWhere, atributoWhere, tipo, linea) in listaWhere)
+            {
+                // Buscar si tablaWhere es un alias
+                var fromItem = listaFrom.FirstOrDefault(f => f.alias == tablaWhere || f.tabla == tablaWhere);
+                if (fromItem == default)
+                {
+                    errores.Add($"Línea {linea}: No se encontró la tabla o alias '{tablaWhere}' en la cláusula FROM.");
+                    continue;
+                }
+
+                // Buscar la tabla real en la lista de tablas
+                var tablaReal = tablas.FirstOrDefault(t => t.nombreTabla == fromItem.tabla);
+                if (tablaReal == default)
+                {
+                    errores.Add($"3:312 Línea {linea}: La tabla '{fromItem.tabla}' no existe en la base de datos.");
+                    continue;
+                }
+
+                // Validar que el atributo exista en la tabla real
+                bool existe = atributos.Any(a =>
+                    a.noTabla == tablaReal.noTabla &&
+                    a.nombreAtributo == atributoWhere);
+
+                if (!existe)
+                {
+                    errores.Add($"3:312 Línea {linea}: El atributo '{atributoWhere}' no existe en la tabla '{tablaReal.nombreTabla}' referida como '{tablaWhere}'.");
+                }
+            }
+
+            return errores;
+        }
+        public bool Validar_NombresTablasEnConsulta(out string nombreTabla,
+            ref List<(string tabla, string alias, int linea)> listaFrom)
+        {
+            bool salida = false;
+            nombreTabla = null;
+            foreach (var tablaInfo in listaFrom)
+            {
+                nombreTabla = tablaInfo.tabla;
+                string nombreTablaTemp = nombreTabla;
+                int lineaActual = tablaInfo.linea;
+
+                bool tablaExiste = tablas.Any(t => t.nombreTabla.Equals(nombreTablaTemp,
+                                        StringComparison.OrdinalIgnoreCase));
+
+                salida = tablaExiste;
+                if (salida == false)
+                {
+                    break;
+                }
+            }
+            return salida;
+        }
+        public bool Validar_IdentificadorEnWhere(
+ out string identificadorInvalido,
+ ref List<(string tabla, string atributo, string tipo, int linea)> listaWhere,
+ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas)
+        {
+            identificadorInvalido = null;
+
+            foreach (var condicion in listaWhere)
+            {
+                // Solo validamos identificadores que usan notación tabla.atributo
+                if (condicion.tipo == "atributo" && condicion.tabla != "")
+                {
+                    string nombreTabla = condicion.tabla;
+                    string nombreAtributo = condicion.atributo;
+                    int linea = condicion.linea;
+
+                    // Verificar si la tabla existe
+                    bool tablaExiste = tablas.Any(t => t.nombreTabla.Equals(nombreTabla,
+                                            StringComparison.OrdinalIgnoreCase));
+
+                    if (!tablaExiste)
+                    {
+                        identificadorInvalido = $"{nombreTabla}.{nombreAtributo}";
+                        return false;
+                    }
+
+                    // Verificar si el atributo existe en la tabla
+                    var tabla = tablas.FirstOrDefault(t => t.nombreTabla.Equals(nombreTabla,
+                                                StringComparison.OrdinalIgnoreCase));
+                    bool atributoExiste = atributos.Any(a =>
+                        a.noTabla == tabla.noTabla &&
+                        a.nombreAtributo.Equals(nombreAtributo, StringComparison.OrdinalIgnoreCase));
+
+                    if (!atributoExiste)
+                    {
+                        identificadorInvalido = $"{nombreTabla}.{nombreAtributo}";
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
         #region Utilidades
         public bool Validar_NombreTabla(string nombreTabla, out bool salida, ref int numTabChecker)

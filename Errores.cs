@@ -53,6 +53,12 @@ namespace Escaner_DML
             txtError.Text = "Error 2:200: Linea " + lineas + " Se esperaba: "+palEsperada;
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
+        public void validarIdentificadorInvalido(TextBox txtError, int lineas, string identificador)
+        {
+            txtError.Text = $"Error 3:315 Línea {lineas:D2} El identificador { identificador} no es válido.";
+            
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
         public void nombreAtributoDuplicado(TextBox txtError, int lineas, string atributo)
         {
             txtError.Text = "Error 3:306: Linea " + lineas + " El nombre del atributo " + atributo + " esta duplicado";
@@ -91,6 +97,32 @@ namespace Escaner_DML
         public void validarCantidadBytes(TextBox txtError, int lineas)
         {
             txtError.Text = "3:308: Linea " + lineas + " Los datos de la cadena o binarios se truncarían";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarNombreEnTabla(TextBox txtError, string atributo, int lineas)
+        {
+            txtError.Text = "3:311 El nombre del atributo "+atributo+" no es válido.";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarAmbiguedad(TextBox txtError, string atributo, int lineas)
+        {
+            txtError.Text = "3:312 El nombre del atributo "+ atributo + " es ambigüo.";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarTablaNoValida(TextBox txtError, int lineas, string nombreTabla)
+        {
+            txtError.Text = $"Error 3:314 Línea {lineas:D2} El nombre de la tabla { nombreTabla} no es válido.";
+            
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarNombreEnTablaWhere(TextBox txtError, string atributo, int lineas)
+        {
+            txtError.Text = atributo;
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
+        public void validarTablaNoValidaAlias(TextBox txtError, string atributo, int lineas)
+        {
+            txtError.Text = atributo;
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
 
