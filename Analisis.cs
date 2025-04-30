@@ -1209,17 +1209,24 @@ namespace Escaner_DML
         {
             List<string> atributosAmbiguos = new List<string>();
 
-            foreach (var (atributoCompleto, _) in listaSelect)
-            {
-                var partes = atributoCompleto.Split('.');
+            // Agrupamos los atributos por línea (subconsulta)
+            var atributosPorLinea = listaSelect
+                .Where(s => !s.atributo.Contains('.')) // solo atributos sin alias
+                .GroupBy(s => s.linea);
 
-                if (partes.Length == 1)
+            foreach (var grupo in atributosPorLinea)
+            {
+                int linea = grupo.Key;
+
+                foreach (var (atributoCompleto, _) in grupo)
                 {
-                    // Atributo sin alias
-                    string nombreAtributo = partes[0];
+                    string nombreAtributo = atributoCompleto;
                     int cantidadApariciones = 0;
 
-                    foreach (var from in listaFrom)
+                    // Solo considerar las tablas del mismo contexto (misma línea)
+                    var fromEnLinea = listaFrom.Where(f => f.linea == linea);
+
+                    foreach (var from in fromEnLinea)
                     {
                         var tabla = tablas.FirstOrDefault(t => t.nombreTabla == from.tabla);
                         if (tabla == default) continue;
@@ -1232,10 +1239,9 @@ namespace Escaner_DML
                             cantidadApariciones++;
                     }
 
-                    if (cantidadApariciones > 1)
+                    if (cantidadApariciones > 1 && !atributosAmbiguos.Contains(nombreAtributo))
                         atributosAmbiguos.Add(nombreAtributo);
                 }
-                // Si viene con alias (ej. a.nombre), no es ambiguo
             }
 
             return atributosAmbiguos;
