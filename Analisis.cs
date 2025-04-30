@@ -24,11 +24,7 @@ namespace Escaner_DML
         Regex constantesTL = new Regex(@"\b\d+\b");
         Regex constantes = new Regex(@"'([^']*)'");
         public bool errorActivado = false;
-        List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas = new List<(int, string, int, int)>();
-        List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull,int noAtributoTabla)> atributos = new List<(int, int, string, string, int, int,int)>();
-        List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restricciones = new List<(int, int, int, string, int, int, int)>();
-
-
+        
         public Analisis(bool error,
             List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas2,
             List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos2,
@@ -161,7 +157,7 @@ namespace Escaner_DML
             { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null , null}, // 301
             { "304 303", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null, null}, // 302 
             { null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99", null}, // 303
-            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null}, // 304
+            { "4 800 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null}, // 304
             { null , "99", null, "99", null, "99", "99", "99", null, null, null, null, null, null, null, null, null, "99", "51 4", null, "99", null, null, null, null, "99" , null}, // 305
             { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null, null}, // 306
             {  null, null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "50 306", null, null, "99", null, null, null, null, "99", null},
@@ -430,9 +426,7 @@ namespace Escaner_DML
             //LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion,);
                 return tokens;
         }
-        List<(string atributo, int linea)> listaSelect = new List<(string atributo, int linea)>();
-        List<(string tabla, string alias, int linea)> listaFrom = new List<(string tabla, string alias, int linea)>();
-        List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
+        
         public void LlenadoSelects(List<string> tokens)
         {
             bool comenzoSelect = false;
@@ -454,8 +448,8 @@ namespace Escaner_DML
                         {
                             if (tokens2[i + 1] == ".")
                             {
-                                string tipo = "";
-                                if (tokens2[i - 1] != "=")
+                                string tipo = "";                  
+                                if (tokens2[i - 1] != "=" && tokens2[i+3] != "IN")
                                 {
                                     if (constantesTL.IsMatch(tokens2[i + 4]))
                                         tipo = "num";
@@ -480,6 +474,11 @@ namespace Escaner_DML
                                         tipo = "atributo";
                                 }
                                 listaWhere.Add(("", tokens2[i], tipo, linea));
+                            }
+                            else if (tokens2[i + 1] == "IN")
+                            {
+                                listaWhere.Add(("", tokens2[i], "", linea));
+                                i += 2;
                             }
                         }
                         if (tokens2[i] == "WHERE")
@@ -528,6 +527,7 @@ namespace Escaner_DML
 
                 }
             }
+            comenzoWhere = false;
         }
         public void LLENADOTABLASPAPU(
     DataGridView dtTab,
@@ -718,7 +718,7 @@ namespace Escaner_DML
                 do
                 {
                     string X = pila.Pop();
-                    if (Regex.IsMatch(X, @"^7\d{2}$"))
+                    if (Regex.IsMatch(X, @"^7\d{2}$")|| Regex.IsMatch(X, @"^8\d{2}$"))
                     {
                         if (X == "700")
                             errorSintactico = Validar_NombreTabla(K, out errorSintactico, ref numeroTablaChecker);
@@ -801,6 +801,14 @@ namespace Escaner_DML
                             Errores.validarExistirTabla(texto, lineas);
                             error = true;
                             break;
+                        }
+                        if(X == "800")
+                        {
+                            nombrePerteneceATabla();
+                        }
+                        if(X == "801")
+                        {
+
                         }
                         //apunN++;
                     }
@@ -1058,6 +1066,54 @@ namespace Escaner_DML
             {
                 MessageBox.Show(ex.Message);
                 return true;
+            }
+        }
+
+        List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas = new List<(int, string, int, int)>();
+        List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos = new List<(int, int, string, string, int, int, int)>();
+        List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restricciones = new List<(int, int, int, string, int, int, int)>();
+        
+        List<(string tabla, string alias, int linea)> listaFrom = new List<(string tabla, string alias, int linea)>();
+        List<(string atributo, int linea)> listaSelect = new List<(string atributo, int linea)>();
+        List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
+
+        public void nombrePerteneceATabla()
+        {
+            foreach (var (atributoCompleto, linea) in listaSelect)
+            {
+                var partes = atributoCompleto.Split('.');
+
+                if (partes.Length != 2)
+                {
+                    MessageBox.Show($"Línea {linea}: El atributo '{atributoCompleto}' debe estar en formato alias.atributo");
+                    continue;
+                }
+
+                string alias = partes[0];
+                string nombreAtributo = partes[1];
+
+                // Verificar que el alias exista en listaFrom
+                var entradaFrom = listaFrom.FirstOrDefault(f => f.alias == alias);
+                if (entradaFrom == default)
+                {
+                    MessageBox.Show($"Línea {linea}: Alias '{alias}' no está definido en FROM.");
+                    continue;
+                }
+
+                // Verificar que la tabla exista
+                var tabla = tablas.FirstOrDefault(t => t.Item2 == entradaFrom.tabla);
+                if (tabla == default)
+                {
+                    MessageBox.Show($"Línea {linea}: La tabla '{entradaFrom.tabla}' asociada al alias '{alias}' no existe.");
+                    continue;
+                }
+
+                // Verificar que el atributo exista en la tabla
+                bool atributoExiste = atributos.Any(a => a.Item1 == tabla.Item1 && a.Item3 == nombreAtributo);
+                if (!atributoExiste)
+                {
+                    MessageBox.Show($"Línea {linea}: El atributo '{nombreAtributo}' no existe en la tabla '{entradaFrom.tabla}'.");
+                }
             }
         }
         #region Utilidades
