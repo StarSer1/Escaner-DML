@@ -451,10 +451,10 @@ namespace Escaner_DML
                                 string tipo = "";                  
                                 if (tokens2[i - 1] != "=" && tokens2[i+3] != "IN")
                                 {
-                                    if (constantesTL.IsMatch(tokens2[i + 4]))
-                                        tipo = "NUMERIC";
-                                    else if (constantes.IsMatch(tokens2[i + 4]))
+                                    if (constantes.IsMatch(tokens2[i + 4]))
                                         tipo = "CHAR";
+                                    else if (constantesTL.IsMatch(tokens2[i + 4]))
+                                        tipo = "NUMERIC";
                                     else
                                         tipo = "atributo";
                                 }
@@ -466,10 +466,10 @@ namespace Escaner_DML
                                 string tipo = "";
                                 if (tokens2[i - 1] != "=")
                                 {
-                                    if (constantesTL.IsMatch(tokens2[i + 2]))
-                                        tipo = "NUMERIC";
-                                    else if (constantes.IsMatch(tokens2[i + 2]))
+                                    if (constantes.IsMatch(tokens2[i + 2]))
                                         tipo = "CHAR";
+                                    else if (constantesTL.IsMatch(tokens2[i + 2]))
+                                        tipo = "NUMERIC";
                                     else
                                         tipo = "atributo";
                                 }
@@ -1227,7 +1227,28 @@ namespace Escaner_DML
 
             // 1. Verificar si la tabla está en listaFrom
             bool tablaEnFrom = listaFrom.Any(f => f.tabla == nombreTabla);
-            if (!tablaEnFrom) return false;
+            if (!tablaEnFrom)
+            {
+                var fromCoincidente = listaFrom.FirstOrDefault(t =>
+                        t.alias.Equals(nombreTabla, StringComparison.OrdinalIgnoreCase));
+
+                if (fromCoincidente != default)
+                {
+                    // Verificar si el atributo existe en la tabla
+                    var tabla2 = tablas.FirstOrDefault(t => t.nombreTabla.Equals(fromCoincidente.tabla,
+                                                StringComparison.OrdinalIgnoreCase));
+                    bool atributoExiste2 = atributos.Any(a =>
+                        a.noTabla == tabla2.noTabla &&
+                        a.nombreAtributo.Equals(nombreAtributo, StringComparison.OrdinalIgnoreCase));
+
+                    if (!atributoExiste2)
+                    {
+                        return false;
+                    }
+                    else
+                        return true;
+                }
+            }
 
             // 2. Obtener noTabla
             var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
@@ -1499,7 +1520,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
             foreach (var condicion in listaWhere)
             {
                 // Solo validamos identificadores que usan notación tabla.atributo
-                if (condicion.tipo == "atributo" && condicion.tabla != "")
+                if (condicion.tabla != "")
                 {
                     string nombreTabla = condicion.tabla;
                     string nombreAtributo = condicion.atributo;
@@ -1511,8 +1532,33 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
 
                     if (!tablaExiste)
                     {
-                        identificadorInvalido = $"{nombreTabla}.{nombreAtributo}";
-                        return false;
+                        var fromCoincidente = listaFrom.FirstOrDefault(t =>
+                        t.alias.Equals(nombreTabla, StringComparison.OrdinalIgnoreCase));
+
+                        if (fromCoincidente != default)
+                        {
+                            // Verificar si el atributo existe en la tabla
+                            var tabla2 = tablas.FirstOrDefault(t => t.nombreTabla.Equals(fromCoincidente.tabla,
+                                                        StringComparison.OrdinalIgnoreCase));
+                            bool atributoExiste2 = atributos.Any(a =>
+                                a.noTabla == tabla2.noTabla &&
+                                a.nombreAtributo.Equals(nombreAtributo, StringComparison.OrdinalIgnoreCase));
+
+                            if (!atributoExiste2)
+                            {
+                                identificadorInvalido = $"{nombreTabla}.{nombreAtributo}";
+                                return false;
+                            }
+                            //if (!tablaExiste2)
+                            //{
+                            //    identificadorInvalido = $"{nombreTabla}.{nombreAtributo}";
+                            //    return false;
+                            //}
+                            else
+                                continue;
+                        }
+
+                        
                     }
 
                     // Verificar si el atributo existe en la tabla
