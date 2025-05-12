@@ -988,59 +988,6 @@ namespace Escaner_DML
                                     else
                                         Errores.ErrorSintactico(texto, lineas);
                                     break;
-                                    //if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
-                                    //{
-                                    //    Errores.ErrorIdentificador(texto, lineas);
-                                    //    break;
-                                    //}
-                                    //else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
-                                    //{
-                                    //    Errores.ErrorConstante(texto, lineas);
-                                    //    break;
-                                    //}
-                                    //else if (operadores.IsMatch(tokens[apun - 1]))
-                                    //{
-                                    //    Errores.ErrorOperador(texto, lineas);
-                                    //    break;
-                                    //}
-
-                                    //else if (4.ToString() == ConvertirToken(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
-                                    //{
-                                    //    Errores.ErrorOperadorRelacional(texto, lineas);
-                                    //}
-                                    //else if (tokens[apun] == "(")
-                                    //{
-                                    //    if (!reservadas.IsMatch(tokens[apun - 1]))
-                                    //    {
-                                    //        Errores.ErrorPalabraReservada(texto, lineas);
-                                    //        break;
-                                    //    }
-                                    //}
-                                    //else if (4.ToString() == ConvertirToken(tokens[apun]))
-                                    //{
-                                    //    if (delimitadores.IsMatch(tokens[apun + 1]) && !reservadas.IsMatch(tokens[apun - 1]))
-                                    //    {
-                                    //        Errores.ErrorPalabraReservada(texto, lineas);
-                                    //        break;
-                                    //    }
-                                    //}
-                                    //else if (relacionales.IsMatch(tokens[apun]))
-                                    //{
-                                    //    if (4.ToString() != ConvertirToken(tokens[apun + 1]))
-                                    //    {
-                                    //        Errores.ErrorIdentificador(texto, lineas);
-                                    //        break;
-                                    //    }
-                                    //}
-                                    //else if (Errores.ErroresComillas(texto, acumuladorComillas, lineas))
-                                    //{
-                                    //    texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
-                                    //}
-                                    //else
-                                    //{
-                                    //    Errores.ErrorSintactico(texto, lineas);
-                                    //    break;
-                                    //}
                                 }
                             }
                             else
@@ -1134,20 +1081,20 @@ namespace Escaner_DML
                                     }
                                     else if (relacionales.IsMatch(tokens[apun]))
                                     {
-                                        if (apun + 2 >= tokens.Count)
+                                        if (apun + 2 >= tokens.Count) // ADELANTE
                                         {
                                             Errores.ErrorIdentificador(texto, lineas);
                                             break;
                                         }
-                                        if (4.ToString() != ConvertirToken(tokens[apun + 1]))
+                                        if (4.ToString() != ConvertirToken(tokens[apun + 1])) // ADELANTE
                                         {
                                             Errores.ErrorIdentificador(texto, lineas);
                                             break;
                                         }
                                     }
-                                    else if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun]))
+                                    else if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun])) // ADELANTE
                                     {
-                                        if (apun + 2 >= tokens.Count)
+                                        if (apun + 2 >= tokens.Count) // ADELANTE
                                         {
                                             Errores.ErrorIdentificador(texto, lineas);
                                             break;
