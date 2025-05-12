@@ -223,7 +223,17 @@ namespace Escaner_DML
             }
             return errorB;
         }
+        public void validarTipoDatoInsert(TextBox txtError, int lineas, string atributo, string mensaje)
+        {
+            txtError.Text = $"Error 3:310 Línea {lineas:D2} {mensaje}";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
 
+        public void validarLongitudInsert(TextBox txtError, int lineas, string atributo, int maxLongitud)
+        {
+            txtError.Text = $"Error 3:311 Línea {lineas:D2} El valor para '{atributo}' excede la longitud máxima de {maxLongitud}";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
 
     }
 }
