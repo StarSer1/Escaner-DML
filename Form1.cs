@@ -82,7 +82,7 @@ namespace Escaner_DML
                             tokens.RemoveAt(tokens.Count - 1);
                         }
 
-                        errorActivado = Analisis.Sintaxis(tokens, txtError);
+                        //errorActivado = Analisis.Sintaxis(tokens, txtError);
                         if (errorActivado == true)
                         {
                             tablas = tablasTemp;

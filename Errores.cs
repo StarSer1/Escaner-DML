@@ -69,7 +69,7 @@ namespace Escaner_DML
             txtError.Text = "3:302: Linea " + lineas + " El nombre del atributo '" + atributo + "' se especifica más de una vez";
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
-        public void validarExistirAtributo(TextBox txtError, int lineas, string atributo, ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas, int numeroTablasChecker)
+        public void validarExistirAtributo(TextBox txtError, int lineas, string atributo, List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas, int numeroTablasChecker)
         {
             txtError.Text = "3:303: Linea " + lineas + " El nombre del atributo '" + atributo + "' no existe en la tabla '" + tablas.FirstOrDefault(t => t.noTabla == numeroTablasChecker).nombreTabla + "'";
             txtError.BackColor = Color.FromArgb(255, 137, 137);
