@@ -190,7 +190,9 @@ namespace Escaner_DML
         bool empezoComilla = false;
         Errores Errores = new Errores();
 
-        
+        // En la clase Analisis, agregar esta variable
+        private Dictionary<int, List<List<string>>> datosTablas = new Dictionary<int, List<List<string>>>();
+
         Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
         {
             // Palabras Reservadas (1)
@@ -552,6 +554,35 @@ namespace Escaner_DML
             {
                 try
                 {
+                    if (tokens2[i] == "INSERT" && tokens2[i + 1] == "INTO")
+                    {
+                        string nombreTabla = tokens2[i + 2];
+                        var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+                        if (tabla.Equals(default)) continue;
+
+                        // Extraer valores entre VALUES (...) o hasta ;
+                        List<string> valores = new List<string>();
+                        int j = i + 4; // Saltar "INSERT INTO tabla VALUES ("
+                        while (j < tokens2.Count && tokens2[j] != ")")
+                        {
+                            if (tokens2[j] != "," && tokens2[j] != "(")
+                                valores.Add(tokens2[j].Trim('\''));
+                            j++;
+                        }
+
+                        // Almacenar los datos
+                        if (!datosTablas.ContainsKey(tabla.noTabla))
+                            datosTablas[tabla.noTabla] = new List<List<string>>();
+                        datosTablas[tabla.noTabla].Add(valores);
+                    }
+                }
+                catch { }
+            }
+            for (int i = 0; i < tokens2.Count; i++)
+            {
+                try
+                {
+
                         //TABLAS
                         if (tokens2[i] == "CREATE" && tokens2[i + 1] == "TABLE")
                         {
@@ -1224,6 +1255,24 @@ namespace Escaner_DML
                         equis = X;
                 }
                 while (equis != "199");
+                // Validación adicional para INSERT después del análisis sintáctico
+                if (tokens.First() == "INSERT")
+                {
+                    string nombreTabla = tokens[tokens.IndexOf("INTO") + 1];
+                    List<string> valores = tokens
+                        .Skip(tokens.IndexOf("VALUES") + 2) // Saltar hasta después de "("
+                        .TakeWhile(t => t != ")")
+                        .Where(t => t != ",")
+                        .ToList();
+                    valores.RemoveAll(v => v.Trim() == "'");
+
+                    bool errorSemantico;
+                    if (!ValidarLlaveForaneaInsert(nombreTabla, valores, texto, lineas, out errorSemantico))
+                    {
+                        error = true;
+                    }
+                }
+
                 if (error == false)
                 {
                     Errores.SinError(texto, lineas);
@@ -1294,7 +1343,88 @@ namespace Escaner_DML
             return atributoExiste;
         }
 
+        private bool VerificarValorExiste(int noTablaRef, string nombreAtributoRef, string valor)
+        {
+            if (!datosTablas.ContainsKey(noTablaRef))
+                return false;
 
+            var atributosTabla = atributos
+                .Where(a => a.noTabla == noTablaRef)
+                .OrderBy(a => a.noAtributoTabla)
+                .ToList();
+            int indiceAttr = atributosTabla.FindIndex(a => a.nombreAtributo == nombreAtributoRef);
+            if (indiceAttr == -1)
+                return false;
+
+            var filas = datosTablas[noTablaRef];
+            return filas.Any(fila => fila[indiceAttr] == valor);
+        }
+
+        public bool ValidarLlaveForaneaInsert(
+    string nombreTabla,
+    List<string> valores,
+    TextBox txtError,
+    int linea,
+    out bool errorSemantico)
+        {
+            errorSemantico = false;
+
+            // Obtener la tabla destino
+            var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+            if (tabla.Equals(default))
+            {
+                txtError.Text = $"Error: La tabla '{nombreTabla}' no existe.";
+                errorSemantico = true;
+                return false;
+            }
+
+            // Obtener atributos en orden
+            var attrs = atributos
+                .Where(a => a.noTabla == tabla.noTabla)
+                .OrderBy(a => a.noAtributoTabla)
+                .ToList();
+
+            if (attrs.Count != valores.Count)
+            {
+                Errores.validarCantidadAtributos(txtError, linea);
+                errorSemantico = true;
+                return false;
+            }
+
+            // Mapear valores a atributos
+            var valoresPorAtributo = new Dictionary<string, string>();
+            for (int i = 0; i < attrs.Count; i++)
+                valoresPorAtributo[attrs[i].nombreAtributo] = valores[i].Trim('\'');
+
+            // Obtener restricciones de llave foránea
+            var fks = restricciones
+                .Where(r => r.noTabla == tabla.noTabla && r.Tipo == 2) // 2 = llave foránea
+                .ToList();
+
+            foreach (var fk in fks)
+            {
+                var attrLocal = atributos.FirstOrDefault(a => a.noAtributo == fk.atributoAsociado);
+                if (attrLocal.Equals(default)) continue;
+
+                string valor = valoresPorAtributo[attrLocal.nombreAtributo];
+                var tablaRef = tablas.FirstOrDefault(t => t.noTabla == fk.Tabla);
+                var attrRef = atributos.FirstOrDefault(a => a.noAtributo == fk.atributo);
+
+                if (tablaRef.Equals(default) || attrRef.Equals(default)) continue;
+
+                // Verificar si el valor existe
+                if (!VerificarValorExiste(tablaRef.noTabla, attrRef.nombreAtributo, valor))
+                {
+                    txtError.Text = $"ERROR: La Sentencia INSERT está en conflicto con la restricción de Llave Foránea '{fk.nombreRestriccion}'. " +
+                                    $"El conflicto ocurre en la BD 'INSCRITOS', tabla '{tablaRef.nombreTabla}', atributo '{attrRef.nombreAtributo}'.";
+                    txtError.BackColor = Color.FromArgb(255, 137, 137);
+                    errorSemantico = true;
+                    return false;
+                }
+            }
+
+            return true;
+        }
         public List<string> nombrePerteneceATabla()
         {
             List<string> errores = new List<string>();
