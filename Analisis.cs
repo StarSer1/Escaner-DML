@@ -262,15 +262,18 @@ namespace Escaner_DML
 
             string cadena = "";
             int linea = 1;
+            int puntoPartida = 0;
             texto.Text = texto.Text.ToUpper() + " ";
             bool comillas = false;
             bool funciono = false;
             bool sigo = false;
+            string ultimaTab = "";
             bool sigoRelacional = false;
             for (int i = 0; i < texto.TextLength; i++)
             {
+                int algo = tokens.Count;
                 string c = texto.Text[i].ToString();
-                if ( c == "\n")
+                if ( c == "\n" || c == ",")
                 {
 
                 }
@@ -401,10 +404,17 @@ namespace Escaner_DML
                                     else if (c == ")")
                                         acumuladorParentesisAbierto--;
 
-                                 
+
 
 
                                     tokens.Add(cadena);
+                                    if (tokens[algo - 4] == "TABLE" && ultimaTab != tokens[algo-3])
+                                    {
+                                        LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion, tokens,puntoPartida);
+                                        ultimaTab = tokens[algo - 3];
+                                        puntoPartida = algo-2;
+                                    }
+
                                     funciono = Sintaxis(tokens, txtError, ref errorSintactico, ref numeroTablaChecker, ref K, ref lineas, ref error, ref apunN, ref numeroTablaCheckerRef, ref apun, ref tokensConN, ref KparaN, ref equis);
                                     if (cadena != "")
                                         MostrarDgv(dgvLex, tokens.Last(), linea);
@@ -472,13 +482,19 @@ namespace Escaner_DML
                         funciono = Sintaxis(tokens, txtError, ref errorSintactico, ref numeroTablaChecker, ref K, ref lineas, ref error, ref apunN, ref numeroTablaCheckerRef, ref apun, ref tokensConN, ref KparaN, ref equis);
                         MostrarDgv(dgvLex, c, linea);
                     }
-                    else
+                    else //Coma
                     {
-                        tokens.Add(cadena);
+
+                        tokens.Add(cadena);                       
                         funciono = Sintaxis(tokens, txtError, ref errorSintactico, ref numeroTablaChecker, ref K, ref lineas, ref error, ref apunN, ref numeroTablaCheckerRef, ref apun, ref tokensConN, ref KparaN, ref equis);
                         if (tokens.Last() != "")
                             MostrarDgv(dgvLex, tokens.Last(), linea);
                         tokens.Add(c);
+                        if (tokens[algo] == "," || c == ",")
+                        {
+                            LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion, tokens, puntoPartida);
+                            puntoPartida = algo;
+                        }
                         funciono = Sintaxis(tokens, txtError, ref errorSintactico, ref numeroTablaChecker, ref K, ref lineas, ref error, ref apunN, ref numeroTablaCheckerRef, ref apun, ref tokensConN, ref KparaN, ref equis);
                         if (c != "")
                             MostrarDgv(dgvLex, c, linea);
@@ -616,16 +632,16 @@ namespace Escaner_DML
     DataGridView dtTab,
     DataGridView dtAtb,
     DataGridView dtRes,
-    List<string> tokens)
+    List<string> tokens,
+    int puntoPartida)
         {
             List<string> tokens2 = new List<string>();
             
             int noTablaTemp = 2;
             int noAtributoTemp = 0;
-            
             tokens2.AddRange(tokens);
             tokens2.RemoveAll(elemento => elemento == "\n");
-            for (int i = 0; i < tokens2.Count; i++)
+            for (int i = puntoPartida; i < tokens2.Count; i++)
             {
                 try
                 {
