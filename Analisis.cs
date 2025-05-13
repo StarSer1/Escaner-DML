@@ -794,7 +794,7 @@ namespace Escaner_DML
 
                                 if (!validacionTipo)
                                 {
-                                    Errores.validarTipoDatoInsert(texto, errorInfo.linea, errorInfo.atributo, errorInfo.error);
+                                    Errores.validarTipoDatoInsert(texto, lineas, errorInfo.atributo, errorInfo.error);
                                     error = true;
                                     break;
                                 }
