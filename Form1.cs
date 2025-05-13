@@ -88,14 +88,18 @@ namespace Escaner_DML
                             tablas = tablasTemp;
                             atributos = atributosTemp;
                             restricciones = restriccionesTemp;
+                              
                         }
-
-                        }catch
+                        if(!errorActivado)
+                                Analisis.consultaSQL(dataGridView1, txtEntrada);
+                        }
+                        catch
                         { }
 
                     }
                 }
                 txtEntrada.Text = textoOriginal;
+                
             }
 
         }

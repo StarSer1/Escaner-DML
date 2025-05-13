@@ -74,11 +74,13 @@
             this.Column22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BtnInicializar = new System.Windows.Forms.Button();
             this.BtnLimpiar = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.DgvLexica)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DtAtributos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DtRestricciones)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DtTablas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // BtnAnalizar
@@ -473,12 +475,21 @@
             this.BtnLimpiar.UseVisualStyleBackColor = false;
             this.BtnLimpiar.Click += new System.EventHandler(this.BtnLimpiar_Click);
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(300, 12);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(273, 63);
+            this.dataGridView1.TabIndex = 18;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(236)))), ((int)(((byte)(210)))));
             this.ClientSize = new System.Drawing.Size(694, 497);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.DtTablas);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.DtRestricciones);
@@ -512,6 +523,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.DtAtributos)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DtRestricciones)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DtTablas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -565,6 +577,7 @@
         private System.Windows.Forms.Button BtnInicializar;
         private System.Windows.Forms.Button BtnLimpiar;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column23;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 

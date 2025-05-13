@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
@@ -24,7 +25,10 @@ namespace Escaner_DML
         Regex constantesTL = new Regex(@"\b\d+\b");
         Regex constantes = new Regex(@"'([^']*)'");
         public bool errorActivado = false;
-        
+        private SqlConnection sqlConnection;
+        private SqlDataAdapter sqlDataAdapter;
+        private DataSet dataSet;
+
         public Analisis(bool error,
             List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas2,
             List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos2,
@@ -34,8 +38,38 @@ namespace Escaner_DML
             this.tablas = tablas2;
             this.atributos= atributos2;
             this.restricciones = restricciones2;
+            string connectionString = @"Data Source=DESKTOP-GQ6Q9HG\SQLEXPRESS;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
+            sqlConnection = new SqlConnection(connectionString);
+            sqlDataAdapter = new SqlDataAdapter();
+            dataSet = new DataSet();
         }
+        public void consultaSQL(DataGridView dgvResultados, RichTextBox texto)
+        {
+            string consultaSql = texto.Text;
 
+            try
+            {
+                // Abrir la conexión
+                sqlConnection.Open();
+
+                // Configurar el adaptador y ejecutar la consulta
+                sqlDataAdapter.SelectCommand = new SqlCommand(consultaSql, sqlConnection);
+                dataSet.Clear(); // Limpiar datos anteriores
+                sqlDataAdapter.Fill(dataSet);
+
+                // Mostrar los resultados en el DataGridView
+                dgvResultados.DataSource = dataSet.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al ejecutar la consulta: " + ex.Message);
+            }
+            finally
+            {
+                // Cerrar la conexión
+                sqlConnection.Close();
+            }
+        }
 
         Stack<string> pila = new Stack<string>();
         string[,] TablaSintacOG =
