@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.BtnAnalizar = new System.Windows.Forms.Button();
             this.BtnSalir = new System.Windows.Forms.Button();
             this.DgvLexica = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -74,24 +73,13 @@
             this.Column22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BtnInicializar = new System.Windows.Forms.Button();
             this.BtnLimpiar = new System.Windows.Forms.Button();
+            this.botonn1 = new Escaner_DML.botonn();
             ((System.ComponentModel.ISupportInitialize)(this.DgvLexica)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DtAtributos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DtRestricciones)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DtTablas)).BeginInit();
             this.SuspendLayout();
-            // 
-            // BtnAnalizar
-            // 
-            this.BtnAnalizar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(242)))), ((int)(((byte)(255)))));
-            this.BtnAnalizar.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnAnalizar.Location = new System.Drawing.Point(592, 438);
-            this.BtnAnalizar.Name = "BtnAnalizar";
-            this.BtnAnalizar.Size = new System.Drawing.Size(83, 31);
-            this.BtnAnalizar.TabIndex = 0;
-            this.BtnAnalizar.Text = "Analizar";
-            this.BtnAnalizar.UseVisualStyleBackColor = false;
-            this.BtnAnalizar.Click += new System.EventHandler(this.BtnAnalizar_Click);
             // 
             // BtnSalir
             // 
@@ -473,12 +461,25 @@
             this.BtnLimpiar.UseVisualStyleBackColor = false;
             this.BtnLimpiar.Click += new System.EventHandler(this.BtnLimpiar_Click);
             // 
+            // botonn1
+            // 
+            this.botonn1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.botonn1.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold);
+            this.botonn1.Location = new System.Drawing.Point(592, 438);
+            this.botonn1.Name = "botonn1";
+            this.botonn1.Size = new System.Drawing.Size(83, 31);
+            this.botonn1.TabIndex = 18;
+            this.botonn1.Text = "Analizar";
+            this.botonn1.UseVisualStyleBackColor = false;
+            this.botonn1.Click += new System.EventHandler(this.BtnAnalizar_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(236)))), ((int)(((byte)(210)))));
             this.ClientSize = new System.Drawing.Size(1201, 899);
+            this.Controls.Add(this.botonn1);
             this.Controls.Add(this.DtTablas);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.DtRestricciones);
@@ -498,7 +499,6 @@
             this.Controls.Add(this.BtnSalir);
             this.Controls.Add(this.BtnLimpiar);
             this.Controls.Add(this.BtnInicializar);
-            this.Controls.Add(this.BtnAnalizar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -518,17 +518,15 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button BtnAnalizar;
         private System.Windows.Forms.Button BtnSalir;
-        private System.Windows.Forms.DataGridView DgvLexica;
+        public System.Windows.Forms.DataGridView DgvLexica;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.RichTextBox txtEntrada;
+        public System.Windows.Forms.RichTextBox txtEntrada;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ComboBox cmbEjemplo;
-        private System.Windows.Forms.TextBox txtError;
+        public System.Windows.Forms.TextBox txtError;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
@@ -540,7 +538,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DataGridView DtAtributos;
+        public System.Windows.Forms.DataGridView DtAtributos;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
@@ -548,7 +546,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.DataGridView DtRestricciones;
+        public System.Windows.Forms.DataGridView DtRestricciones;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column13;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
@@ -557,7 +555,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column17;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column18;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.DataGridView DtTablas;
+        public System.Windows.Forms.DataGridView DtTablas;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column19;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column20;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column21;
@@ -565,6 +563,7 @@
         private System.Windows.Forms.Button BtnInicializar;
         private System.Windows.Forms.Button BtnLimpiar;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column23;
+        private botonn botonn1;
     }
 }
 
