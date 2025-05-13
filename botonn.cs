@@ -21,15 +21,33 @@ namespace Escaner_DML
                 base.OnClick(e);
                 return;
             }
+            parentForm.selects.Clear();
+            parentForm.froms.Clear();
+            parentForm.wheres.Clear();
 
             // 2. Pasa los mismos objetos que ya existen en el form
             var analisis = new Analisis(
                 parentForm.errorActivado,
                 parentForm.tablas,
                 parentForm.atributos,
-                parentForm.restricciones
+                parentForm.restricciones,
+                parentForm.selects,
+                parentForm.froms,
+                parentForm.wheres
             );
-            
+
+            string textoOriginal = parentForm.txtEntrada.Text;
+
+            // Paso 1: Eliminar saltos de línea y unir todo en una sola línea
+            string textoEnUnaLinea = string.Join(" ", textoOriginal
+                .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(linea => linea.Trim()));
+
+            // Paso 2: Insertar salto de línea antes de cada '('
+            string resultado = textoEnUnaLinea.Replace("(", "\n(");
+
+            parentForm.txtEntrada.Text = resultado;
+
 
             // 3. Llama a A() pasándole el RichTextBox y el flag
             List<string> papus = analisis.A(parentForm.txtEntrada, parentForm.DgvLexica, parentForm.txtError, parentForm.DtTablas, parentForm.DtAtributos, parentForm.DtRestricciones);
@@ -39,9 +57,11 @@ namespace Escaner_DML
             parentForm.atributos = analisis.atributos;
             parentForm.restricciones = analisis.restricciones;
             analisis.LlenadoSelects();
+            var ayuda = analisis.listaSelect;
 
             // 4. Luego dispara el Click “visible”
             base.OnClick(e);
+            parentForm.txtEntrada.Text = textoOriginal;
         }
     }
 }

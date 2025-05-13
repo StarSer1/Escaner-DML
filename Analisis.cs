@@ -29,12 +29,18 @@ namespace Escaner_DML
         public Analisis(bool error,
             List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas2,
             List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos2,
-            List<(int noTabla, int noRestriccion, int tipo, string nombreRestriccion, int atributoAsociado, int tabla, int atributo)> restricciones2)
+            List<(int noTabla, int noRestriccion, int tipo, string nombreRestriccion, int atributoAsociado, int tabla, int atributo)> restricciones2, List<(string tabla, string alias, int linea)> listaFrom,
+            List<(string tabla, string atributo, int linea)> listaSelect,
+            List<(string tabla, string atributo, string tipo, int linea)> listaWhere)
         {
             this.errorActivado = error;
             this.tablas = tablas2;
             this.atributos= atributos2;
             this.restricciones = restricciones2;
+
+            this.listaSelect = listaSelect;
+            this.listaWhere = listaWhere;
+            this.listaFrom = listaFrom;
         }
 
 
@@ -218,6 +224,7 @@ namespace Escaner_DML
             {"$", 199 }
         };
         List<string> tokens = new List<string>();
+        List<string> tk = new List<string>();
         public void ValoresSintaxis(List<string> tokens, TextBox texto, ref bool errorSintactico, ref int numeroTablaChecker, ref string K, ref int lineas, ref bool error, ref int apunN,
             ref int numeroTablaCheckerRef, ref int apun, ref List<string> tokensConN, ref string KparaN, ref string equis)
         {
@@ -475,10 +482,12 @@ namespace Escaner_DML
                     else
                     {
                         tokens.Add(cadena);
+                        tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " ") || item == "");
                         funciono = Sintaxis(tokens, txtError, ref errorSintactico, ref numeroTablaChecker, ref K, ref lineas, ref error, ref apunN, ref numeroTablaCheckerRef, ref apun, ref tokensConN, ref KparaN, ref equis);
                         if (tokens.Last() != "")
                             MostrarDgv(dgvLex, tokens.Last(), linea);
                         tokens.Add(c);
+                        tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " ") || item == "");
                         funciono = Sintaxis(tokens, txtError, ref errorSintactico, ref numeroTablaChecker, ref K, ref lineas, ref error, ref apunN, ref numeroTablaCheckerRef, ref apun, ref tokensConN, ref KparaN, ref equis);
                         if (c != "")
                             MostrarDgv(dgvLex, c, linea);
@@ -492,7 +501,6 @@ namespace Escaner_DML
                 {
                     break;
                 }
-                tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " ") || item == "");
                 if (c == "\n")
                     linea++;
             }
@@ -514,7 +522,7 @@ namespace Escaner_DML
 
             List<string> tokens2 = new List<string>();
 
-            tokens2.AddRange(tokens);
+            tokens2.AddRange(tk);
             tokens2.RemoveAll(elemento => elemento == "'");
             for (int i = 0; i < tokens2.Count; i++)
             {
@@ -624,7 +632,7 @@ List<string> tokens)
             int noTablaTemp = 2;
             int noAtributoTemp = 0;
 
-            tokens2.AddRange(tokens);
+            tokens2.AddRange(tk);
             tokens2.RemoveAll(elemento => elemento == "\n");
             for (int i = 0; i < tokens2.Count; i++)
             {
@@ -1069,7 +1077,7 @@ List<string> tokens)
                                     Errores.ErrorSintactico(texto, lineas);
                                 return true;
 
-                    }
+                            }
                 }
                         else
                         {
@@ -1079,8 +1087,43 @@ List<string> tokens)
                                 if (produccion != "99")
                                 {
                                     produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
-                                    //pila.Pop();
-                                }
+                                    X = pila.Pop();
+                                    if (!Regex.IsMatch(X, @"^[32]\d{2}$") || X == "199")
+                                    {
+                                        if (X == ConvertirToken(K))
+                                        {
+                                            apun++;
+                                            apunN++;
+                                        }
+                                        else
+                                        {
+                                            error = true;
+                                            string palFaltante = tablaSimbolos.FirstOrDefault(z => z.Value.ToString() == X).Key ?? "Identificador";
+                                            if (reservadas.IsMatch(palFaltante))
+                                                Errores.ErrorPalabraReservada(texto, lineas);
+                                            else if (constantesTL.IsMatch(palFaltante))
+                                                Errores.ErrorConstante(texto, lineas);
+                                            else if (palFaltante == "Identificador")
+                                                Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                            else if (constantes.IsMatch(palFaltante))
+                                                Errores.ErrorConstante(texto, lineas);
+                                            else if (relacionales.IsMatch(palFaltante))
+                                                Errores.ErrorOperadorRelacional(texto, lineas);
+                                            else if (acumuladorComillas1 % 2 != 0)
+                                                Errores.ErroresComillas(texto, acumuladorComillas1, lineas);
+                                            else if (acumuladorComillas3 % 2 != 0)
+                                                Errores.ErroresComillas(texto, acumuladorComillas3, lineas);
+                                            else if (operadores.IsMatch(palFaltante))
+                                                Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                            else if (acumuladorParentesisAbierto % 2 != 0)
+                                                Errores.ErrorParentesisDDL(texto, lineas);
+                                            else
+                                                Errores.ErrorSintactico(texto, lineas);
+                                            return true;
+
+                                        }
+                                    }
+                        }
 
                             }
                             else
@@ -2016,9 +2059,9 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                         if (relacionales.IsMatch(c) && c != " ")
                         {
                             cadena += c;
-                            tokens.Add(cadena);
+                            tk.Add(cadena);
                             if (cadena != "")
-                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                                MostrarDgv(dgvLex, tk.Last(), linea);
                             cadena = "";
                             c = "";
                         }
@@ -2033,9 +2076,9 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                     {
                         if (c != " ")
                         {
-                            tokens.Add(cadena);
+                            tk.Add(cadena);
                             if (cadena != "")
-                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                                MostrarDgv(dgvLex, tk.Last(), linea);
                             cadena = c;
                             if (i + 1 < texto.TextLength)
                             {
@@ -2047,9 +2090,9 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                                 }
                                 else
                                 {
-                                    tokens.Add(cadena);
+                                    tk.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tk.Last(), linea);
                                     cadena = "";
                                 }
                             }
@@ -2065,9 +2108,9 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                             if (siguienteChar.ToString() == " ")
                             {
                                 cadena += c;
-                                tokens.Add(cadena);
+                                tk.Add(cadena);
                                 if (cadena != "")
-                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    MostrarDgv(dgvLex, tk.Last(), linea);
                                 cadena = "";
                             }
                             else if (constantesTL.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
@@ -2086,32 +2129,32 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                         {
                             if (reservadas.IsMatch(cadena))
                             {
-                                tokens.Add(cadena);
+                                tk.Add(cadena);
                                 //tokens.Add(c);
                                 if (cadena != "")
-                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    MostrarDgv(dgvLex, tk.Last(), linea);
                                 cadena = "";
                             }
-                            else if (tokens.Count != 0)
+                            else if (tk.Count != 0)
                             {
-                                if (reservadas.IsMatch(tokens.Last()) && cadena != "")
+                                if (reservadas.IsMatch(tk.Last()) && cadena != "")
                                 {
-                                    tokens.Add(cadena);
+                                    tk.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tk.Last(), linea);
                                     sigo = true;
                                     cadena = "";
 
                                 }
-                                else if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
+                                else if (relacionales.IsMatch(tk.Last()) || relacionales.IsMatch(cadena))
                                 {
-                                    tokens.Add(cadena);
+                                    tk.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tk.Last(), linea);
                                     cadena = "";
 
                                 }
-                                else if (delimitadores.IsMatch(tokens.Last()))
+                                else if (delimitadores.IsMatch(tk.Last()))
                                 {
                                     if (c == "(")
                                         acumuladorParentesisAbierto++;
@@ -2121,16 +2164,16 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
 
 
 
-                                    tokens.Add(cadena);
+                                    tk.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tk.Last(), linea);
                                     cadena = "";
                                 }
                                 else
                                 {
-                                    tokens.Add(cadena);
+                                    tk.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        MostrarDgv(dgvLex, tk.Last(), linea);
                                     cadena = "";
                                 }
                             }
@@ -2139,7 +2182,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                         {
                             cadena += " ";
                         }
-                        tokens.Add(c);
+                        tk.Add(c);
                     }
                 }
                 else
@@ -2147,7 +2190,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                     if ("'’‘".Contains(c))
                     {
                         if (empezoComilla == false)
-                            tokens.Add(c);
+                            tk.Add(c);
                         empezoComilla = !empezoComilla;
                     }
                     if (c == "(")
@@ -2166,24 +2209,24 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                     if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
                     else if (cadena != "" && comillas == true)
                     {
-                        tokens.Add("'" + cadena + "'");
-                        tokens.Add(c);
-                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        tk.Add("'" + cadena + "'");
+                        tk.Add(c);
+                        MostrarDgv(dgvLex, tk.Last() + "~", linea);
                         comillas = false;
                     }
                     else if (cadena != "" && (c == ")" || c == ",") && constantesTL.IsMatch(cadena))
                     {
-                        tokens.Add(cadena);
-                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
-                        tokens.Add(c);
+                        tk.Add(cadena);
+                        MostrarDgv(dgvLex, tk.Last() + "~", linea);
+                        tk.Add(c);
                         MostrarDgv(dgvLex, c, linea);
                     }
                     else
                     {
-                        tokens.Add(cadena);
-                        if (tokens.Last() != "")
-                            MostrarDgv(dgvLex, tokens.Last(), linea);
-                        tokens.Add(c);
+                        tk.Add(cadena);
+                        if (tk.Last() != "")
+                            MostrarDgv(dgvLex, tk.Last(), linea);
+                        tk.Add(c);
                         if (c != "")
                             MostrarDgv(dgvLex, c, linea);
                     }
@@ -2192,7 +2235,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
 
 
                 }
-                tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " "));
+                tk.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " "));
                 if (c == "\n")
                     linea++;
             }
@@ -2201,7 +2244,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
             //errorActivado = true;
             //tokens = RemoverDuplicadosVacios(tokens);
             //LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion,);
-            return tokens;
+            return tk;
         }
         #endregion
     }
