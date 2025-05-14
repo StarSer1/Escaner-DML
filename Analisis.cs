@@ -904,6 +904,18 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
+                            // NUEVA REGLA
+                            // Se ocupa que K si esta en una linea diferente a la 1, cheque con el atributo de 3 o 2 tokens atras, si son iguales
+                            // todo esta altoke, si son diferentes, errrror.
+                            if (lineas != 1 && BuscarAtributoPorLinea(K) && tokens[apun-2] == "SELECT")
+                            {
+                                if (tokens[apun - 5] != K)
+                                {
+                                    Errores.ValidarAtributoScInvalido(texto, lineas, K, tokens[apun-5]);
+                                    error = true;
+                                    break;
+                                }
+                            }
                             
 
 
@@ -1294,6 +1306,19 @@ namespace Escaner_DML
         List<(string tabla, string alias, int linea)> listaFrom = new List<(string tabla, string alias, int linea)>();
         List<(string tabla, string atributo, int linea)> listaSelect = new List<(string tabla, string atributo, int linea)>();
         List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
+
+        public bool BuscarAtributoPorLinea(string atributoSc)
+        {
+            // Buscar en listaSelect y listaWhere, asegurando que la línea no sea 1
+            bool encontrado = listaSelect.Any(s => s.atributo == atributoSc && s.linea != 1) ||
+                             listaWhere.Any(w => w.atributo == atributoSc && w.linea != 1);
+
+            // Verificar si el atributo existe en la lista de atributos
+            bool atributoValido = atributos.Any(a => a.nombreAtributo.Equals(atributoSc, StringComparison.OrdinalIgnoreCase));
+
+            // Retornar true solo si se encuentra en listaSelect o listaWhere con línea != 1 y es un atributo válido
+            return encontrado && atributoValido;
+        }
 
         public bool ValidarAtributoEnTabla(string atributoCalificado)
         {
