@@ -747,11 +747,13 @@ namespace Escaner_DML
                 tokens.Add("$");
                 int apun = 0;
                 int apunN = 0;
-                string equis;
+                string equis = "";
                 bool errorSintactico = false;
                 string K = "";
                 int numeroTablaChecker = 0;
                 int numeroTablaCheckerRef = 0;
+                
+                
                 do
                 {
                     string X = pila.Pop();
@@ -1120,6 +1122,44 @@ namespace Escaner_DML
                             }
                             else
                             {
+                                if (tokens[apun] == "INSERT" && tokens[apun + 1] == "INTO")
+                                {
+                                    string nombreTabla = tokens[apun + 2];
+                                    var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+                                    if (tabla.Equals(default)) continue;
+
+                                    // Extraer valores entre VALUES (...) o hasta ;
+                                    List<string> valores = new List<string>();
+                                    int j = apun + 5; // Saltar "INSERT INTO tabla VALUES ("
+                                    while (j < tokens.Count && tokens[j] != ")")
+                                    {
+                                        if (tokens[j] != "," && tokens[j] != "(")
+                                            valores.Add(tokens[j].Trim('\''));
+                                        j++;
+                                    }
+
+                                    // Almacenar los datos
+                                    if (!datosTablas.ContainsKey(tabla.noTabla))
+                                        datosTablas[tabla.noTabla] = new List<List<string>>();
+                                    datosTablas[tabla.noTabla].Add(valores);
+                                }
+
+                                if (K == "INSERT")
+                                {
+                                    string nombreTabla = tokens[apun + 2];
+                                    List<string> valores = tokens
+                                        .Skip(apun+5) // Saltar hasta después de "("
+                                        .TakeWhile(t => t != ")")
+                                        .Where(t => t != ",")
+                                        .ToList();
+                                    valores.RemoveAll(v => v.Trim() == "'");
+
+                                    bool errorSemantico;
+                                    if (!ValidarLlaveForaneaInsert(nombreTabla, valores, texto, lineas, out errorSemantico))
+                                    {
+                                        error = true;
+                                    }
+                                }
                                 string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
                                 if (produccion != null)
                                 {
@@ -1268,22 +1308,7 @@ namespace Escaner_DML
                 }
                 while (equis != "199");
                 // Validación adicional para INSERT después del análisis sintáctico
-                if (tokens.First() == "INSERT")
-                {
-                    string nombreTabla = tokens[tokens.IndexOf("INTO") + 1];
-                    List<string> valores = tokens
-                        .Skip(tokens.IndexOf("VALUES") + 2) // Saltar hasta después de "("
-                        .TakeWhile(t => t != ")")
-                        .Where(t => t != ",")
-                        .ToList();
-                    valores.RemoveAll(v => v.Trim() == "'");
-
-                    bool errorSemantico;
-                    if (!ValidarLlaveForaneaInsert(nombreTabla, valores, texto, lineas, out errorSemantico))
-                    {
-                        error = true;
-                    }
-                }
+                
 
                 if (error == false)
                 {
@@ -1375,7 +1400,7 @@ namespace Escaner_DML
                 return false;
 
 
-
+            
             var atributosTabla = atributos
                 .Where(a => a.noTabla == noTablaRef)
                 .OrderBy(a => a.noAtributoTabla)
@@ -1391,7 +1416,11 @@ namespace Escaner_DML
             if (atributosTabla[indiceAttr].tipo == tipoDato)
             {
                 if (atributosTabla[indiceAttr].longitud == valor.Length - 2)
+                {
+                    
                     return true;
+                    
+                }
                 else
                     return false;
 
