@@ -805,30 +805,30 @@ namespace Escaner_DML
                             // Si pasa la validación de cantidad, validar tipos de datos
                             if (!errorSintactico)
                             {
-                                // 1. Obtener nombre de la tabla destino (debes tener esta variable)
-                                string nombreTablaDestino = tokens[tokens.IndexOf("INTO") + 1];
+                                //// 1. Obtener nombre de la tabla destino (debes tener esta variable)
+                                //string nombreTablaDestino = tokens[tokens.IndexOf("INTO") + 1];
 
-                                // 2. Obtener los valores del INSERT (debes tener esta lista)
-                                List<string> valoresInsert = tokens
-                                    .Skip(tokens.IndexOf("VALUES") + 1)
-                                    .TakeWhile(t => t != ")")
-                                    .Where(t => t != "(" && t != ",")
-                                    .ToList();
-                                valoresInsert.RemoveAll(v => v.Trim() == "'");
+                                //// 2. Obtener los valores del INSERT (debes tener esta lista)
+                                //List<string> valoresInsert = tokens
+                                //    .Skip(tokens.IndexOf("VALUES") + 1)
+                                //    .TakeWhile(t => t != ")")
+                                //    .Where(t => t != "(" && t != ",")
+                                //    .ToList();
+                                //valoresInsert.RemoveAll(v => v.Trim() == "'");
 
-                                // 3. Validar tipos y longitud
-                                bool validacionTipo = Validar_TipoDatoEnInsercion(
-                                    nombreTablaDestino,
-                                    valoresInsert,
-                                    out (string error, int linea, string atributo) errorInfo
-                                );
+                                //// 3. Validar tipos y longitud
+                                //bool validacionTipo = Validar_TipoDatoEnInsercion(
+                                //    nombreTablaDestino,
+                                //    valoresInsert,
+                                //    out (string error, int linea, string atributo) errorInfo
+                                //);
 
-                                if (!validacionTipo)
-                                {
-                                    Errores.validarTipoDatoInsert(texto, lineas, errorInfo.atributo, errorInfo.error);
-                                    error = true;
-                                    break;
-                                }
+                                //if (!validacionTipo)
+                                //{
+                                //    Errores.validarTipoDatoInsert(texto, lineas, errorInfo.atributo, errorInfo.error);
+                                //    error = true;
+                                //    break;
+                                //}
                             }
                             else
                             {
@@ -845,14 +845,14 @@ namespace Escaner_DML
                             error = true;
                             break;
                         }
-                        if (X == "707")
-                            errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
-                        if (errorSintactico == true)
-                        {
-                            Errores.validarCantidadBytes(texto, lineas);
-                            error = true;
-                            break;
-                        }
+                        //if (X == "707")
+                        //    errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
+                        //if (errorSintactico == true)
+                        //{
+                        //    Errores.validarCantidadBytes(texto, lineas);
+                        //    error = true;
+                        //    break;
+                        //}
                         if (X == "708")
                             errorSintactico = Validar_TablaContAtrib(out errorSintactico, numeroTablaCheckerRef, K);
                         if (errorSintactico == true)
@@ -1367,11 +1367,14 @@ namespace Escaner_DML
 
             return atributoExiste;
         }
-
-        private bool VerificarValorExiste(int noTablaRef, string nombreAtributoRef, string valor)
+        
+        private bool VerificarValorExiste(int noTablaRef, string nombreAtributoRef, string valor, int tabla)
         {
-            if (!datosTablas.ContainsKey(noTablaRef))
+            string tipoDato = "";
+            if (!datosTablas.ContainsKey(tabla))
                 return false;
+
+
 
             var atributosTabla = atributos
                 .Where(a => a.noTabla == noTablaRef)
@@ -1381,8 +1384,23 @@ namespace Escaner_DML
             if (indiceAttr == -1)
                 return false;
 
-            var filas = datosTablas[noTablaRef];
-            return filas.Any(fila => fila[indiceAttr] == valor);
+            if (constantes.IsMatch(valor))
+                tipoDato = "CHAR";
+            else if (constantesTL.IsMatch(valor))
+                tipoDato = "NUMERIC";
+            if (atributosTabla[indiceAttr].tipo == tipoDato)
+            {
+                if (atributosTabla[indiceAttr].longitud == valor.Length - 2)
+                    return true;
+                else
+                    return false;
+
+            }
+            else
+                return false;
+
+
+
         }
 
         public bool ValidarLlaveForaneaInsert(
@@ -1419,7 +1437,7 @@ namespace Escaner_DML
             // Mapear valores a atributos
             var valoresPorAtributo = new Dictionary<string, string>();
             for (int i = 0; i < attrs.Count; i++)
-                valoresPorAtributo[attrs[i].nombreAtributo] = valores[i].Trim('\'');
+                valoresPorAtributo[attrs[i].nombreAtributo] = valores[i];
 
             // Obtener restricciones de llave foránea
             var fks = restricciones
@@ -1438,7 +1456,7 @@ namespace Escaner_DML
                 if (tablaRef.Equals(default) || attrRef.Equals(default)) continue;
 
                 // Verificar si el valor existe
-                if (!VerificarValorExiste(tablaRef.noTabla, attrRef.nombreAtributo, valor))
+                if (!VerificarValorExiste(tablaRef.noTabla, attrRef.nombreAtributo, valor, tabla.noTabla))
                 {
                     txtError.Text = $"ERROR: La Sentencia INSERT está en conflicto con la restricción de Llave Foránea '{fk.nombreRestriccion}'. " +
                                     $"El conflicto ocurre en la BD 'INSCRITOS', tabla '{tablaRef.nombreTabla}', atributo '{attrRef.nombreAtributo}'.";
