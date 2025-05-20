@@ -75,6 +75,7 @@
             this.BtnInicializar = new System.Windows.Forms.Button();
             this.BtnLimpiar = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.DgvLexica)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DtAtributos)).BeginInit();
@@ -116,7 +117,7 @@
             this.Column3,
             this.Column4,
             this.Column5});
-            this.DgvLexica.Location = new System.Drawing.Point(701, 45);
+            this.DgvLexica.Location = new System.Drawing.Point(987, 48);
             this.DgvLexica.Name = "DgvLexica";
             this.DgvLexica.RowHeadersVisible = false;
             this.DgvLexica.RowHeadersWidth = 51;
@@ -165,7 +166,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(697, 18);
+            this.label3.Location = new System.Drawing.Point(983, 21);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(127, 22);
             this.label3.TabIndex = 5;
@@ -199,7 +200,7 @@
             this.toolStripStatusLabel3});
             this.statusStrip1.Location = new System.Drawing.Point(0, 475);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(694, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(937, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -411,7 +412,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(969, 18);
+            this.label6.Location = new System.Drawing.Point(1255, 21);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(72, 22);
             this.label6.TabIndex = 16;
@@ -426,7 +427,7 @@
             this.Column20,
             this.Column21,
             this.Column22});
-            this.DtTablas.Location = new System.Drawing.Point(973, 45);
+            this.DtTablas.Location = new System.Drawing.Point(1259, 48);
             this.DtTablas.Name = "DtTablas";
             this.DtTablas.Size = new System.Drawing.Size(220, 424);
             this.DtTablas.TabIndex = 17;
@@ -477,18 +478,30 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(300, 12);
+            this.dataGridView1.Location = new System.Drawing.Point(696, 82);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(273, 63);
+            this.dataGridView1.Size = new System.Drawing.Size(228, 350);
             this.dataGridView1.TabIndex = 18;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(692, 48);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(210, 22);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "Resulado de consulta";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(236)))), ((int)(((byte)(210)))));
-            this.ClientSize = new System.Drawing.Size(694, 497);
+            this.ClientSize = new System.Drawing.Size(937, 497);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.DtTablas);
             this.Controls.Add(this.label6);
@@ -578,6 +591,7 @@
         private System.Windows.Forms.Button BtnLimpiar;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column23;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Label label7;
     }
 }
 

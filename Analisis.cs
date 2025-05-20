@@ -43,7 +43,7 @@ namespace Escaner_DML
             sqlDataAdapter = new SqlDataAdapter();
             dataSet = new DataSet();
         }
-        public void consultaSQL(DataGridView dgvResultados, RichTextBox texto)
+        public void consultaSQL(DataGridView dgvResultados, RichTextBox texto, TextBox error)
         {
             string consultaSql = texto.Text;
 
@@ -62,7 +62,16 @@ namespace Escaner_DML
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al ejecutar la consulta: " + ex.Message);
+                if(ex.Message == "No se puede encontrar la tabla 0.")
+                {
+
+                }
+                else
+                {
+                    error.Text = ex.Message;
+                    error.BackColor = Color.FromArgb(255, 137, 137);
+                }
+                
             }
             finally
             {
