@@ -228,7 +228,7 @@
             // 
             this.cmbEjemplo.FormattingEnabled = true;
             this.cmbEjemplo.Items.AddRange(new object[] {
-            "Thanos",
+            "Examen",
             "Ejemplo 5.2.1",
             "Ejemplo 5.2.2",
             "Ejemplo 5.2.3",

@@ -224,7 +224,9 @@ namespace Escaner_DML
         bool empezoComilla = false;
         Errores Errores = new Errores();
 
-        
+        // En la clase Analisis, agregar esta variable
+        private Dictionary<int, List<List<string>>> datosTablas = new Dictionary<int, List<List<string>>>();
+
         Dictionary<string, int> tablaSimbolos = new Dictionary<string, int>
         {
             // Palabras Reservadas (1)
@@ -586,6 +588,35 @@ namespace Escaner_DML
             {
                 try
                 {
+                    if (tokens2[i] == "INSERT" && tokens2[i + 1] == "INTO")
+                    {
+                        string nombreTabla = tokens2[i + 2];
+                        var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+                        if (tabla.Equals(default)) continue;
+
+                        // Extraer valores entre VALUES (...) o hasta ;
+                        List<string> valores = new List<string>();
+                        int j = i + 4; // Saltar "INSERT INTO tabla VALUES ("
+                        while (j < tokens2.Count && tokens2[j] != ")")
+                        {
+                            if (tokens2[j] != "," && tokens2[j] != "(")
+                                valores.Add(tokens2[j].Trim('\''));
+                            j++;
+                        }
+
+                        // Almacenar los datos
+                        if (!datosTablas.ContainsKey(tabla.noTabla))
+                            datosTablas[tabla.noTabla] = new List<List<string>>();
+                        datosTablas[tabla.noTabla].Add(valores);
+                    }
+                }
+                catch { }
+            }
+            for (int i = 0; i < tokens2.Count; i++)
+            {
+                try
+                {
+
                         //TABLAS
                         if (tokens2[i] == "CREATE" && tokens2[i + 1] == "TABLE")
                         {
@@ -750,11 +781,13 @@ namespace Escaner_DML
                 tokens.Add("$");
                 int apun = 0;
                 int apunN = 0;
-                string equis;
+                string equis = "";
                 bool errorSintactico = false;
                 string K = "";
                 int numeroTablaChecker = 0;
                 int numeroTablaCheckerRef = 0;
+                
+                
                 do
                 {
                     string X = pila.Pop();
@@ -801,12 +834,44 @@ namespace Escaner_DML
                             break;
                         }
                         if (X == "705")
-                            errorSintactico = Validar_CantidadAtributos(K, out errorSintactico, ref numeroTablaChecker, apunN);
-                        if (errorSintactico == true)
                         {
-                            Errores.validarCantidadAtributos(texto, lineas);
-                            error = true;
-                            break;
+                            // Validación de cantidad de atributos
+                            errorSintactico = Validar_CantidadAtributos(K, out errorSintactico, ref numeroTablaChecker, apunN);
+
+                            // Si pasa la validación de cantidad, validar tipos de datos
+                            if (!errorSintactico)
+                            {
+                                //// 1. Obtener nombre de la tabla destino (debes tener esta variable)
+                                //string nombreTablaDestino = tokens[tokens.IndexOf("INTO") + 1];
+
+                                //// 2. Obtener los valores del INSERT (debes tener esta lista)
+                                //List<string> valoresInsert = tokens
+                                //    .Skip(tokens.IndexOf("VALUES") + 1)
+                                //    .TakeWhile(t => t != ")")
+                                //    .Where(t => t != "(" && t != ",")
+                                //    .ToList();
+                                //valoresInsert.RemoveAll(v => v.Trim() == "'");
+
+                                //// 3. Validar tipos y longitud
+                                //bool validacionTipo = Validar_TipoDatoEnInsercion(
+                                //    nombreTablaDestino,
+                                //    valoresInsert,
+                                //    out (string error, int linea, string atributo) errorInfo
+                                //);
+
+                                //if (!validacionTipo)
+                                //{
+                                //    Errores.validarTipoDatoInsert(texto, lineas, errorInfo.atributo, errorInfo.error);
+                                //    error = true;
+                                //    break;
+                                //}
+                            }
+                            else
+                            {
+                                Errores.validarCantidadAtributos(texto, lineas);
+                                error = true;
+                                break;
+                            }
                         }
                         if (X == "706")
                             errorSintactico = Validar_ExistirTabla(K, out errorSintactico, ref numeroTablaChecker);
@@ -816,14 +881,14 @@ namespace Escaner_DML
                             error = true;
                             break;
                         }
-                        if (X == "707")
-                            errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
-                        if (errorSintactico == true)
-                        {
-                            Errores.validarCantidadBytes(texto, lineas);
-                            error = true;
-                            break;
-                        }
+                        //if (X == "707")
+                        //    errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
+                        //if (errorSintactico == true)
+                        //{
+                        //    Errores.validarCantidadBytes(texto, lineas);
+                        //    error = true;
+                        //    break;
+                        //}
                         if (X == "708")
                             errorSintactico = Validar_TablaContAtrib(out errorSintactico, numeroTablaCheckerRef, K);
                         if (errorSintactico == true)
@@ -871,6 +936,18 @@ namespace Escaner_DML
                                 foreach (var atributo in atributosNoEncontrados)
                                 {
                                     Errores.validarNombreEnTabla(texto,atributo,lineas);
+                                    error = true;
+                                    break;
+                                }
+                            }
+                            // NUEVA REGLA
+                            // Se ocupa que K si esta en una linea diferente a la 1, cheque con el atributo de 3 o 2 tokens atras, si son iguales
+                            // todo esta altoke, si son diferentes, errrror.
+                            if (lineas != 1 && BuscarAtributoPorLinea(K) && tokens[apun-2] == "SELECT")
+                            {
+                                if (tokens[apun - 5] != K)
+                                {
+                                    Errores.ValidarAtributoScInvalido(texto, lineas, K, tokens[apun-5]);
                                     error = true;
                                     break;
                                 }
@@ -1026,6 +1103,44 @@ namespace Escaner_DML
                             }
                             else
                             {
+                                if (tokens[apun] == "INSERT" && tokens[apun + 1] == "INTO")
+                                {
+                                    string nombreTabla = tokens[apun + 2];
+                                    var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+                                    if (tabla.Equals(default)) continue;
+
+                                    // Extraer valores entre VALUES (...) o hasta ;
+                                    List<string> valores = new List<string>();
+                                    int j = apun + 5; // Saltar "INSERT INTO tabla VALUES ("
+                                    while (j < tokens.Count && tokens[j] != ")")
+                                    {
+                                        if (tokens[j] != "," && tokens[j] != "(")
+                                            valores.Add(tokens[j].Trim('\''));
+                                        j++;
+                                    }
+
+                                    // Almacenar los datos
+                                    if (!datosTablas.ContainsKey(tabla.noTabla))
+                                        datosTablas[tabla.noTabla] = new List<List<string>>();
+                                    datosTablas[tabla.noTabla].Add(valores);
+                                }
+
+                                if (K == "INSERT")
+                                {
+                                    string nombreTabla = tokens[apun + 2];
+                                    List<string> valores = tokens
+                                        .Skip(apun+5) // Saltar hasta después de "("
+                                        .TakeWhile(t => t != ")")
+                                        .Where(t => t != ",")
+                                        .ToList();
+                                    valores.RemoveAll(v => v.Trim() == "'");
+
+                                    bool errorSemantico;
+                                    if (!ValidarLlaveForaneaInsert(nombreTabla, valores, texto, lineas, out errorSemantico))
+                                    {
+                                        error = true;
+                                    }
+                                }
                                 string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
                                 if (produccion != null)
                                 {
@@ -1173,6 +1288,9 @@ namespace Escaner_DML
                         equis = X;
                 }
                 while (equis != "199");
+                // Validación adicional para INSERT después del análisis sintáctico
+                
+
                 if (error == false)
                 {
                     Errores.SinError(texto, lineas);
@@ -1194,6 +1312,19 @@ namespace Escaner_DML
         List<(string tabla, string alias, int linea)> listaFrom = new List<(string tabla, string alias, int linea)>();
         List<(string tabla, string atributo, int linea)> listaSelect = new List<(string tabla, string atributo, int linea)>();
         List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
+
+        public bool BuscarAtributoPorLinea(string atributoSc)
+        {
+            // Buscar en listaSelect y listaWhere, asegurando que la línea no sea 1
+            bool encontrado = listaSelect.Any(s => s.atributo == atributoSc && s.linea != 1) ||
+                             listaWhere.Any(w => w.atributo == atributoSc && w.linea != 1);
+
+            // Verificar si el atributo existe en la lista de atributos
+            bool atributoValido = atributos.Any(a => a.nombreAtributo.Equals(atributoSc, StringComparison.OrdinalIgnoreCase));
+
+            // Retornar true solo si se encuentra en listaSelect o listaWhere con línea != 1 y es un atributo válido
+            return encontrado && atributoValido;
+        }
 
         public bool ValidarAtributoEnTabla(string atributoCalificado)
         {
@@ -1242,8 +1373,111 @@ namespace Escaner_DML
 
             return atributoExiste;
         }
+        
+        private bool VerificarValorExiste(int noTablaRef, string nombreAtributoRef, string valor, int tabla)
+        {
+            string tipoDato = "";
+            if (!datosTablas.ContainsKey(tabla))
+                return false;
 
 
+            
+            var atributosTabla = atributos
+                .Where(a => a.noTabla == noTablaRef)
+                .OrderBy(a => a.noAtributoTabla)
+                .ToList();
+            int indiceAttr = atributosTabla.FindIndex(a => a.nombreAtributo == nombreAtributoRef);
+            if (indiceAttr == -1)
+                return false;
+
+            if (constantes.IsMatch(valor))
+                tipoDato = "CHAR";
+            else if (constantesTL.IsMatch(valor))
+                tipoDato = "NUMERIC";
+            if (atributosTabla[indiceAttr].tipo == tipoDato)
+            {
+                if (atributosTabla[indiceAttr].longitud == valor.Length - 2)
+                {
+                    
+                    return true;
+                    
+                }
+                else
+                    return false;
+
+            }
+            else
+                return false;
+
+
+
+        }
+
+        public bool ValidarLlaveForaneaInsert(
+    string nombreTabla,
+    List<string> valores,
+    TextBox txtError,
+    int linea,
+    out bool errorSemantico)
+        {
+            errorSemantico = false;
+
+            // Obtener la tabla destino
+            var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+            if (tabla.Equals(default))
+            {
+                txtError.Text = $"Error: La tabla '{nombreTabla}' no existe.";
+                errorSemantico = true;
+                return false;
+            }
+
+            // Obtener atributos en orden
+            var attrs = atributos
+                .Where(a => a.noTabla == tabla.noTabla)
+                .OrderBy(a => a.noAtributoTabla)
+                .ToList();
+
+            if (attrs.Count != valores.Count)
+            {
+                Errores.validarCantidadAtributos(txtError, linea);
+                errorSemantico = true;
+                return false;
+            }
+
+            // Mapear valores a atributos
+            var valoresPorAtributo = new Dictionary<string, string>();
+            for (int i = 0; i < attrs.Count; i++)
+                valoresPorAtributo[attrs[i].nombreAtributo] = valores[i];
+
+            // Obtener restricciones de llave foránea
+            var fks = restricciones
+                .Where(r => r.noTabla == tabla.noTabla && r.Tipo == 2) // 2 = llave foránea
+                .ToList();
+
+            foreach (var fk in fks)
+            {
+                var attrLocal = atributos.FirstOrDefault(a => a.noAtributo == fk.atributoAsociado);
+                if (attrLocal.Equals(default)) continue;
+
+                string valor = valoresPorAtributo[attrLocal.nombreAtributo];
+                var tablaRef = tablas.FirstOrDefault(t => t.noTabla == fk.Tabla);
+                var attrRef = atributos.FirstOrDefault(a => a.noAtributo == fk.atributo);
+
+                if (tablaRef.Equals(default) || attrRef.Equals(default)) continue;
+
+                // Verificar si el valor existe
+                if (!VerificarValorExiste(tablaRef.noTabla, attrRef.nombreAtributo, valor, tabla.noTabla))
+                {
+                    txtError.Text = $"ERROR: La Sentencia INSERT está en conflicto con la restricción de Llave Foránea '{fk.nombreRestriccion}'. " +
+                                    $"El conflicto ocurre en la BD 'INSCRITOS', tabla '{tablaRef.nombreTabla}', atributo '{attrRef.nombreAtributo}'.";
+                    txtError.BackColor = Color.FromArgb(255, 137, 137);
+                    errorSemantico = true;
+                    return false;
+                }
+            }
+
+            return true;
+        }
         public List<string> nombrePerteneceATabla()
         {
             List<string> errores = new List<string>();
@@ -1308,6 +1542,82 @@ namespace Escaner_DML
             }
 
             return errores;
+        }
+        public bool Validar_TipoDatoEnInsercion(
+    string nombreTabla,
+    List<string> valores,
+    out (string error, int linea, string atributo) errorInfo)
+        {
+            errorInfo = ("", -1, "");
+
+            // Buscar la tabla
+            var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+            if (tabla.Equals(default))
+            {
+                errorInfo = ("La tabla no existe", -1, nombreTabla);
+                return false;
+            }
+
+            // Obtener los atributos de la tabla en orden
+            var atributosTabla = atributos
+                .Where(a => a.noTabla == tabla.noTabla)
+                .OrderBy(a => a.noAtributoTabla)
+                .ToList();
+
+            // Verificar cantidad de valores vs atributos
+            if (valores.Count != atributosTabla.Count)
+            {
+                errorInfo = ("La cantidad de valores no coincide con los atributos", -1, "");
+                return false;
+            }
+
+            for (int i = 0; i < valores.Count; i++)
+            {
+                string valor = valores[i];
+                var atributo = atributosTabla[i];
+
+                // Validar tipo de dato
+                if (atributo.tipo == "CHAR")
+                {
+                    // Debe ser una cadena entre comillas
+                    if (!constantes.IsMatch(valor))
+                    {
+                        errorInfo = (
+                            $"El valor '{valor}' no es una cadena válida para el atributo {atributo.nombreAtributo}",
+                            -1,
+                            atributo.nombreAtributo
+                        );
+                        return false;
+                    }
+
+                    // Validar longitud
+                    string valorSinComillas = valor.Trim('\'');
+                    if (valorSinComillas.Length > atributo.longitud)
+                    {
+                        errorInfo = (
+                            $"Longitud excedida para '{atributo.nombreAtributo}'. Máximo: {atributo.longitud}",
+                            -1,
+                            atributo.nombreAtributo
+                        );
+                        return false;
+                    }
+                }
+                else if (atributo.tipo == "NUMERIC")
+                {
+                    // Debe ser un número sin comillas
+                    if (!constantesTL.IsMatch(valor))
+                    {
+                        errorInfo = (
+                            $"El valor '{valor}' no es numérico para el atributo {atributo.nombreAtributo}",
+                            -1,
+                            atributo.nombreAtributo
+                        );
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
         public List<string> ObtenerAtributosAmbiguos()
         {

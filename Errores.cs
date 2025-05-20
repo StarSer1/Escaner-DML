@@ -109,6 +109,11 @@ namespace Escaner_DML
             txtError.Text = "3:312 El nombre del atributo "+ atributo + " es ambigüo.";
             txtError.BackColor = Color.FromArgb(255, 137, 137);
         }
+        public void ValidarAtributoScInvalido(TextBox txtError, int lineas, string atriBueno, string atriMalo)
+        {
+            txtError.Text = "3:317 Linea " + lineas + " El atributo " + atriMalo + " no coincide con el atributo " + atriBueno + " de la subconsulta";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
         public void validarTablaNoValida(TextBox txtError, int lineas, string nombreTabla)
         {
             txtError.Text = $"Error 3:314 Línea {lineas:D2} El nombre de la tabla { nombreTabla} no es válido.";
@@ -223,7 +228,17 @@ namespace Escaner_DML
             }
             return errorB;
         }
+        public void validarTipoDatoInsert(TextBox txtError, int lineas, string atributo, string mensaje)
+        {
+            txtError.Text = $"Error 3:310 Línea {lineas:D2} {mensaje}";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
 
+        public void validarLongitudInsert(TextBox txtError, int lineas, string atributo, int maxLongitud)
+        {
+            txtError.Text = $"Error 3:311 Línea {lineas:D2} El valor para '{atributo}' excede la longitud máxima de {maxLongitud}";
+            txtError.BackColor = Color.FromArgb(255, 137, 137);
+        }
 
     }
 }
