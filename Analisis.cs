@@ -786,6 +786,7 @@ namespace Escaner_DML
                 else if (tokens.First() == "SELECT")
                     pila.Push("300");
                 List<string> tokensConN = tokens;
+                tokens2 = tokens2.Where(s => s != "\n").ToList();
                 tokens = tokens.Where(s => s != "\n").ToList();
                 tokens.Add("$");
                 int apun = 0;
@@ -1080,6 +1081,10 @@ namespace Escaner_DML
                             {
                                 if (X == ConvertirToken(K))
                                 {
+                                    if(apun == 28)
+                                    {
+
+                                    }
                                     apun++;
                                     tokens.RemoveAt(tokens.Count - 1);
                                     if (apun < tokens2.Count)
