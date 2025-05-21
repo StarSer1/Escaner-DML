@@ -38,7 +38,7 @@ namespace Escaner_DML
             this.tablas = tablas2;
             this.atributos= atributos2;
             this.restricciones = restricciones2;
-            string connectionString = @"Data Source=DESKTOP-GQ6Q9HG\SQLEXPRESS;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
+            string connectionString = @"Data Source=DESKTOP-0434B1E;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
             sqlConnection = new SqlConnection(connectionString);
             sqlDataAdapter = new SqlDataAdapter();
             dataSet = new DataSet();
@@ -257,6 +257,7 @@ namespace Escaner_DML
             {"$", 199 }
         };
         List<string> tokens = new List<string>();
+
         public List<string> Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
         {
             string cadena = "";
@@ -268,7 +269,7 @@ namespace Escaner_DML
             for (int i = 0; i < texto.TextLength; i++)
             {
                 string c = texto.Text[i].ToString();
-                if ( c == "\n")
+                if (c == "\n")
                 {
 
                 }
@@ -381,7 +382,7 @@ namespace Escaner_DML
                                     else if (c == ")")
                                         acumuladorParentesisAbierto--;
 
-                                 
+
 
 
                                     tokens.Add(cadena);
@@ -409,7 +410,7 @@ namespace Escaner_DML
                 {
                     if ("'’‘".Contains(c))
                     {
-                        if (empezoComilla == false) 
+                        if (empezoComilla == false)
                             tokens.Add(c);
                         empezoComilla = !empezoComilla;
                     }
@@ -429,7 +430,7 @@ namespace Escaner_DML
                     if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
                     else if (cadena != "" && comillas == true)
                     {
-                        tokens.Add("'"+cadena+"'");
+                        tokens.Add("'" + cadena + "'");
                         tokens.Add(c);
                         MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         comillas = false;
@@ -459,14 +460,10 @@ namespace Escaner_DML
                 if (c == "\n")
                     linea++;
             }
-            //bool errorParentesis = Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
-            //if (errorComillas || errorParentesis)
-            //errorActivado = true;
-            //tokens = RemoverDuplicadosVacios(tokens);
-            //LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion,);
-                return tokens;
+
+            return tokens;
         }
-        
+
         public void LlenadoSelects(List<string> tokens)
         {
             bool comenzoSelect = false;
@@ -847,30 +844,7 @@ namespace Escaner_DML
                             // Si pasa la validación de cantidad, validar tipos de datos
                             if (!errorSintactico)
                             {
-                                //// 1. Obtener nombre de la tabla destino (debes tener esta variable)
-                                //string nombreTablaDestino = tokens[tokens.IndexOf("INTO") + 1];
-
-                                //// 2. Obtener los valores del INSERT (debes tener esta lista)
-                                //List<string> valoresInsert = tokens
-                                //    .Skip(tokens.IndexOf("VALUES") + 1)
-                                //    .TakeWhile(t => t != ")")
-                                //    .Where(t => t != "(" && t != ",")
-                                //    .ToList();
-                                //valoresInsert.RemoveAll(v => v.Trim() == "'");
-
-                                //// 3. Validar tipos y longitud
-                                //bool validacionTipo = Validar_TipoDatoEnInsercion(
-                                //    nombreTablaDestino,
-                                //    valoresInsert,
-                                //    out (string error, int linea, string atributo) errorInfo
-                                //);
-
-                                //if (!validacionTipo)
-                                //{
-                                //    Errores.validarTipoDatoInsert(texto, lineas, errorInfo.atributo, errorInfo.error);
-                                //    error = true;
-                                //    break;
-                                //}
+                              
                             }
                             else
                             {
@@ -887,14 +861,7 @@ namespace Escaner_DML
                             error = true;
                             break;
                         }
-                        //if (X == "707")
-                        //    errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
-                        //if (errorSintactico == true)
-                        //{
-                        //    Errores.validarCantidadBytes(texto, lineas);
-                        //    error = true;
-                        //    break;
-                        //}
+                       
                         if (X == "708")
                             errorSintactico = Validar_TablaContAtrib(out errorSintactico, numeroTablaCheckerRef, K);
                         if (errorSintactico == true)
@@ -946,9 +913,7 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            // NUEVA REGLA
-                            // Se ocupa que K si esta en una linea diferente a la 1, cheque con el atributo de 3 o 2 tokens atras, si son iguales
-                            // todo esta altoke, si son diferentes, errrror.
+
                             if (lineas != 1 && BuscarAtributoPorLinea(K) && tokens[apun-2] == "SELECT")
                             {
                                 if (tokens[apun - 5] != K)
@@ -1077,10 +1042,6 @@ namespace Escaner_DML
                             {
                                 if (X == ConvertirToken(K))
                                 {
-                                    if(apun == 28)
-                                    {
-
-                                    }
                                     apun++;
                                     tokens.RemoveAt(tokens.Count - 1);
                                     if (apun < tokens2.Count)
@@ -1326,6 +1287,212 @@ namespace Escaner_DML
         List<(string tabla, string alias, int linea)> listaFrom = new List<(string tabla, string alias, int linea)>();
         List<(string tabla, string atributo, int linea)> listaSelect = new List<(string tabla, string atributo, int linea)>();
         List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
+
+        public List<string> Inicializar(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
+        {
+            string cadena = "";
+            int linea = 1;
+            texto.Text = texto.Text.ToUpper() + " ";
+            bool comillas = false;
+            bool sigo = false;
+            bool sigoRelacional = false;
+            for (int i = 0; i < texto.TextLength; i++)
+            {
+                string c = texto.Text[i].ToString();
+                if (c == "\n")
+                {
+
+                }
+                if (!delimitadores.IsMatch(c))
+                {
+                    if (sigoRelacional)
+                    {
+                        if (relacionales.IsMatch(c) && c != " ")
+                        {
+                            cadena += c;
+                            tokens.Add(cadena);
+                            if (cadena != "")
+                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                            cadena = "";
+                            c = "";
+                        }
+                        sigoRelacional = false;
+                    }
+                    if (c != " " && !relacionales.IsMatch(c) && !constantesTL.IsMatch(c))
+                    {
+                        if (c != "\n")
+                            cadena += c;
+                    }
+                    if (relacionales.IsMatch(c))
+                    {
+                        if (c != " ")
+                        {
+                            tokens.Add(cadena);
+                            if (cadena != "")
+                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                            cadena = c;
+                            if (i + 1 < texto.TextLength)
+                            {
+                                char siguienteChar = texto.Text[i + 1];
+
+                                if (relacionales.IsMatch(siguienteChar.ToString()))
+                                {
+                                    sigoRelacional = true;
+                                }
+                                else
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                            }
+                        }
+                    }
+                    if (constantesTL.IsMatch(c))
+                    {
+                        if (i + 1 < texto.TextLength)
+                        {
+                            char siguienteChar = texto.Text[i + 1];
+
+                            //si el siguiente es espacio en blanco
+                            if (siguienteChar.ToString() == " ")
+                            {
+                                cadena += c;
+                                tokens.Add(cadena);
+                                if (cadena != "")
+                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                cadena = "";
+                            }
+                            else if (constantesTL.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
+                            {
+                                cadena += c;
+                            }
+                            else if (delimitadores.IsMatch(siguienteChar.ToString()))
+                            {
+                                cadena += c;
+                            }
+                        }
+                    }
+                    if (c == " " || c == "\n")
+                    {
+                        if (empezoComilla == false)
+                        {
+                            if (reservadas.IsMatch(cadena))
+                            {
+                                tokens.Add(cadena);
+                                //tokens.Add(c);
+                                if (cadena != "")
+                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                cadena = "";
+                            }
+                            else if (tokens.Count != 0)
+                            {
+                                if (reservadas.IsMatch(tokens.Last()) && cadena != "")
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    sigo = true;
+                                    cadena = "";
+
+                                }
+                                else if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+
+                                }
+                                else if (delimitadores.IsMatch(tokens.Last()))
+                                {
+                                    if (c == "(")
+                                        acumuladorParentesisAbierto++;
+                                    else if (c == ")")
+                                        acumuladorParentesisAbierto--;
+
+
+
+
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                                else
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            cadena += " ";
+                        }
+                        tokens.Add(c);
+                    }
+                }
+                else
+                {
+                    if ("'’‘".Contains(c))
+                    {
+                        if (empezoComilla == false)
+                            tokens.Add(c);
+                        empezoComilla = !empezoComilla;
+                    }
+                    if (c == "(")
+                        acumuladorParentesisAbierto++;
+                    else if (c == ")")
+                        acumuladorParentesisAbierto--;
+
+                    if (c == "’" || c == "‘")
+                        acumuladorComillas1++;
+
+                    if (c == "'")
+                        acumuladorComillas3++;
+
+
+
+                    if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
+                    else if (cadena != "" && comillas == true)
+                    {
+                        tokens.Add("'" + cadena + "'");
+                        tokens.Add(c);
+                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        comillas = false;
+                    }
+                    else if (cadena != "" && (c == ")" || c == ",") && constantesTL.IsMatch(cadena))
+                    {
+                        tokens.Add(cadena);
+                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        tokens.Add(c);
+                        MostrarDgv(dgvLex, c, linea);
+                    }
+                    else
+                    {
+                        tokens.Add(cadena);
+                        if (tokens.Last() != "")
+                            MostrarDgv(dgvLex, tokens.Last(), linea);
+                        tokens.Add(c);
+                        if (c != "")
+                            MostrarDgv(dgvLex, c, linea);
+                    }
+                    cadena = "";
+
+
+
+                }
+                tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " "));
+                if (c == "\n")
+                    linea++;
+            }
+           
+            return tokens;
+        }
 
         public bool BuscarAtributoPorLinea(string atributoSc)
         {
