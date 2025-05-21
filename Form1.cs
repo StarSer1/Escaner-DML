@@ -100,7 +100,8 @@ namespace Escaner_DML
                             restricciones = restriccionesTemp;
                               
                         }
-                        if(!errorActivado)
+                        errorActivado = Analisis.Limpiar(tokens, txtError);
+                        if (!errorActivado)
                                 Analisis.consultaSQL(dataGridView1, txtEntrada, txtError);
                         }
                         catch
@@ -115,6 +116,15 @@ namespace Escaner_DML
         }
         private void BtnLimpiar_Click(object sender, EventArgs e)
         {
+            List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablasTemp =
+                    tablas.Select(t => (t.noTabla, t.nombreTabla, t.cantidadAtributos, t.cantidadRestricciones)).ToList();
+
+            List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTemp)> atributosTemp =
+                atributos.Select(a => (a.noTabla, a.noAtributo, a.nombreAtributo, a.tipo, a.longitud, a.noNull, a.noAtributoTabla)).ToList();
+
+            List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restriccionesTemp =
+                restricciones.Select(r => (r.noTabla, r.noRestriccion, r.Tipo, r.nombreRestriccion, r.atributoAsociado, r.Tabla, r.atributo)).ToList();
+
             DtTablas.Rows.Clear();
             DtAtributos.Rows.Clear();
             DtRestricciones.Rows.Clear();

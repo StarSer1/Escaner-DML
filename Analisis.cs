@@ -49,15 +49,10 @@ namespace Escaner_DML
 
             try
             {
-                // Abrir la conexión
                 sqlConnection.Open();
-
-                // Configurar el adaptador y ejecutar la consulta
                 sqlDataAdapter.SelectCommand = new SqlCommand(consultaSql, sqlConnection);
-                dataSet.Clear(); // Limpiar datos anteriores
+                dataSet.Clear();
                 sqlDataAdapter.Fill(dataSet);
-
-                // Mostrar los resultados en el DataGridView
                 dgvResultados.DataSource = dataSet.Tables[0];
             }
             catch (Exception ex)
@@ -768,6 +763,7 @@ namespace Escaner_DML
 
 
         }
+       
         public bool Sintaxis(List<string> tokens, List<string> tokens2, TextBox texto)
         {
             try
@@ -1319,7 +1315,6 @@ namespace Escaner_DML
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
                 return true;
             }
         }
@@ -1924,6 +1919,551 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                 i++;
             }
             return salida = true;
+        }
+        public bool Limpiar(List<string> tokens, TextBox texto)
+        {
+            try
+            {
+                acumuladorComillas2 = acumuladorComillas2 - 1;
+                texto.BackColor = Color.White;
+                texto.Text = "";
+                bool error = false;
+                int lineas = 1;
+                string KparaN = "";
+                pila.Push("199");
+                if (tokens.First() == "INSERT")
+                    pila.Push("211");
+                else if (tokens.First() == "CREATE")
+                    pila.Push("200");
+                else if (tokens.First() == "SELECT")
+                    pila.Push("300");
+                List<string> tokensConN = tokens;
+                tokens = tokens.Where(s => s != "\n").ToList();
+                tokens.Add("$");
+                int apun = 0;
+                int apunN = 0;
+                string equis = "";
+                bool errorSintactico = false;
+                string K = "";
+                int numeroTablaChecker = 0;
+                int numeroTablaCheckerRef = 0;
+
+
+                do
+                {
+                    string X = pila.Pop();
+                    if (Regex.IsMatch(X, @"^7\d{2}$") || Regex.IsMatch(X, @"^8\d{2}$"))
+                    {
+                        if (X == "700")
+                            errorSintactico = Validar_NombreTabla(K, out errorSintactico, ref numeroTablaChecker);
+                        if (errorSintactico == true)
+                        {
+                            Errores.nombreAtributoDuplicado(texto, lineas, K);
+                            error = true;
+                            break;
+                        }
+                        if (X == "701")
+                            errorSintactico = Validar_NombreAtributo(K, out errorSintactico);
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarNombreAtributo(texto, lineas, K);
+                            error = true;
+                            break;
+                        }
+                        if (X == "702")
+                            errorSintactico = Validar_ExistirAtributo(K, out errorSintactico, ref numeroTablaChecker);
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarExistirAtributo(texto, lineas, K, ref tablas, numeroTablaChecker);
+                            error = true;
+                            break;
+                        }
+                        if (X == "703")
+                            errorSintactico = Validar_DupRestriccion(K, out errorSintactico);
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarDupRestriccion(texto, lineas, K);
+                            error = true;
+                            break;
+                        }
+                        if (X == "704")
+                            errorSintactico = Validar_AtributoNoValido(K, out errorSintactico, ref numeroTablaChecker);
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarAtributoNoValido(texto, lineas, K, ref tablas, numeroTablaChecker);
+                            error = true;
+                            break;
+                        }
+                        if (X == "705")
+                        {
+                            // Validación de cantidad de atributos
+                            errorSintactico = Validar_CantidadAtributos(K, out errorSintactico, ref numeroTablaChecker, apunN);
+
+                            // Si pasa la validación de cantidad, validar tipos de datos
+                            if (!errorSintactico)
+                            {
+                                //// 1. Obtener nombre de la tabla destino (debes tener esta variable)
+                                //string nombreTablaDestino = tokens[tokens.IndexOf("INTO") + 1];
+
+                                //// 2. Obtener los valores del INSERT (debes tener esta lista)
+                                //List<string> valoresInsert = tokens
+                                //    .Skip(tokens.IndexOf("VALUES") + 1)
+                                //    .TakeWhile(t => t != ")")
+                                //    .Where(t => t != "(" && t != ",")
+                                //    .ToList();
+                                //valoresInsert.RemoveAll(v => v.Trim() == "'");
+
+                                //// 3. Validar tipos y longitud
+                                //bool validacionTipo = Validar_TipoDatoEnInsercion(
+                                //    nombreTablaDestino,
+                                //    valoresInsert,
+                                //    out (string error, int linea, string atributo) errorInfo
+                                //);
+
+                                //if (!validacionTipo)
+                                //{
+                                //    Errores.validarTipoDatoInsert(texto, lineas, errorInfo.atributo, errorInfo.error);
+                                //    error = true;
+                                //    break;
+                                //}
+                            }
+                            else
+                            {
+                                Errores.validarCantidadAtributos(texto, lineas);
+                                error = true;
+                                break;
+                            }
+                        }
+                        if (X == "706")
+                            errorSintactico = Validar_ExistirTabla(K, out errorSintactico, ref numeroTablaChecker);
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarExistirTabla(texto, lineas);
+                            error = true;
+                            break;
+                        }
+                        //if (X == "707")
+                        //    errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
+                        //if (errorSintactico == true)
+                        //{
+                        //    Errores.validarCantidadBytes(texto, lineas);
+                        //    error = true;
+                        //    break;
+                        //}
+                        if (X == "708")
+                            errorSintactico = Validar_TablaContAtrib(out errorSintactico, numeroTablaCheckerRef, K);
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarAtributoNoValido(texto, lineas, K, ref tablas, numeroTablaCheckerRef);
+                            error = true;
+                            break;
+                        }
+                        if (X == "709")
+                        {
+                            errorSintactico = Validar_ExistirTablaParaRef(K, out errorSintactico, ref numeroTablaCheckerRef);
+                        }
+                        if (errorSintactico == true)
+                        {
+                            Errores.validarExistirTabla(texto, lineas);
+                            error = true;
+                            break;
+                        }
+                        if (X == "800")
+                        {
+                            List<string> ambiguos = ObtenerAtributosAmbiguos();
+
+                            if (ambiguos.Any())
+                            {
+                                if (tokens[apun - 2] != "(")
+                                {
+                                    foreach (var atributo in ambiguos)
+                                    {
+                                        Errores.validarAmbiguedad(texto, atributo, lineas);
+                                        error = true;
+                                        break;
+                                    }
+                                }
+
+
+
+                            }
+
+
+
+                            List<string> atributosNoEncontrados = nombrePerteneceATabla();
+
+                            if (atributosNoEncontrados.Any())
+                            {
+                                foreach (var atributo in atributosNoEncontrados)
+                                {
+                                    Errores.validarNombreEnTabla(texto, atributo, lineas);
+                                    error = true;
+                                    break;
+                                }
+                            }
+                            // NUEVA REGLA
+                            // Se ocupa que K si esta en una linea diferente a la 1, cheque con el atributo de 3 o 2 tokens atras, si son iguales
+                            // todo esta altoke, si son diferentes, errrror.
+                            if (lineas != 1 && BuscarAtributoPorLinea(K) && tokens[apun - 2] == "SELECT")
+                            {
+                                if (tokens[apun - 5] != K)
+                                {
+                                    Errores.ValidarAtributoScInvalido(texto, lineas, K, tokens[apun - 5]);
+                                    error = true;
+                                    break;
+                                }
+                            }
+
+
+
+
+                        }
+                        if (X == "801")
+                        {
+                            if (tokens[apun - 2] == ".")
+                            {
+                                bool errrrror = ValidarAtributoEnTabla(tokens[apun - 3] + "." + K);
+                                if (errrrror == false)
+                                {
+                                    Errores.validarIdentificadorInvalido(texto, lineas, K);
+                                    error = true;
+                                    break;
+                                }
+                            }
+
+                            List<string> erroresWhereINv = ObtenerAtributosWhereInvalidosConAlias();
+
+
+                            if (erroresWhereINv.Any())
+                            {
+                                foreach (var atributo in erroresWhereINv)
+                                {
+                                    Errores.validarTablaNoValidaAlias(texto, atributo, lineas);
+                                    error = true;
+                                    break;
+                                }
+                            }
+
+
+                        }
+                        if (X == "803")
+                        {
+                            string tablaMala = "";
+                            bool errorWrok = Validar_NombresTablasEnConsulta(out tablaMala, ref listaFrom);
+                            if (errorWrok == false)
+                            {
+                                error = true;
+                                Errores.validarTablaNoValida(texto, lineas, tablaMala);
+                                break;
+                            }
+
+                            string identificadorInvalido;
+                            bool errorAlex = Validar_IdentificadorEnWhere(out identificadorInvalido, ref listaWhere, ref tablas);
+                            if (errorAlex == false)
+                            {
+                                error = true;
+                                Errores.validarIdentificadorInvalido(texto, lineas, identificadorInvalido);
+                                break;
+                            }
+
+                        }
+                        if (X == "808") // Código para validación de subconsultas
+                        {
+                            (string errorMsg, int linea) errorInfo;
+                            bool valido = Validar_TipoDatoEnComparacion(
+                                out errorInfo,
+                                ref listaWhere,
+                                ref atributos
+                            );
+
+                            if (!valido)
+                            {
+                                error = true;
+
+                                // errorInfo.error == "Error de tipo en la comparación: MNOMBRE no es del mismo tipo..."
+                                var match = System.Text.RegularExpressions.Regex.Match(
+                                    errorInfo.errorMsg,
+                                    @":\s*(\w+)"
+                                );
+                                string atributoInvalido = match.Success
+                                    ? match.Groups[1].Value
+                                    : errorInfo.errorMsg; // fallback
+
+                                Errores.validarAtributoSubconsultaInvalido(
+                                    txtError: texto,
+                                    lineas: errorInfo.linea,
+                                    atributo: atributoInvalido
+                                );
+                                break;
+                            }
+                            bool errorsisimo = Validar_TipoDatoEnComparacionDos(out errorInfo, ref listaWhere, ref atributos);
+                            if (!errorsisimo)
+                            {
+                                error = true;
+
+                                // errorInfo.error == "Error de tipo en la comparación: MNOMBRE no es del mismo tipo..."
+                                var match = System.Text.RegularExpressions.Regex.Match(
+                                    errorInfo.errorMsg,
+                                    @":\s*(\w+)"
+                                );
+                                string atributoInvalido = match.Success
+                                    ? match.Groups[1].Value
+                                    : errorInfo.errorMsg; // fallback
+
+                                Errores.validarAtributoSubconsultaInvalido(
+                                    txtError: texto,
+                                    lineas: errorInfo.linea,
+                                    atributo: atributoInvalido
+                                );
+                                break;
+                            }
+
+                        }
+                        //apunN++;
+                    }
+                    else
+                    {
+                        K = tokens[apun];
+                        if (apunN < tokensConN.Count())
+                            KparaN = tokensConN[apunN];
+                        if (KparaN != "\n")
+                        {
+                            if (!Regex.IsMatch(X, @"^[32]\d{2}$") || X == "199")
+                            {
+                                if (X == ConvertirToken(K))
+                                {
+                                    apun++;
+                                    apunN++;
+                                }
+                                else
+                                {
+                                    error = true;
+                                    string palFaltante = tablaSimbolos.FirstOrDefault(z => z.Value.ToString() == X).Key ?? "Identificador";
+                                    if (reservadas.IsMatch(palFaltante))
+                                        Errores.ErrorPalabraReservada(texto, lineas);
+                                    else if (constantesTL.IsMatch(palFaltante))
+                                        Errores.ErrorConstante(texto, lineas);
+                                    else if (palFaltante == "Identificador")
+                                        Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                    else if (constantes.IsMatch(palFaltante))
+                                        Errores.ErrorConstante(texto, lineas);
+                                    else if (relacionales.IsMatch(palFaltante))
+                                        Errores.ErrorOperadorRelacional(texto, lineas);
+                                    else if (acumuladorComillas1 % 2 != 0)
+                                        Errores.ErroresComillas(texto, acumuladorComillas1, lineas);
+                                    else if (acumuladorComillas3 % 2 != 0)
+                                        Errores.ErroresComillas(texto, acumuladorComillas3, lineas);
+                                    else if (operadores.IsMatch(palFaltante))
+                                        Errores.ErrorMaestro(texto, lineas, palFaltante);
+                                    else if (acumuladorParentesisAbierto % 2 != 0)
+                                        Errores.ErrorParentesisDDL(texto, lineas);
+                                    else
+                                        Errores.ErrorSintactico(texto, lineas);
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (tokens[apun] == "INSERT" && tokens[apun + 1] == "INTO")
+                                {
+                                    string nombreTabla = tokens[apun + 2];
+                                    var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+                                    if (tabla.Equals(default)) continue;
+
+                                    // Extraer valores entre VALUES (...) o hasta ;
+                                    List<string> valores = new List<string>();
+                                    int j = apun + 5; // Saltar "INSERT INTO tabla VALUES ("
+                                    while (j < tokens.Count && tokens[j] != ")")
+                                    {
+                                        if (tokens[j] != "," && tokens[j] != "(")
+                                            valores.Add(tokens[j].Trim('\''));
+                                        j++;
+                                    }
+
+                                    // Almacenar los datos
+                                    if (!datosTablas.ContainsKey(tabla.noTabla))
+                                        datosTablas[tabla.noTabla] = new List<List<string>>();
+                                    datosTablas[tabla.noTabla].Add(valores);
+                                }
+
+                                if (K == "INSERT")
+                                {
+                                    string nombreTabla = tokens[apun + 2];
+                                    List<string> valores = tokens
+                                        .Skip(apun + 5) // Saltar hasta después de "("
+                                        .TakeWhile(t => t != ")")
+                                        .Where(t => t != ",")
+                                        .ToList();
+                                    valores.RemoveAll(v => v.Trim() == "'");
+
+                                    bool errorSemantico;
+                                    if (!ValidarLlaveForaneaInsert(nombreTabla, valores, texto, lineas, out errorSemantico))
+                                    {
+                                        error = true;
+                                    }
+                                }
+                                string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
+                                if (produccion != null)
+                                {
+                                    if (produccion != "99")
+                                    {
+                                        produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
+                                    }
+
+                                }
+                                else
+                                {
+                                    error = true;
+                                    if (reservadas.IsMatch(tokens[apun - 1]) && tokens[apun].StartsWith("'") && tokens[apun].EndsWith("'"))
+                                    {
+                                        Errores.ErrorIdentificador(texto, lineas);
+                                        break;
+                                    }
+                                    else if ((relacionales.IsMatch(tokens[apun - 1]) || (relacionales.IsMatch(tokens[apun - 2])) && (!tokens[apun].StartsWith("'") && !tokens[apun].EndsWith("'"))))
+                                    {
+                                        Errores.ErrorConstante(texto, lineas);
+                                        break;
+                                    }
+                                    else if (tokens[apun - 1] == "," && (constantes.IsMatch(tokens[apun - 3]) || constantesTL.IsMatch(tokens[apun - 2])))
+                                    {
+                                        if (tokens[apun] == ")")
+                                        {
+                                            Errores.ErrorConstante(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (constantes.IsMatch(tokens[apun - 2]) && constantes.IsMatch(tokens[apun + 1]))
+                                    {
+                                        Errores.ErrorConstante(texto, lineas);
+                                        break;
+                                    }
+                                    else if (constantesTL.IsMatch(tokens[apun - 1]) && constantesTL.IsMatch(tokens[apun]))
+                                    {
+                                        Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
+                                        break;
+                                    }
+                                    else if (tokens[apun] == "(")
+                                    {
+                                        if (!reservadas.IsMatch(tokens[apun - 1]))
+                                        {
+                                            Errores.ErrorPalabraReservada(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (Errores.ErroresComillas(texto, acumuladorComillas1, lineas))
+                                    {
+                                        texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                        break;
+                                    }
+                                    else if (Errores.ErroresComillas(texto, acumuladorComillas3, lineas))
+                                    {
+                                        texto.Text = "Error 2:205: Linea " + (lineas - 1) + " Se esperaba Delimitador";
+                                        break;
+                                    }
+                                    else if (tokens[apun - 1] == "NULL")
+                                    {
+                                        if (tokens[apun] != "," || tokens[apun] != ";")
+                                        {
+                                            Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (delimitadores.IsMatch(tokens[apun]) && !relacionales.IsMatch(tokens[apun - 1]))
+                                    {
+                                        Errores.ErrorOperadorRelacional(texto, lineas);
+                                        break;
+                                    }
+                                    else if (reservadas.IsMatch(tokens[apun - 1]))
+                                    {
+                                        if (reservadas.IsMatch(tokens[apun]))
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (tokens[apun - 1] == ",")
+                                    {
+                                        if (4.ToString() != ConvertirToken(tokens[apun]))
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (relacionales.IsMatch(tokens[apun]))
+                                    {
+                                        if (apun + 2 >= tokens.Count) // ADELANTE
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
+                                        if (4.ToString() != ConvertirToken(tokens[apun + 1])) // ADELANTE
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (operadores.IsMatch(tokens[apun]) || relacionales.IsMatch(tokens[apun])) // ADELANTE
+                                    {
+                                        if (apun + 2 >= tokens.Count) // ADELANTE
+                                        {
+                                            Errores.ErrorIdentificador(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else if (acumuladorParentesisAbierto % 2 != 0)
+                                    {
+                                        Errores.ErrorParentesisDDL(texto, lineas);
+                                    }
+                                    else if (4.ToString() == ConvertirToken(tokens[apun]) && delimitadores.IsMatch(tokens[apun - 1]))
+                                    {
+                                        Errores.ErrorPalabraReservada(texto, lineas);
+                                        break;
+                                    }
+                                    else if (tokens[apun] == "INTO")
+                                    {
+                                        if (tokens[apun - 1] != "SELECT")
+                                        {
+                                            Errores.ErrorPalabraReservada(texto, lineas);
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Errores.ErrorSintactico(texto, lineas);
+
+                                        break;
+                                    }
+                                }
+
+                            }
+                        }
+
+                        else
+                        {
+                            lineas++;
+                            apunN++;
+                            pila.Push(X);
+                        }
+                    }
+
+                    equis = X;
+                }
+                while (equis != "199");
+                // Validación adicional para INSERT después del análisis sintáctico
+
+
+                if (error == false)
+                {
+                    Errores.SinError(texto, lineas);
+                }
+                pila.Clear();
+                return error;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return true;
+            }
         }
         public bool Validar_NombreAtributo(string nombreAtributo, out bool salida)
         {
