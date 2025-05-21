@@ -20,6 +20,7 @@ namespace Escaner_DML
         
 
         List<string> tokens = new List<string>();
+        List<string> tokens2 = new List<string>();
 
         public Form1()
         {
@@ -75,6 +76,7 @@ namespace Escaner_DML
                 if (Errores.ErrorSimboloDesco(txtEntrada, txtError) == false)
                 {
                     tokens = Analisis.Analizador(txtEntrada, DgvLexica, txtError, DtTablas, DtAtributos, DtRestricciones);
+                    tokens2.Add(tokens[0]);
 
                     // Ahora las copias temporales no se verán afectadas por los cambios en las originales
 
@@ -89,7 +91,7 @@ namespace Escaner_DML
                             tokens.RemoveAt(tokens.Count - 1);
                         }
 
-                        errorActivado = Analisis.Sintaxis(tokens, txtError);
+                        errorActivado = Analisis.Sintaxis(tokens2,tokens, txtError);
                         if (errorActivado == true)
                         {
                             tablas = tablasTemp;

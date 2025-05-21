@@ -768,7 +768,7 @@ namespace Escaner_DML
 
 
         }
-        public bool Sintaxis(List<string> tokens, TextBox texto)
+        public bool Sintaxis(List<string> tokens, List<string> tokens2, TextBox texto)
         {
             try
             {
@@ -1081,6 +1081,11 @@ namespace Escaner_DML
                                 if (X == ConvertirToken(K))
                                 {
                                     apun++;
+                                    tokens.RemoveAt(tokens.Count - 1);
+                                    if (apun < tokens2.Count)
+                                        tokens.Add(tokens2[apun]);
+
+                                    tokens.Add("$");
                                     apunN++;
                                 }
                                 else
