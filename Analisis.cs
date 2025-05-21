@@ -33,6 +33,7 @@ namespace Escaner_DML
             List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas2,
             List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos2,
             List<(int noTabla, int noRestriccion, int tipo, string nombreRestriccion, int atributoAsociado, int tabla, int atributo)> restricciones2)
+
         {
             this.errorActivado = error;
             this.tablas = tablas2;
@@ -42,6 +43,215 @@ namespace Escaner_DML
             sqlConnection = new SqlConnection(connectionString);
             sqlDataAdapter = new SqlDataAdapter();
             dataSet = new DataSet();
+        }
+        public List<string> Analizador2(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
+        {
+            string cadena = "";
+            int linea = 1;
+            texto.Text = texto.Text.ToUpper() + " ";
+            bool comillas = false;
+            bool sigo = false;
+            bool sigoRelacional = false;
+            for (int i = 0; i < texto.TextLength; i++)
+            {
+                string c = texto.Text[i].ToString();
+                if (c == "\n")
+                {
+
+                }
+                if (!delimitadores.IsMatch(c))
+                {
+                    if (sigoRelacional)
+                    {
+                        if (relacionales.IsMatch(c) && c != " ")
+                        {
+                            cadena += c;
+                            tokens.Add(cadena);
+                            if (cadena != "")
+                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                            cadena = "";
+                            c = "";
+                        }
+                        sigoRelacional = false;
+                    }
+                    if (c != " " && !relacionales.IsMatch(c) && !constantesTL.IsMatch(c))
+                    {
+                        if (c != "\n")
+                            cadena += c;
+                    }
+                    if (relacionales.IsMatch(c))
+                    {
+                        if (c != " ")
+                        {
+                            tokens.Add(cadena);
+                            if (cadena != "")
+                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                            cadena = c;
+                            if (i + 1 < texto.TextLength)
+                            {
+                                char siguienteChar = texto.Text[i + 1];
+
+                                if (relacionales.IsMatch(siguienteChar.ToString()))
+                                {
+                                    sigoRelacional = true;
+                                }
+                                else
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                            }
+                        }
+                    }
+                    if (constantesTL.IsMatch(c))
+                    {
+                        if (i + 1 < texto.TextLength)
+                        {
+                            char siguienteChar = texto.Text[i + 1];
+
+                            //si el siguiente es espacio en blanco
+                            if (siguienteChar.ToString() == " ")
+                            {
+                                cadena += c;
+                                tokens.Add(cadena);
+                                if (cadena != "")
+                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                cadena = "";
+                            }
+                            else if (constantesTL.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
+                            {
+                                cadena += c;
+                            }
+                            else if (delimitadores.IsMatch(siguienteChar.ToString()))
+                            {
+                                cadena += c;
+                            }
+                        }
+                    }
+                    if (c == " " || c == "\n")
+                    {
+                        if (empezoComilla == false)
+                        {
+                            if (reservadas.IsMatch(cadena))
+                            {
+                                tokens.Add(cadena);
+                                //tokens.Add(c);
+                                if (cadena != "")
+                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                cadena = "";
+                            }
+                            else if (tokens.Count != 0)
+                            {
+                                if (reservadas.IsMatch(tokens.Last()) && cadena != "")
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    sigo = true;
+                                    cadena = "";
+
+                                }
+                                else if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+
+                                }
+                                else if (delimitadores.IsMatch(tokens.Last()))
+                                {
+                                    if (c == "(")
+                                        acumuladorParentesisAbierto++;
+                                    else if (c == ")")
+                                        acumuladorParentesisAbierto--;
+
+
+
+
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                                else
+                                {
+                                    tokens.Add(cadena);
+                                    if (cadena != "")
+                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    cadena = "";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            cadena += " ";
+                        }
+                        tokens.Add(c);
+                    }
+                }
+                else
+                {
+                    if ("'’‘".Contains(c))
+                    {
+                        if (empezoComilla == false)
+                            tokens.Add(c);
+                        empezoComilla = !empezoComilla;
+                    }
+                    if (c == "(")
+                        acumuladorParentesisAbierto++;
+                    else if (c == ")")
+                        acumuladorParentesisAbierto--;
+
+                    if (c == "’" || c == "‘")
+                        acumuladorComillas1++;
+
+                    if (c == "'")
+                        acumuladorComillas3++;
+
+
+
+                    if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
+                    else if (cadena != "" && comillas == true)
+                    {
+                        tokens.Add("'" + cadena + "'");
+                        tokens.Add(c);
+                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        comillas = false;
+                    }
+                    else if (cadena != "" && (c == ")" || c == ",") && constantesTL.IsMatch(cadena))
+                    {
+                        tokens.Add(cadena);
+                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        tokens.Add(c);
+                        MostrarDgv(dgvLex, c, linea);
+                    }
+                    else
+                    {
+                        tokens.Add(cadena);
+                        if (tokens.Last() != "")
+                            MostrarDgv(dgvLex, tokens.Last(), linea);
+                        tokens.Add(c);
+                        if (c != "")
+                            MostrarDgv(dgvLex, c, linea);
+                    }
+                    cadena = "";
+
+
+
+                }
+                tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " "));
+                if (c == "\n")
+                    linea++;
+            }
+            //bool errorParentesis = Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
+            //if (errorComillas || errorParentesis)
+            //errorActivado = true;
+            //tokens = RemoverDuplicadosVacios(tokens);
+            //LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion,);
+            return tokens;
         }
         public void consultaSQL(DataGridView dgvResultados, RichTextBox texto, TextBox error)
         {
@@ -262,8 +472,9 @@ namespace Escaner_DML
             {"$", 199 }
         };
         List<string> tokens = new List<string>();
-        int dondevoy = 1;
-        public List<string> Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
+        int dondevoy = 0;
+        string actual = "";
+        public string Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
         {
             string cadena = "";
             int linea = 1;
@@ -271,9 +482,9 @@ namespace Escaner_DML
             bool comillas = false;
             bool sigo = false;
             bool sigoRelacional = false;
-            for (int i = 0; i < dondevoy; i++)
+            for (int i = 0; i < texto.TextLength; i++)
             {
-                string c = texto.Text[i].ToString();
+                string c = texto.Text[dondevoy].ToString();
                 if ( c == "\n")
                 {
 
@@ -351,6 +562,7 @@ namespace Escaner_DML
                     }
                     if (c == " " || c == "\n")
                     {
+                        actual = cadena;
                         if (empezoComilla == false)
                         {
                             if (reservadas.IsMatch(cadena))
@@ -403,6 +615,7 @@ namespace Escaner_DML
                                     cadena = "";
                                 }
                             }
+                            break;
                         }
                         else
                         {
@@ -455,6 +668,19 @@ namespace Escaner_DML
                         tokens.Add(c);
                         if (c != "")
                             MostrarDgv(dgvLex, c, linea);
+                        if (cadena == "")
+                        {
+                            actual = c;
+                            
+                        }
+                        else
+                        {
+                            actual = cadena;
+                            dondevoy--;
+                        }
+                        
+                        
+                        break;
                     }
                     cadena = "";
 
@@ -464,13 +690,14 @@ namespace Escaner_DML
                 tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " "));
                 if (c == "\n")
                     linea++;
+                dondevoy++;
             }
             //bool errorParentesis = Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
             //if (errorComillas || errorParentesis)
             //errorActivado = true;
             //tokens = RemoverDuplicadosVacios(tokens);
             //LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion,);
-                return tokens;
+                return actual;
         }
         
         public void LlenadoSelects(List<string> tokens)
@@ -769,10 +996,12 @@ namespace Escaner_DML
 
 
         }
-        public bool Sintaxis(List<string> tokens, TextBox texto, RichTextBox ennt, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
+
+        public bool Sintaxis(List<string> tokens, List<string> tokens2, TextBox texto, RichTextBox ennt, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
         {
             try
             {
+                bool primeravez = true;
                 acumuladorComillas2 = acumuladorComillas2 - 1;
                 texto.BackColor = Color.White;
                 texto.Text = "";
@@ -787,6 +1016,7 @@ namespace Escaner_DML
                 else if (tokens.First() == "SELECT")
                     pila.Push("300");
                 List<string> tokensConN = tokens;
+                tokens2 = tokens2.Where(s => s != "\n").ToList();
                 tokens = tokens.Where(s => s != "\n").ToList();
                 tokens.Add("$");
                 int apun = 0;
@@ -1082,11 +1312,36 @@ namespace Escaner_DML
                                 if (X == ConvertirToken(K))
                                 {
                                     apun++;
+
+                                    //if(apun < tokens2.Count)
+                                    //if(primeravez != true)
+                                    //{
+                                    //    tokens.RemoveAt(tokens.Count-1);
+                                    //    dondevoy = dondevoy + 1;
+                                    //    actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                    //    tokens.Add(actual);
+
+                                    //}
+                                    //else
+                                    //{
+                                    //    tokens.RemoveAt(tokens.Count - 1);
+                                    //    dondevoy = dondevoy + 1;
+                                    //    actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                    //    tokens.Add(actual);
+                                    //    primeravez = false;
+                                    //}
                                     tokens.RemoveAt(tokens.Count - 1);
-                                    tokens.Add(ObtenerPalabraEnIndice(ennt, apun));
+                                    if (apun < tokens2.Count)
+                                        tokens.Add(tokens2[apun]);
+
                                     tokens.Add("$");
                                     tokensConN = tokens;
                                     //tokens = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+
+                                    
+                                    
+                                    //tokens = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                    apunN++;
                                     apunN++;
                                 }
                                 else
