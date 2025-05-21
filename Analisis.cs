@@ -36,7 +36,7 @@ namespace Escaner_DML
         {
             this.errorActivado = error;
             this.tablas = tablas2;
-            this.atributos= atributos2;
+            this.atributos = atributos2;
             this.restricciones = restricciones2;
             string connectionString = @"Data Source=DESKTOP-GQ6Q9HG\SQLEXPRESS;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
             sqlConnection = new SqlConnection(connectionString);
@@ -62,7 +62,7 @@ namespace Escaner_DML
             }
             catch (Exception ex)
             {
-                if(ex.Message == "No se puede encontrar la tabla 0.")
+                if (ex.Message == "No se puede encontrar la tabla 0.")
                 {
 
                 }
@@ -71,7 +71,7 @@ namespace Escaner_DML
                     error.Text = ex.Message;
                     error.BackColor = Color.FromArgb(255, 137, 137);
                 }
-                
+
             }
             finally
             {
@@ -262,6 +262,7 @@ namespace Escaner_DML
             {"$", 199 }
         };
         List<string> tokens = new List<string>();
+        int dondevoy = 1;
         public List<string> Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
         {
             string cadena = "";
@@ -270,7 +271,7 @@ namespace Escaner_DML
             bool comillas = false;
             bool sigo = false;
             bool sigoRelacional = false;
-            for (int i = 0; i < texto.TextLength; i++)
+            for (int i = 0; i < dondevoy; i++)
             {
                 string c = texto.Text[i].ToString();
                 if ( c == "\n")
@@ -768,7 +769,7 @@ namespace Escaner_DML
 
 
         }
-        public bool Sintaxis(List<string> tokens, TextBox texto)
+        public bool Sintaxis(List<string> tokens, TextBox texto, RichTextBox ennt, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
         {
             try
             {
@@ -1081,6 +1082,11 @@ namespace Escaner_DML
                                 if (X == ConvertirToken(K))
                                 {
                                     apun++;
+                                    tokens.RemoveAt(tokens.Count - 1);
+                                    tokens.Add(ObtenerPalabraEnIndice(ennt, apun));
+                                    tokens.Add("$");
+                                    tokensConN = tokens;
+                                    //tokens = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
                                     apunN++;
                                 }
                                 else
@@ -1627,6 +1633,24 @@ namespace Escaner_DML
             }
 
             return true;
+        }
+        public string ObtenerPalabraEnIndice(RichTextBox richTextBox, int indice)
+        {
+            // Separar el texto por espacios en blanco para obtener palabras
+            var palabras = richTextBox.Text.Split(new[] { ' ', '\t', '\n', '\r' },
+                                                   StringSplitOptions.RemoveEmptyEntries);
+
+            // Verificar si el índice está dentro del rango de palabras
+            if (indice >= 0 && indice < palabras.Length)
+            {
+                return palabras[indice];
+            }
+            else
+            {
+                // Si el índice está fuera del rango, podrías manejarlo como desees,
+                // por ejemplo, lanzando una excepción o devolviendo un valor por defecto.
+                throw new IndexOutOfRangeException("El índice está fuera del rango de palabras.");
+            }
         }
         public List<string> ObtenerAtributosAmbiguos()
         {
