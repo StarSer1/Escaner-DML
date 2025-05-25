@@ -480,6 +480,7 @@ namespace Escaner_DML
         string comillaConst = "";
         int dondevoy = 0;
         string actual = "";
+        bool insertPendiente = false;
         public string Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
         {
             string cadena = "";
@@ -1395,6 +1396,21 @@ namespace Escaner_DML
                                                 banderaConst = false;
                                                 repeticion = repeticion - 2;
                                             }
+                                            if(insertPendiente == true)
+                                            {
+                                                int pasos = 0;
+                                                for (int i = apun; i >= 0; i--)
+                                                {
+                                                    if (tokens[i] == "INSERT")
+                                                    {
+                                                        break; // Encontrado
+                                                    }
+
+                                                    pasos++;
+                                                }
+                                                uno(apun-pasos, tokens);
+                                                insertPendiente = false;
+                                            }
                                             if (valorAntesN == true)
                                             {
                                                 tokensConN.Add("\n");
@@ -1460,53 +1476,36 @@ namespace Escaner_DML
                             }
                             else
                             {
-                                if (tokens[apun] == "INSERT" && tokens[apun + 1] == "INTO")
+                                if (tokens[apun] == "INSERT")
                                 {
-                                    string nombreTabla = tokens[apun + 2];
-                                    var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
-                                    if (tabla.Equals(default)) continue;
-
-                                    // Extraer valores entre VALUES (...) o hasta ;
-                                    List<string> valores = new List<string>();
-                                    int j = apun + 5; // Saltar "INSERT INTO tabla VALUES ("
-                                    while (j < tokens.Count && tokens[j] != ")")
-                                    {
-                                        if (tokens[j] != "," && tokens[j] != "(")
-                                            valores.Add(tokens[j].Trim('\''));
-                                        j++;
-                                    }
-
-                                    // Almacenar los datos
-                                    if (!datosTablas.ContainsKey(tabla.noTabla))
-                                        datosTablas[tabla.noTabla] = new List<List<string>>();
-                                    datosTablas[tabla.noTabla].Add(valores);
+                                    insertPendiente = true;
                                 }
 
-                                if (K == "INSERT")
-                                {
-                                    string nombreTabla = tokens[apun + 2];
-                                    List<string> valores = tokens
-                                        .Skip(apun+5) // Saltar hasta después de "("
-                                        .TakeWhile(t => t != ")")
-                                        .Where(t => t != ",")
-                                        .ToList();
-                                    valores.RemoveAll(v => v.Trim() == "'");
+                                //if (K == "INSERT")
+                                //{
+                                //    string nombreTabla = tokens[apun + 2];
+                                //    List<string> valores = tokens
+                                //        .Skip(apun+5) // Saltar hasta después de "("
+                                //        .TakeWhile(t => t != ")")
+                                //        .Where(t => t != ",")
+                                //        .ToList();
+                                //    valores.RemoveAll(v => v.Trim() == "'");
 
-                                    bool errorSemantico;
-                                    if (!ValidarLlaveForaneaInsert(nombreTabla, valores, texto, lineas, out errorSemantico))
-                                    {
-                                        error = true;
-                                    }
-                                }
-                                string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
-                                if (produccion != null)
-                                {
-                                    if (produccion != "99")
-                                    {
-                                        produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
-                                    }
+                                //    bool errorSemantico;
+                                //    if (!ValidarLlaveForaneaInsert(nombreTabla, valores, texto, lineas, out errorSemantico))
+                                //    {
+                                //        error = true;
+                                //    }
+                                //}
+                                //string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
+                                //if (produccion != null)
+                                //{
+                                //    if (produccion != "99")
+                                //    {
+                                //        produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
+                                //    }
 
-                                }
+                                //}
                                 else
                                 {
                                     error = true;
@@ -1528,11 +1527,11 @@ namespace Escaner_DML
                                             break;
                                         }
                                     }
-                                    else if (constantes.IsMatch(tokens[apun - 2]) && constantes.IsMatch(tokens[apun + 1]))
-                                    {
-                                        Errores.ErrorConstante(texto, lineas);
-                                        break;
-                                    }
+                                    //else if (constantes.IsMatch(tokens[apun - 2]) && constantes.IsMatch(tokens[apun + 1]))
+                                    //{
+                                    //    Errores.ErrorConstante(texto, lineas);
+                                    //    break;
+                                    //}
                                     else if (constantesTL.IsMatch(tokens[apun - 1]) && constantesTL.IsMatch(tokens[apun]))
                                     {
                                         Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
@@ -1661,7 +1660,27 @@ namespace Escaner_DML
                 return true;
             }
         }
+        public void uno(int apun, List<string > tokens)
+        {
+            string nombreTabla = tokens[apun + 2];
+            var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
+            //if (tabla.Equals(default)) continue;
 
+            // Extraer valores entre VALUES (...) o hasta ;
+            List<string> valores = new List<string>();
+            int j = apun + 5; // Saltar "INSERT INTO tabla VALUES ("
+            while (j < tokens.Count && tokens[j] != ")")
+            {
+                if (tokens[j] != "," && tokens[j] != "(")
+                    valores.Add(tokens[j].Trim('\''));
+                j++;
+            }
+
+            // Almacenar los datos
+            if (!datosTablas.ContainsKey(tabla.noTabla))
+                datosTablas[tabla.noTabla] = new List<List<string>>();
+            datosTablas[tabla.noTabla].Add(valores);
+        }
         List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas = new List<(int, string, int, int)>();
         List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos = new List<(int, int, string, string, int, int, int)>();
         List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restricciones = new List<(int, int, int, string, int, int, int)>();
