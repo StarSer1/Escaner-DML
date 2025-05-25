@@ -441,6 +441,7 @@ namespace Escaner_DML
         int acumuladorComillas2 = 0;
         int acumuladorComillas3 = 0;
         bool empezoComilla = false;
+        bool valorAntesN = false;
         Errores Errores = new Errores();
 
         // En la clase Analisis, agregar esta variable
@@ -472,6 +473,8 @@ namespace Escaner_DML
             {"$", 199 }
         };
         List<string> tokens = new List<string>();
+        List<string> tokensConN = new List<string>();
+
         int dondevoy = 0;
         string actual = "";
         public string Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
@@ -487,7 +490,7 @@ namespace Escaner_DML
                 string c = texto.Text[dondevoy].ToString();
                 if ( c == "\n")
                 {
-
+                    valorAntesN = true;
                 }
                 if (!delimitadores.IsMatch(c))
                 {
@@ -539,7 +542,7 @@ namespace Escaner_DML
                     {
                         if (i + 1 < texto.TextLength)
                         {
-                            char siguienteChar = texto.Text[i + 1];
+                            char siguienteChar = texto.Text[dondevoy + 1];
 
                             //si el siguiente es espacio en blanco
                             if (siguienteChar.ToString() == " ")
@@ -557,6 +560,10 @@ namespace Escaner_DML
                             else if (delimitadores.IsMatch(siguienteChar.ToString()))
                             {
                                 cadena += c;
+                                if (siguienteChar == ')')
+                                {
+                                    return cadena;
+                                }
                             }
                         }
                     }
@@ -671,7 +678,14 @@ namespace Escaner_DML
                         if (cadena == "")
                         {
                             actual = c;
-                            
+                            if (actual == "(" || actual == ")" || actual == ",")
+                            {
+                                //dondevoy++;
+                                if (char.IsDigit(texto.Text[dondevoy]))
+                                {
+                                    dondevoy--;
+                                }
+                            }
                         }
                         else
                         {
@@ -1015,7 +1029,7 @@ namespace Escaner_DML
                     pila.Push("200");
                 else if (tokens.First() == "SELECT")
                     pila.Push("300");
-                List<string> tokensConN = tokens;
+                //tokensConN = tokens;
                 tokens2 = tokens2.Where(s => s != "\n").ToList();
                 tokens = tokens.Where(s => s != "\n").ToList();
                 tokens.Add("$");
@@ -1311,37 +1325,59 @@ namespace Escaner_DML
                             {
                                 if (X == ConvertirToken(K))
                                 {
-                                    apun++;
 
-                                    //if(apun < tokens2.Count)
-                                    //if(primeravez != true)
-                                    //{
-                                    //    tokens.RemoveAt(tokens.Count-1);
-                                    //    dondevoy = dondevoy + 1;
-                                    //    actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
-                                    //    tokens.Add(actual);
+                                    if (apun < tokens2.Count - 1)
+                                        if (primeravez != true)
+                                        {
+                                            if (apun == 93)
+                                            {
 
-                                    //}
-                                    //else
-                                    //{
-                                    //    tokens.RemoveAt(tokens.Count - 1);
-                                    //    dondevoy = dondevoy + 1;
-                                    //    actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
-                                    //    tokens.Add(actual);
-                                    //    primeravez = false;
-                                    //}
-                                    tokens.RemoveAt(tokens.Count - 1);
-                                    if (apun < tokens2.Count)
-                                        tokens.Add(tokens2[apun]);
+                                            }
+                                            apun++;
+                                            tokens.RemoveAt(tokens.Count - 1);
+                                            actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                            while (actual == "")
+                                            {                                               
+                                                dondevoy++;
+                                                actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                            }
+                                            dondevoy = dondevoy + 1;
+                                            tokensConN.Add(actual);
+                                            tokens.Add(actual);
+                                            if (valorAntesN == true)
+                                            {
+                                                tokensConN.Add("\n");
+                                                valorAntesN = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            tokensConN.Add(tokens[0]);
+                                            apun++;
+                                            tokens.RemoveAt(tokens.Count - 1);
+                                            actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                            dondevoy = dondevoy + 1;
+                                            actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                            dondevoy = dondevoy + 1;
+                                            tokensConN.Add(actual);
+                                            tokens.Add(actual);
+                                            primeravez = false;
+                                        }
+                                    else
+                                    {
+                                        apun++;
+                                        tokens.RemoveAt(tokens.Count - 1);
+                                    }
+                                    //tokens.RemoveAt(tokens.Count - 1);
+                                    //if (apun < tokens2.Count)
+                                    //    tokens.Add(tokens2[apun]);
 
                                     tokens.Add("$");
-                                    tokensConN = tokens;
                                     //tokens = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
 
                                     
                                     
                                     //tokens = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
-                                    apunN++;
                                     apunN++;
                                 }
                                 else
