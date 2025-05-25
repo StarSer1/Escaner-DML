@@ -1048,6 +1048,7 @@ namespace Escaner_DML
             try
             {
                 tokensConN.Clear();
+                tokens.RemoveRange(1, tokens.Count - 1);
                 bool primeravez = true;
                 acumuladorComillas2 = acumuladorComillas2 - 1;
                 texto.BackColor = Color.White;
