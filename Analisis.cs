@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
@@ -475,6 +476,8 @@ namespace Escaner_DML
         List<string> tokens = new List<string>();
         List<string> tokensConN = new List<string>();
 
+        bool banderaConst = false;
+        string comillaConst = "";
         int dondevoy = 0;
         string actual = "";
         public string Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
@@ -491,7 +494,7 @@ namespace Escaner_DML
                 if ( c == "\n")
                 {
                     valorAntesN = true;
-                }
+                }               
                 if (!delimitadores.IsMatch(c))
                 {
                     if (sigoRelacional)
@@ -712,15 +715,21 @@ namespace Escaner_DML
                 }
                 if (texto.Text[dondevoy+1]== '\'')
                 {
-                    return cadena;
+                    banderaConst = true;
+                    return "'"+cadena+"'";
                 }
                 if (c == "#")
                 {
                     return cadena;
                 }
-                else if (c== "'")
+                //if (empezoComilla == true)
+                //{
+                //    banderaConst = true;
+                //    comillaConst += texto.Text[dondevoy];
+                //}
+                else if (c == "'")
                 {
-                    return c;
+                    banderaConst = true;
                 }
                 tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " "));
                 if (c == "\n")
@@ -1061,8 +1070,9 @@ namespace Escaner_DML
                 string K = "";
                 int numeroTablaChecker = 0;
                 int numeroTablaCheckerRef = 0;
-                
-                
+                int repeticion = tokens2.Count - 1;
+
+
                 do
                 {
                     string X = pila.Pop();
@@ -1347,11 +1357,11 @@ namespace Escaner_DML
                                 if (X == ConvertirToken(K))
                                 {
 
-                                    if(apun == 19)
+                                    if(apun == 32)
                                     {
 
                                     }
-                                    if (apun < tokens2.Count - 1)
+                                    if (apun < repeticion)
                                         if (primeravez != true)
                                         {
                                             if (apun == 93)
@@ -1361,6 +1371,11 @@ namespace Escaner_DML
                                             apun++;
                                             tokens.RemoveAt(tokens.Count - 1);
                                             actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                            if( banderaConst == true)
+                                            {
+                                                tokensConN.Add("'");
+                                                tokens.Add("'");                                          
+                                            }
                                             while (actual == "")
                                             {                                               
                                                 dondevoy++;
@@ -1369,6 +1384,13 @@ namespace Escaner_DML
                                             dondevoy = dondevoy + 1;
                                             tokensConN.Add(actual);
                                             tokens.Add(actual);
+                                            if (banderaConst == true)
+                                            {
+                                                tokensConN.Add("'");
+                                                tokens.Add("'");
+                                                banderaConst = false;
+                                                repeticion = repeticion - 2;
+                                            }
                                             if (valorAntesN == true)
                                             {
                                                 tokensConN.Add("\n");
