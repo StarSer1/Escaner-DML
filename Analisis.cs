@@ -577,7 +577,7 @@ namespace Escaner_DML
                     }
                     if (c == " " || c == "\n")
                     {
-                        actual = cadena;
+                        return actual = cadena;
                         if (empezoComilla == false)
                         {
                             if (reservadas.IsMatch(cadena))
@@ -716,6 +716,8 @@ namespace Escaner_DML
                 if (texto.Text[dondevoy+1]== '\'')
                 {
                     banderaConst = true;
+                    dondevoy++;
+
                     return "'"+cadena+"'";
                 }
                 if (c == "#")
@@ -1045,6 +1047,7 @@ namespace Escaner_DML
         {
             try
             {
+                tokensConN.Clear();
                 bool primeravez = true;
                 acumuladorComillas2 = acumuladorComillas2 - 1;
                 texto.BackColor = Color.White;
@@ -1357,7 +1360,7 @@ namespace Escaner_DML
                                 if (X == ConvertirToken(K))
                                 {
 
-                                    if(apun == 32)
+                                    if(apun == 29)
                                     {
 
                                     }
@@ -1382,8 +1385,8 @@ namespace Escaner_DML
                                                 actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
                                             }
                                             dondevoy = dondevoy + 1;
-                                            tokensConN.Add(actual);
-                                            tokens.Add(actual);
+                                            tokensConN.Add(actual.Trim().Replace(" ", ""));
+                                            tokens.Add(actual.Trim().Replace(" ", ""));
                                             if (banderaConst == true)
                                             {
                                                 tokensConN.Add("'");
