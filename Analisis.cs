@@ -511,6 +511,10 @@ namespace Escaner_DML
                     {
                         if (c != "\n")
                             cadena += c;
+                        if(texto.Text[dondevoy+1] == '=')
+                        {
+                            return cadena;
+                        }
                     }
                     if (relacionales.IsMatch(c))
                     {
@@ -522,7 +526,7 @@ namespace Escaner_DML
                             cadena = c;
                             if (i + 1 < texto.TextLength)
                             {
-                                char siguienteChar = texto.Text[i + 1];
+                                char siguienteChar = texto.Text[dondevoy + 1];
 
                                 if (relacionales.IsMatch(siguienteChar.ToString()))
                                 {
@@ -534,6 +538,7 @@ namespace Escaner_DML
                                     if (cadena != "")
                                         MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
+                                    return c;
                                 }
                             }
                         }
@@ -686,6 +691,10 @@ namespace Escaner_DML
                                     dondevoy--;
                                 }
                             }
+                            if (actual == ".")
+                            {
+                                
+                            }
                         }
                         else
                         {
@@ -700,6 +709,18 @@ namespace Escaner_DML
 
 
 
+                }
+                if (texto.Text[dondevoy+1]== '\'')
+                {
+                    return cadena;
+                }
+                if (c == "#")
+                {
+                    return cadena;
+                }
+                else if (c== "'")
+                {
+                    return c;
                 }
                 tokens.RemoveAll(item => (string.IsNullOrEmpty(item) || item == " "));
                 if (c == "\n")
@@ -1326,6 +1347,10 @@ namespace Escaner_DML
                                 if (X == ConvertirToken(K))
                                 {
 
+                                    if(apun == 19)
+                                    {
+
+                                    }
                                     if (apun < tokens2.Count - 1)
                                         if (primeravez != true)
                                         {
