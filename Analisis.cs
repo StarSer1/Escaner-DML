@@ -1396,7 +1396,7 @@ namespace Escaner_DML
                                                 banderaConst = false;
                                                 repeticion = repeticion - 2;
                                             }
-                                            if(insertPendiente == true)
+                                            if(insertPendiente == true && actual == ")")
                                             {
                                                 int pasos = 0;
                                                 for (int i = apun; i >= 0; i--)
@@ -1497,15 +1497,15 @@ namespace Escaner_DML
                                 //        error = true;
                                 //    }
                                 //}
-                                //string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
-                                //if (produccion != null)
-                                //{
-                                //    if (produccion != "99")
-                                //    {
-                                //        produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
-                                //    }
+                                string produccion = TablaSintac[EncontrarIndiceX(X), EncontrarIndiceK(ConvertirToken(K))];
+                                if (produccion != null)
+                                {
+                                    if (produccion != "99")
+                                    {
+                                        produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
+                                    }
 
-                                //}
+                                }
                                 else
                                 {
                                     error = true;
