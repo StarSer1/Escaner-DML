@@ -8,7 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Diagnostics;
+using System.Globalization;
 namespace Escaner_DML
 {
     public partial class Form1 : Form
@@ -43,6 +44,9 @@ namespace Escaner_DML
 
         private void BtnAnalizar_Click(object sender, EventArgs e)
         {
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+
             if (txtEntrada.Text != "")
             {
                 string textoOriginal = txtEntrada.Text;
@@ -76,7 +80,6 @@ namespace Escaner_DML
                 {
                     cad = Analisis.CargarTexto(txtEntrada, DgvLexica, txtError, DtTablas, DtAtributos, DtRestricciones);
                     tokensForm1.Add(cad[0]);
-                    // Ahora las copias temporales no se verán afectadas por los cambios en las originales
 
                     if (Analisis.errorActivado == false)
                     {
@@ -84,32 +87,27 @@ namespace Escaner_DML
                         Analisis.cadText(cad);
                         try
                         {
-                            //while (cad.Last() == "\n")
-                            //{
-                            //    cad.RemoveAt(cad.Count - 1);
-                            //}
-
                             errorActivado = Analisis.Sintaxis(tokensForm1, txtError, txtEntrada, DgvLexica, cad, txtError, DtTablas, DtAtributos, DtRestricciones);
                             if (errorActivado == true)
                             {
                                 tablas = tablasTemp;
                                 atributos = atributosTemp;
                                 restricciones = restriccionesTemp;
-
                             }
 
                             if (!errorActivado)
                                 Analisis.consultaSQL(dataGridView1, txtEntrada, txtError);
                         }
-                        catch
-                        { }
-
+                        catch { }
                     }
                 }
+
                 txtEntrada.Text = textoOriginal;
-                
             }
 
+            stopwatch.Stop();
+            double tiempoEjecucion = stopwatch.Elapsed.TotalSeconds;
+            txtTiempo.Text += $"\n\nTiempo de ejecución: {tiempoEjecucion.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)} segundos";
         }
         private void BtnLimpiar_Click(object sender, EventArgs e)
         {
