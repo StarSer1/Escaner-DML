@@ -561,6 +561,7 @@ namespace Escaner_DML
                                 tokens.Add(cadena);
                                 if (cadena != "")
                                     MostrarDgv(dgvLex, tokens.Last(), linea);
+                                return cadena;
                                 cadena = "";
                             }
                             else if (constantesTL.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
@@ -1380,7 +1381,7 @@ namespace Escaner_DML
                                     {
 
                                     }
-                                    if(tokens.Count >= 382)
+                                    if(tokens.Count >= 1258)
                                     {
 
                                     }
@@ -1394,15 +1395,16 @@ namespace Escaner_DML
                                             apun++;
                                             tokens.RemoveAt(tokens.Count - 1);
                                             actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
-                                            if( banderaConst == true)
-                                            {
-                                                tokensConN.Add("'");
-                                                tokens.Add("'");                                          
-                                            }
                                             while (actual == "")
                                             {                                               
                                                 dondevoy++;
                                                 actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+
+                                            }
+                                            if( banderaConst == true)
+                                            {
+                                                tokensConN.Add("'");
+                                                tokens.Add("'");                                          
                                             }
                                             dondevoy = dondevoy + 1;
                                             if (actual.StartsWith("'") && actual.EndsWith("'"))
@@ -1514,7 +1516,7 @@ namespace Escaner_DML
                                 //{
                                 //    string nombreTabla = tokens[apun + 2];
                                 //    List<string> valores = tokens
-                                //        .Skip(apun+5) // Saltar hasta después de "("
+                                //        .Skip(apun + 5) // Saltar hasta después de "("
                                 //        .TakeWhile(t => t != ")")
                                 //        .Where(t => t != ",")
                                 //        .ToList();
