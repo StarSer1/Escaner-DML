@@ -33,7 +33,7 @@ namespace Escaner_DML
             this.tablas = tablas2;
             this.atributos = atributos2;
             this.restricciones = restricciones2;
-            string connectionString = @"Data Source=CARLOS-DESKTOP;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
+            string connectionString = @"Data Source=DESKTOP-0434B1E;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
             sqlConnection = new SqlConnection(connectionString);
             sqlDataAdapter = new SqlDataAdapter();
             dataSet = new DataSet();
@@ -211,7 +211,6 @@ namespace Escaner_DML
                             cadena += c;
                             tokens.Add(cadena);
                             if (cadena != "")
-                                //MostrarDgv(dgvLex, tokens.Last(), linea);
                             cadena = "";
                             c = "";
                         }
@@ -232,7 +231,6 @@ namespace Escaner_DML
                         {
                             tokens.Add(cadena);
                             if (cadena != "")
-                                //MostrarDgv(dgvLex, tokens.Last(), linea);
                             cadena = c;
                             if (i + 1 < texto.TextLength)
                             {
@@ -246,7 +244,6 @@ namespace Escaner_DML
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        //MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                     return c;
                                 }
@@ -265,9 +262,7 @@ namespace Escaner_DML
                                 cadena += c;
                                 tokens.Add(cadena);
                                 if (cadena != "")
-                                    //MostrarDgv(dgvLex, tokens.Last(), linea);
                                 return cadena;
-                                //cadena = "";
                             }
                             else if (constantesTL.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
                             {
@@ -297,66 +292,6 @@ namespace Escaner_DML
                         {
                             cadena += c;
                         }
-                        
-                        //if (empezoComilla == false)
-                        //{
-                        //    if (reservadas.IsMatch(cadena))
-                        //    {
-                        //        tokens.Add(cadena);
-                        //        //tokens.Add(c);
-                        //        if (cadena != "")
-                        //            MostrarDgv(dgvLex, tokens.Last(), linea);
-                        //        cadena = "";
-                        //    }
-                        //    else if (tokens.Count != 0)
-                        //    {
-                        //        if (reservadas.IsMatch(tokens.Last()) && cadena != "")
-                        //        {
-                        //            tokens.Add(cadena);
-                        //            if (cadena != "")
-                        //                MostrarDgv(dgvLex, tokens.Last(), linea);
-                        //            sigo = true;
-                        //            cadena = "";
-
-                        //        }
-                        //        else if (relacionales.IsMatch(tokens.Last()) || relacionales.IsMatch(cadena))
-                        //        {
-                        //            tokens.Add(cadena);
-                        //            if (cadena != "")
-                        //                MostrarDgv(dgvLex, tokens.Last(), linea);
-                        //            cadena = "";
-
-                        //        }
-                        //        else if (delimitadores.IsMatch(tokens.Last()))
-                        //        {
-                        //            if (c == "(")
-                        //                acumuladorParentesisAbierto++;
-                        //            else if (c == ")")
-                        //                acumuladorParentesisAbierto--;
-
-                                 
-
-
-                        //            tokens.Add(cadena);
-                        //            if (cadena != "")
-                        //                MostrarDgv(dgvLex, tokens.Last(), linea);
-                        //            cadena = "";
-                        //        }
-                        //        else
-                        //        {
-                        //            tokens.Add(cadena);
-                        //            if (cadena != "")
-                        //                MostrarDgv(dgvLex, tokens.Last(), linea);
-                        //            cadena = "";
-                        //        }
-                        //    }
-                        //    break;
-                        //}
-                        //else
-                        //{
-                        //    cadena += " ";
-                        //}
-                        //tokens.Add(c);
                     }
                 }
                 else
@@ -378,32 +313,24 @@ namespace Escaner_DML
 
                     if (c == "'")
                         acumuladorComillas3++;
-
-
-
                     if (comillas == false && Regex.IsMatch(c, @"['’‘]")) comillas = true;
                     else if (cadena != "" && comillas == true)
                     {
                         tokens.Add("'"+cadena+"'");
                         tokens.Add(c);
-                        //MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         comillas = false;
                     }
                     else if (cadena != "" && (c == ")" || c == ",") && constantesTL.IsMatch(cadena))
                     {
                         tokens.Add(cadena);
-                        //MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         tokens.Add(c);
-                        //MostrarDgv(dgvLex, c, linea);
                     }
                     else
                     {
                         tokens.Add(cadena);
                         if (tokens.Last() != "")
-                            //MostrarDgv(dgvLex, tokens.Last(), linea);
                         tokens.Add(c);
                         if (c != "")
-                            //MostrarDgv(dgvLex, c, linea);
                         if (cadena == "")
                         {
                             actual = c;
@@ -445,11 +372,6 @@ namespace Escaner_DML
                 {
                     return cadena;
                 }
-                //if (empezoComilla == true)
-                //{
-                //    banderaConst = true;
-                //    comillaConst += texto.Text[dondevoy];
-                //}
                 else if (c == "'")
                 {
                     banderaConst = true;
@@ -459,11 +381,6 @@ namespace Escaner_DML
                     linea++;
                 dondevoy++;
             }
-            //bool errorParentesis = Errores.ErrorParentesis(dgvCons, dgvIden, dgvLex, txtError, acumuladorParentesisAbierto);
-            //if (errorComillas || errorParentesis)
-            //errorActivado = true;
-            //tokens = RemoverDuplicadosVacios(tokens);
-            //LLENADOTABLASPAPU(dgvTabla, dgvAtributos, dgvRestriccion,);
                 return actual;
         }
         
@@ -515,11 +432,6 @@ namespace Escaner_DML
                                 }
                                 listaWhere.Add(("", tokens2[i], tipo, linea));
                             }
-                            //else if (tokens2[i + 1] == "IN")
-                            //{
-                            //    listaWhere.Add(("", tokens2[i], "", linea));
-                            //    i += 2;
-                            //}
                         }
                         if (tokens2[i] == "WHERE")
                         {
@@ -595,7 +507,6 @@ namespace Escaner_DML
                         var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
                         if (tabla.Equals(default)) continue;
 
-                        // Extraer valores entre VALUES (...) o hasta ;
                         List<string> valores = new List<string>();
                         int j = i + 4; // Saltar "INSERT INTO tabla VALUES ("
                         while (j < tokens2.Count && tokens2[j] != ")")
@@ -605,7 +516,6 @@ namespace Escaner_DML
                             j++;
                         }
 
-                        // Almacenar los datos
                         if (!datosTablas.ContainsKey(tabla.noTabla))
                             datosTablas[tabla.noTabla] = new List<List<string>>();
                         datosTablas[tabla.noTabla].Add(valores);
@@ -626,9 +536,6 @@ namespace Escaner_DML
                             //dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
                             tablas.Add((noTabla, tokens2[i + 2], 0, 0));
                             noTabla++;
-
-
-
                         }
                         //ATRIBUTOS
                         else if (delimitadores.IsMatch(tokens2[i - 1]) && (tokens2[i - 1] != ")" && tokens2[i] != ")"))
@@ -646,7 +553,6 @@ namespace Escaner_DML
                                         noAtributoTemp = 1;
                                         noTablaTemp = noTabla;
                                     }
-                                    //dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 1, noAtributoTemp);
                                     atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], Convert.ToInt32(tokens2[i + 3]), 1, noAtributoTemp));
                                     noAtributo++;
                                 }
@@ -661,7 +567,6 @@ namespace Escaner_DML
                                         noAtributoTemp = 1;
                                         noTablaTemp = noTabla;
                                     }
-                                    //dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 0, noAtributoTemp);
                                     atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], int.Parse(tokens2[i + 3]), 0, noAtributoTemp));
                                     noAtributo++;
                                 }
@@ -683,13 +588,11 @@ namespace Escaner_DML
                                     .FirstOrDefault();
                                     if (atributoAsociado != null)
                                     {
-                                        //dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
                                         restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
                                         noRestriccion++;
                                     }
                                     else
                                     {
-                                        //dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], "N/A", "-", "-");
                                         restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], -1, -1, -1));
                                         noRestriccion++;
                                     }
@@ -715,13 +618,11 @@ namespace Escaner_DML
                                     .FirstOrDefault();
                                     if (atributoAsociado != null && noTablaDT != null && noAtributo != null)
                                     {
-                                        //dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
                                         restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo))));
                                         noRestriccion++;
                                     }
                                     else
                                     {
-                                        //dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], "N/A", "N/A", "N/A");
                                         restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], -1, -1, -1));
                                         noRestriccion++;
                                     }
@@ -729,7 +630,6 @@ namespace Escaner_DML
                                 }
                             }
                         }
-                       
                 }
                 catch
                 {
@@ -748,17 +648,6 @@ namespace Escaner_DML
             }
 
             tablas = tablasConConteo;
-
-            //dtTab.Rows.Clear();
-
-            //foreach (var tabla in tablas)
-            //{
-            //    dtTab.Rows.Add(tabla.noTabla, tabla.nombreTabla, tabla.cantidadAtributos, tabla.cantidadRestricciones);
-            //}
-
-
-
-
         }
 
         public bool Sintaxis(List<string> tokens, TextBox texto, RichTextBox ennt, List<string> cad, TextBox txtError)
@@ -850,30 +739,6 @@ namespace Escaner_DML
                             // Si pasa la validación de cantidad, validar tipos de datos
                             if (!errorSintactico)
                             {
-                                //// 1. Obtener nombre de la tabla destino (debes tener esta variable)
-                                //string nombreTablaDestino = tokens[tokens.IndexOf("INTO") + 1];
-
-                                //// 2. Obtener los valores del INSERT (debes tener esta lista)
-                                //List<string> valoresInsert = tokens
-                                //    .Skip(tokens.IndexOf("VALUES") + 1)
-                                //    .TakeWhile(t => t != ")")
-                                //    .Where(t => t != "(" && t != ",")
-                                //    .ToList();
-                                //valoresInsert.RemoveAll(v => v.Trim() == "'");
-
-                                //// 3. Validar tipos y longitud
-                                //bool validacionTipo = Validar_TipoDatoEnInsercion(
-                                //    nombreTablaDestino,
-                                //    valoresInsert,
-                                //    out (string error, int linea, string atributo) errorInfo
-                                //);
-
-                                //if (!validacionTipo)
-                                //{
-                                //    Errores.validarTipoDatoInsert(texto, lineas, errorInfo.atributo, errorInfo.error);
-                                //    error = true;
-                                //    break;
-                                //}
                             }
                             else
                             {
@@ -890,14 +755,7 @@ namespace Escaner_DML
                             error = true;
                             break;
                         }
-                        //if (X == "707")
-                        //    errorSintactico = Validar_CantidadBytes(out errorSintactico, numeroTablaChecker, apunN, tokens[apun-2]);
-                        //if (errorSintactico == true)
-                        //{
-                        //    Errores.validarCantidadBytes(texto, lineas);
-                        //    error = true;
-                        //    break;
-                        //}
+
                         if (X == "708")
                             errorSintactico = Validar_TablaContAtrib(out errorSintactico, numeroTablaCheckerRef, K);
                         if (errorSintactico == true)
@@ -931,13 +789,7 @@ namespace Escaner_DML
                                         break;
                                     }
                                 }
-
-
-                                
                             }
-
-
-
                             List<string> atributosNoEncontrados = nombrePerteneceATabla();
 
                             if (atributosNoEncontrados.Any())
@@ -949,9 +801,6 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            // NUEVA REGLA
-                            // Se ocupa que K si esta en una linea diferente a la 1, cheque con el atributo de 3 o 2 tokens atras, si son iguales
-                            // todo esta altoke, si son diferentes, errrror.
                             if (lineas != 1 && BuscarAtributoPorLinea(K) && tokens[apun-2] == "SELECT")
                             {
                                 if (tokens[apun - 5] != K)
@@ -961,10 +810,6 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-                            
-
-
-
                         }
                         if(X == "801")
                         {
@@ -978,10 +823,7 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-
                             List<string> erroresWhereINv = ObtenerAtributosWhereInvalidosConAlias();
-
-                                                      
                             if (erroresWhereINv.Any())
                             {
                                 foreach (var atributo in erroresWhereINv)
@@ -991,8 +833,6 @@ namespace Escaner_DML
                                     break;
                                 }
                             }
-
-
                         }
                         if (X == "803")
                         {
@@ -1013,7 +853,6 @@ namespace Escaner_DML
                                 Errores.validarIdentificadorInvalido(texto, lineas, identificadorInvalido);
                                 break;
                             }
-
                         }
                         if (X == "808") // Código para validación de subconsultas
                         {
@@ -1023,12 +862,9 @@ namespace Escaner_DML
                                 ref listaWhere,
                                 ref atributos
                             );
-
                             if (!valido)
                             {
                                 error = true;
-
-                                // errorInfo.error == "Error de tipo en la comparación: MNOMBRE no es del mismo tipo..."
                                 var match = System.Text.RegularExpressions.Regex.Match(
                                     errorInfo.errorMsg,
                                     @":\s*(\w+)"
@@ -1048,8 +884,6 @@ namespace Escaner_DML
                             if (!errorsisimo)
                             {
                                 error = true;
-
-                                // errorInfo.error == "Error de tipo en la comparación: MNOMBRE no es del mismo tipo..."
                                 var match = System.Text.RegularExpressions.Regex.Match(
                                     errorInfo.errorMsg,
                                     @":\s*(\w+)"
@@ -1065,9 +899,7 @@ namespace Escaner_DML
                                 );
                                 break;
                             }
-
                         }
-                        //apunN++;
                     }
                     else
                     {
@@ -1080,7 +912,6 @@ namespace Escaner_DML
                             {
                                 if (X == ConvertirToken(K))
                                 {
-
                                     if(apun == 20)
                                     {
 
@@ -1094,7 +925,6 @@ namespace Escaner_DML
                                         {
                                             if (apun == 93)
                                             {
-
                                             }
                                             apun++;
                                             tokens.RemoveAt(tokens.Count - 1);
@@ -1103,7 +933,6 @@ namespace Escaner_DML
                                             {                                               
                                                 dondevoy++;
                                                 actual = Analizador(ennt);
-
                                             }
                                             if( banderaConst == true)
                                             {
@@ -1113,20 +942,16 @@ namespace Escaner_DML
                                             dondevoy = dondevoy + 1;
                                             if (actual.StartsWith("'") && actual.EndsWith("'"))
                                             {
-                                                // No quitar espacios si empieza y termina con comilla simple
                                                 tokensConN.Add(actual);
                                                 tokens.Add(actual);
                                             }
                                             else
                                             {
-                                                // Quitar todos los espacios (internos y externos)
-                                                
                                                 tokensConN.Add(actual.Trim().Replace(" ", ""));
                                                 tokens.Add(actual.Trim().Replace(" ", ""));
                                             }
                                             if (banderaConst == true)
                                             {
-
                                                 tokensConN.Add("'");
                                                 tokens.Add("'");
                                                 banderaConst = false;
@@ -1142,7 +967,6 @@ namespace Escaner_DML
                                                     {
                                                         break; // Encontrado
                                                     }
-
                                                     pasos++;
                                                 }
                                                 if (insertPendiente == true)
@@ -1216,7 +1040,6 @@ namespace Escaner_DML
                                 {
                                     insertPendiente = true;
                                 }
-
                                 if (K == "INSERT")
                                 {
                                     truncatePendiente = true;
@@ -1228,7 +1051,6 @@ namespace Escaner_DML
                                     {
                                         produccion.Split(' ').Reverse().ToList().ForEach(prod => pila.Push(prod));
                                     }
-
                                 }
                                 else
                                 {
@@ -1251,11 +1073,6 @@ namespace Escaner_DML
                                             break;
                                         }
                                     }
-                                    //else if (constantes.IsMatch(tokens[apun - 2]) && constantes.IsMatch(tokens[apun + 1]))
-                                    //{
-                                    //    Errores.ErrorConstante(texto, lineas);
-                                    //    break;
-                                    //}
                                     else if (constantesTL.IsMatch(tokens[apun - 1]) && constantesTL.IsMatch(tokens[apun]))
                                     {
                                         Errores.ErroresComillas(texto, acumuladorComillas2, lineas);
@@ -1356,7 +1173,6 @@ namespace Escaner_DML
 
                             }
                         }
-
                         else
                         {
                             lineas++;
@@ -1364,13 +1180,9 @@ namespace Escaner_DML
                             pila.Push(X);
                         }
                     }
-
                         equis = X;
                 }
                 while (equis != "199");
-                // Validación adicional para INSERT después del análisis sintáctico
-                
-
                 if (error == false)
                 {
                     Errores.SinError(texto, lineas);
@@ -1384,7 +1196,6 @@ namespace Escaner_DML
                 return true;
             }
         }
-
         public void dos (int apun, List<string> tokens, TextBox texto, int lineas, bool error)
         {
             string nombreTabla = tokens[apun + 2];
@@ -1405,9 +1216,6 @@ namespace Escaner_DML
         {
             string nombreTabla = tokens[apun + 2];
             var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
-            //if (tabla.Equals(default)) continue;
-
-            // Extraer valores entre VALUES (...) o hasta ;
             List<string> valores = new List<string>();
             int j = apun + 5; // Saltar "INSERT INTO tabla VALUES ("
             while (j < tokens.Count && tokens[j] != ")")
@@ -1416,8 +1224,6 @@ namespace Escaner_DML
                     valores.Add(tokens[j].Trim('\''));
                 j++;
             }
-
-            // Almacenar los datos
             if (!datosTablas.ContainsKey(tabla.noTabla))
                 datosTablas[tabla.noTabla] = new List<List<string>>();
             datosTablas[tabla.noTabla].Add(valores);
@@ -1425,36 +1231,24 @@ namespace Escaner_DML
         List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRestricciones)> tablas = new List<(int, string, int, int)>();
         List<(int noTabla, int noAtributo, string nombreAtributo, string tipo, int longitud, int noNull, int noAtributoTabla)> atributos = new List<(int, int, string, string, int, int, int)>();
         List<(int noTabla, int noRestriccion, int Tipo, string nombreRestriccion, int atributoAsociado, int Tabla, int atributo)> restricciones = new List<(int, int, int, string, int, int, int)>();
-        
         List<(string tabla, string alias, int linea)> listaFrom = new List<(string tabla, string alias, int linea)>();
         List<(string tabla, string atributo, int linea)> listaSelect = new List<(string tabla, string atributo, int linea)>();
         List<(string tabla, string atributo, string tipo, int linea)> listaWhere = new List<(string tabla, string atributo, string tipo, int linea)>();
 
         public bool BuscarAtributoPorLinea(string atributoSc)
         {
-            // Buscar en listaSelect y listaWhere, asegurando que la línea no sea 1
             bool encontrado = listaSelect.Any(s => s.atributo == atributoSc && s.linea != 1) ||
                              listaWhere.Any(w => w.atributo == atributoSc && w.linea != 1);
-
-            // Verificar si el atributo existe en la lista de atributos
             bool atributoValido = atributos.Any(a => a.nombreAtributo.Equals(atributoSc, StringComparison.OrdinalIgnoreCase));
-
-            // Retornar true solo si se encuentra en listaSelect o listaWhere con línea != 1 y es un atributo válido
             return encontrado && atributoValido;
         }
-
         public bool ValidarAtributoEnTabla(string atributoCalificado)
         {
-            // Separar tabla y atributo
             if (!atributoCalificado.Contains('.')) return false;
-
             var partes = atributoCalificado.Split('.');
             if (partes.Length != 2) return false;
-
             string nombreTabla = partes[0];
             string nombreAtributo = partes[1];
-
-            // 1. Verificar si la tabla está en listaFrom
             bool tablaEnFrom = listaFrom.Any(f => f.tabla == nombreTabla);
             if (!tablaEnFrom)
             {
@@ -1463,13 +1257,11 @@ namespace Escaner_DML
 
                 if (fromCoincidente != default)
                 {
-                    // Verificar si el atributo existe en la tabla
                     var tabla2 = tablas.FirstOrDefault(t => t.nombreTabla.Equals(fromCoincidente.tabla,
                                                 StringComparison.OrdinalIgnoreCase));
                     bool atributoExiste2 = atributos.Any(a =>
                         a.noTabla == tabla2.noTabla &&
                         a.nombreAtributo.Equals(nombreAtributo, StringComparison.OrdinalIgnoreCase));
-
                     if (!atributoExiste2)
                     {
                         return false;
@@ -1482,23 +1274,18 @@ namespace Escaner_DML
             // 2. Obtener noTabla
             var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
             if (tabla == default) return false;
-
             // 3. Verificar si el atributo pertenece a esa tabla
             bool atributoExiste = atributos.Any(a =>
                 a.noTabla == tabla.noTabla &&
                 a.nombreAtributo == nombreAtributo);
-
             return atributoExiste;
         }
-        
+
         private bool VerificarValorExiste(int noTablaRef, string nombreAtributoRef, string valor, int tabla)
         {
             string tipoDato = "";
             if (!datosTablas.ContainsKey(tabla))
                 return false;
-
-
-            
             var atributosTabla = atributos
                 .Where(a => a.noTabla == noTablaRef)
                 .OrderBy(a => a.noAtributoTabla)
@@ -1506,7 +1293,6 @@ namespace Escaner_DML
             int indiceAttr = atributosTabla.FindIndex(a => a.nombreAtributo == nombreAtributoRef);
             if (indiceAttr == -1)
                 return false;
-
             if (constantes.IsMatch(valor))
                 tipoDato = "CHAR";
             else if (constantesTL.IsMatch(valor))
@@ -1515,21 +1301,14 @@ namespace Escaner_DML
             {
                 if (atributosTabla[indiceAttr].longitud == valor.Length - 2)
                 {
-                    
                     return true;
-                    
                 }
                 else
                     return false;
-
             }
             else
                 return false;
-
-
-
         }
-
         public bool ValidarLlaveForaneaInsert(
     string nombreTabla,
     List<string> valores,
@@ -1538,7 +1317,6 @@ namespace Escaner_DML
     out bool errorSemantico)
         {
             errorSemantico = false;
-
             // Obtener la tabla destino
             var tabla = tablas.FirstOrDefault(t => t.nombreTabla == nombreTabla);
             if (tabla.Equals(default))
@@ -1547,20 +1325,17 @@ namespace Escaner_DML
                 errorSemantico = true;
                 return false;
             }
-
             // Obtener atributos en orden
             var attrs = atributos
                 .Where(a => a.noTabla == tabla.noTabla)
                 .OrderBy(a => a.noAtributoTabla)
                 .ToList();
-
             if (attrs.Count != valores.Count)
             {
                 Errores.validarCantidadAtributos(txtError, linea);
                 errorSemantico = true;
                 return false;
             }
-
             // Mapear valores a atributos
             var valoresPorAtributo = new Dictionary<string, string>();
             for (int i = 0; i < attrs.Count; i++)
@@ -1592,7 +1367,6 @@ namespace Escaner_DML
                     return false;
                 }
             }
-
             return true;
         }
         public List<string> nombrePerteneceATabla()
@@ -1975,11 +1749,6 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                                 identificadorInvalido = $"{nombreTabla}.{nombreAtributo}";
                                 return false;
                             }
-                            //if (!tablaExiste2)
-                            //{
-                            //    identificadorInvalido = $"{nombreTabla}.{nombreAtributo}";
-                            //    return false;
-                            //}
                             else
                                 continue;
                         }
