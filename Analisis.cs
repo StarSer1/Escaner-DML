@@ -41,7 +41,7 @@ namespace Escaner_DML
             this.tablas = tablas2;
             this.atributos = atributos2;
             this.restricciones = restricciones2;
-            string connectionString = @"Data Source=DESKTOP-0434B1E;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
+            string connectionString = @"Data Source=DESKTOP-GQ6Q9HG\SQLEXPRESS;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
             sqlConnection = new SqlConnection(connectionString);
             sqlDataAdapter = new SqlDataAdapter();
             dataSet = new DataSet();
@@ -1270,17 +1270,8 @@ namespace Escaner_DML
                                     {
                                         apun++;
                                         tokens.RemoveAt(tokens.Count - 1);
-                                    }
-                                    //tokens.RemoveAt(tokens.Count - 1);
-                                    //if (apun < tokens2.Count)
-                                    //    tokens.Add(tokens2[apun]);
-
+                                    }                      
                                     tokens.Add("$");
-                                    //tokens = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
-
-                                    
-                                    
-                                    //tokens = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
                                     apunN++;
                                 }
                                 else

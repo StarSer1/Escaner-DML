@@ -49,6 +49,7 @@ namespace Escaner_DML
 
             if (txtEntrada.Text != "")
             {
+                tokensForm1.Clear();
                 string textoOriginal = txtEntrada.Text;
 
                 // Paso 1: Eliminar saltos de línea y unir todo en una sola línea
@@ -78,6 +79,7 @@ namespace Escaner_DML
 
                 if (Errores.ErrorSimboloDesco(txtEntrada, txtError) == false)
                 {
+
                     cad = Analisis.CargarTexto(txtEntrada, DgvLexica, txtError, DtTablas, DtAtributos, DtRestricciones);
                     tokensForm1.Add(cad[0]);
 
