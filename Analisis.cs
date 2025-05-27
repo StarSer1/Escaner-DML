@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics.Contracts;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Printing;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Escaner_DML
@@ -41,7 +33,7 @@ namespace Escaner_DML
             this.tablas = tablas2;
             this.atributos = atributos2;
             this.restricciones = restricciones2;
-            string connectionString = @"Data Source=DESKTOP-0434B1E;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
+            string connectionString = @"Data Source=CARLOS-DESKTOP;Initial Catalog=Escuela;Integrated Security=True;"; // Aquí debes colocar tu cadena de conexión
             sqlConnection = new SqlConnection(connectionString);
             sqlDataAdapter = new SqlDataAdapter();
             dataSet = new DataSet();
@@ -84,87 +76,7 @@ namespace Escaner_DML
         }
 
         Stack<string> pila = new Stack<string>();
-        string[,] TablaSintacOG =
-        {
-//             4     8             10           11    12    13    14    15    50    51    52    53    54    61    62    72    99
-            { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
-            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
-            { "304 303", null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null}, // 302 
-            { null, null, null, "99", null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99"}, // 303
-            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, // 304
-            { null , "99", null, "99", null, "99", "99", "99", "99", "51 4", null, "99", null, null, null, null, "99" }, // 305
-            { "308 307 320", null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null}, // 306
-            {  null, null, null, null, "99", null, null, null, "50 306", null, null, "99", null, null, null, null, "99"},
-            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-            { "4", null, null, null, "99", null, null, null, "99", null, null, "99", null, null, null, null, "99"},
-            { null, null, null, null, "12 311", null, null, null, null, null, null, "99", null, null, null, null, "99" },
-            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, null, null, null, null, null, "317 311", "317 311", null, null, null, "99", null, null, null, null, "99" },
-            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null },
-            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { "304", null, null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null },
-            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null },
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null },
-            // 4    8     10    11    12
-        };
-        string[,] TablaSintacOG2 =
-        {
-            // 4     8     10    11    12    13    14    15                         16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, "16 17 4 52 202 53 55 201", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //200
-            // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99"}, //201
-            //                     4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { "4 203 52 61 53 204 205", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //202
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, "18", "19", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, //203
-            // 4     8     10    11    12    13    14    15    16    18    19       20    22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, "20 21", null, null, null, null, null, "99", null, null, null, null, null, null, null, null}, //204
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 206", null, null, "99", null, null, null, null, null}, //205
-            //  4     8     10    11    12    13    14    15    16    18    19    20     22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { "202", null, null, null, null, null, null, null, null, null, null, null, "207", null, null, null, null, null, null, null, null, null, null, null, null, null}, //206
-            // 4     8     10    11    12    13    14    15    16    18    19    20                      22    24    25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, "22 4 208 52 4 53 209", null, null, null, null, null, null, null, null, null, null, null, null, null}, //207
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22       24       25    26    27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, "24 23", "25 23", null, null, null, null, null, null, null, null, null, null, null}, //208
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25                  26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "26 4 52 4 53 210", null, "50 207", null, null, "99", null, null, null, null, null}, //209
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 207", null, null, "99", null, null, null, null, null}, //210
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26                             27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "27 28 4 29 52 212 53 55 215", null, null, null, null, null, null, null, null, null}, //211
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53         54         61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "213 214", "213 214", null, null, null}, //212
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27    50    51    52    53          54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 62 54", "61", null, null, null}, //213
-            // 4     8     10    11    12    13    14    15    16    18    19    20    22    24    25    26    27        50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "50 212", null, null, "99", null, null, null, null, null}, //214
-            // 4     8     10    11    12    13    14    15     16    18    19    20    22    24    25    26     27    50    51    52    53    54    61    62    72    99
-            { null, null, null, null, null, null, null, null, "200", null, null, null, null, null, null, null, "211", null, null, null, null, null, null, null, null, "99"}, //215
-            { null, null, "10 301 11 306 310", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}, // 300
-            { "302", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "72", null }, // 301
-            { "304 303", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null , null, null, null, null, null, null, null}, // 302 
-            { null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, null, "50 302", null, null, null, null, null, null, null,  "99"}, // 303
-            { "4 305", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null }, // 304
-            { null , "99", null, "99", null, "99", "99", "99", null, null, null, null, null, null, null, null, null, "99", "51 4", null, "99", null, null, null, null, "99" }, // 305
-            { "308 307", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, null, null}, // 306
-            {  null, null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "50 306", null, null, "99", null, null, null, null, "99"},
-            { "4 309", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-            { "4", null, null, null, "99", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, "99", null, null, null, null, "99"},
-            { null, null, null, null, "12 311", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" },
-            { "313 312", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, null, null, null, null, null, "317 311", "317 311", null, null, null, null, null, null, null, null, null, null, null, null, "99", null, null, null, null, "99" },
-            { "304 314", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, "315 316", null, null, null, "13 52 300 53", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, "8", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { "304", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "54 318 54", "319", null, null, null },
-            { null, null, null, null, null, null, "14", "15", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "62", null, null },
-            { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "61", null, null, null }
-            // 4    8     10    11    12
-        };
+        
         string[,] TablaSintac =
         {
             // 4     8     10    11    12    13    14    15                         16    18    19    20    22    24    25    26    27    50    51    52    53    54    61    62    72    99, 30
@@ -270,11 +182,11 @@ namespace Escaner_DML
         List<string> tokensConN = new List<string>();
 
         bool banderaConst = false;
-        string comillaConst = "";
+        //string comillaConst = "";
         int dondevoy = 0;
         string actual = "";
         bool insertPendiente = false;
-        public string Analizador(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
+        public string Analizador(RichTextBox texto)
         {
             string cadena = "";
             bool palabraConComilla = false;
@@ -299,7 +211,7 @@ namespace Escaner_DML
                             cadena += c;
                             tokens.Add(cadena);
                             if (cadena != "")
-                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                                //MostrarDgv(dgvLex, tokens.Last(), linea);
                             cadena = "";
                             c = "";
                         }
@@ -320,7 +232,7 @@ namespace Escaner_DML
                         {
                             tokens.Add(cadena);
                             if (cadena != "")
-                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                                //MostrarDgv(dgvLex, tokens.Last(), linea);
                             cadena = c;
                             if (i + 1 < texto.TextLength)
                             {
@@ -334,7 +246,7 @@ namespace Escaner_DML
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        //MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                     return c;
                                 }
@@ -353,9 +265,9 @@ namespace Escaner_DML
                                 cadena += c;
                                 tokens.Add(cadena);
                                 if (cadena != "")
-                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    //MostrarDgv(dgvLex, tokens.Last(), linea);
                                 return cadena;
-                                cadena = "";
+                                //cadena = "";
                             }
                             else if (constantesTL.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
                             {
@@ -474,24 +386,24 @@ namespace Escaner_DML
                     {
                         tokens.Add("'"+cadena+"'");
                         tokens.Add(c);
-                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        //MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         comillas = false;
                     }
                     else if (cadena != "" && (c == ")" || c == ",") && constantesTL.IsMatch(cadena))
                     {
                         tokens.Add(cadena);
-                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        //MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         tokens.Add(c);
-                        MostrarDgv(dgvLex, c, linea);
+                        //MostrarDgv(dgvLex, c, linea);
                     }
                     else
                     {
                         tokens.Add(cadena);
                         if (tokens.Last() != "")
-                            MostrarDgv(dgvLex, tokens.Last(), linea);
+                            //MostrarDgv(dgvLex, tokens.Last(), linea);
                         tokens.Add(c);
                         if (c != "")
-                            MostrarDgv(dgvLex, c, linea);
+                            //MostrarDgv(dgvLex, c, linea);
                         if (cadena == "")
                         {
                             actual = c;
@@ -664,9 +576,6 @@ namespace Escaner_DML
             comenzoWhere = false;
         }
         public void tab(
-    DataGridView dtTab,
-    DataGridView dtAtb,
-    DataGridView dtRes,
     List<string> tokens)
         {
             List<string> tokens2 = new List<string>();
@@ -714,7 +623,7 @@ namespace Escaner_DML
                         {
                             string tablaBuscar = tokens2[i + 2];
                             bool existeTabla = tablas.Any(t => t.nombreTabla == tablaBuscar);
-                            dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
+                            //dtTab.Rows.Add(noTabla, tokens2[i + 2], atributos);
                             tablas.Add((noTabla, tokens2[i + 2], 0, 0));
                             noTabla++;
 
@@ -737,7 +646,7 @@ namespace Escaner_DML
                                         noAtributoTemp = 1;
                                         noTablaTemp = noTabla;
                                     }
-                                    dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 1, noAtributoTemp);
+                                    //dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 1, noAtributoTemp);
                                     atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], Convert.ToInt32(tokens2[i + 3]), 1, noAtributoTemp));
                                     noAtributo++;
                                 }
@@ -752,7 +661,7 @@ namespace Escaner_DML
                                         noAtributoTemp = 1;
                                         noTablaTemp = noTabla;
                                     }
-                                    dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 0, noAtributoTemp);
+                                    //dtAtb.Rows.Add(noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], tokens2[i + 3], 0, noAtributoTemp);
                                     atributos.Add((noTabla - 1, noAtributo, tokens2[i], tokens2[i + 1], int.Parse(tokens2[i + 3]), 0, noAtributoTemp));
                                     noAtributo++;
                                 }
@@ -774,13 +683,13 @@ namespace Escaner_DML
                                     .FirstOrDefault();
                                     if (atributoAsociado != null)
                                     {
-                                        dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
+                                        //dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], atributoAsociado, "-", "-");
                                         restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), -1, -1));
                                         noRestriccion++;
                                     }
                                     else
                                     {
-                                        dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], "N/A", "-", "-");
+                                        //dtRes.Rows.Add(noTabla - 1, noRestriccion, 1, tokens2[i + 1], "N/A", "-", "-");
                                         restricciones.Add((noTabla - 1, noRestriccion, 1, tokens2[i + 1], -1, -1, -1));
                                         noRestriccion++;
                                     }
@@ -806,13 +715,13 @@ namespace Escaner_DML
                                     .FirstOrDefault();
                                     if (atributoAsociado != null && noTablaDT != null && noAtributo != null)
                                     {
-                                        dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
+                                        //dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], atributoAsociado, int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo)));
                                         restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], int.Parse(Convert.ToString(atributoAsociado)), int.Parse(Convert.ToString(noTablaDT)), int.Parse(Convert.ToString(noAtributo))));
                                         noRestriccion++;
                                     }
                                     else
                                     {
-                                        dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], "N/A", "N/A", "N/A");
+                                        //dtRes.Rows.Add(noTabla - 1, noRestriccion, 2, tokens2[i + 1], "N/A", "N/A", "N/A");
                                         restricciones.Add((noTabla - 1, noRestriccion, 2, tokens2[i + 1], -1, -1, -1));
                                         noRestriccion++;
                                     }
@@ -840,19 +749,19 @@ namespace Escaner_DML
 
             tablas = tablasConConteo;
 
-            dtTab.Rows.Clear();
+            //dtTab.Rows.Clear();
 
-            foreach (var tabla in tablas)
-            {
-                dtTab.Rows.Add(tabla.noTabla, tabla.nombreTabla, tabla.cantidadAtributos, tabla.cantidadRestricciones);
-            }
+            //foreach (var tabla in tablas)
+            //{
+            //    dtTab.Rows.Add(tabla.noTabla, tabla.nombreTabla, tabla.cantidadAtributos, tabla.cantidadRestricciones);
+            //}
 
 
 
 
         }
 
-        public bool Sintaxis(List<string> tokens, TextBox texto, RichTextBox ennt, DataGridView dgvLex, List<string> cad, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
+        public bool Sintaxis(List<string> tokens, TextBox texto, RichTextBox ennt, List<string> cad, TextBox txtError)
         {
             try
             {
@@ -1189,11 +1098,11 @@ namespace Escaner_DML
                                             }
                                             apun++;
                                             tokens.RemoveAt(tokens.Count - 1);
-                                            actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                            actual = Analizador(ennt);
                                             while (actual == "")
                                             {                                               
                                                 dondevoy++;
-                                                actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                                actual = Analizador(ennt);
 
                                             }
                                             if( banderaConst == true)
@@ -1258,9 +1167,9 @@ namespace Escaner_DML
                                             tokensConN.Add(tokens[0]);
                                             apun++;
                                             tokens.RemoveAt(tokens.Count - 1);
-                                            actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                            actual = Analizador(ennt);
                                             dondevoy = dondevoy + 1;
-                                            actual = Analizador(ennt, dgvLex, txtError, dgvTabla, dgvAtributos, dgvRestriccion);
+                                            actual = Analizador(ennt);
                                             dondevoy = dondevoy + 1;
                                             tokensConN.Add(actual);
                                             tokens.Add(actual);
@@ -2269,7 +2178,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
             return salida;
         }
         #region Texto
-        public List<string> CargarTexto(RichTextBox texto, DataGridView dgvLex, TextBox txtError, DataGridView dgvTabla, DataGridView dgvAtributos, DataGridView dgvRestriccion)
+        public List<string> CargarTexto(RichTextBox texto)
         {
             string cadena = "";
             int linea = 1;
@@ -2293,7 +2202,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                             cadena += c;
                             tokens.Add(cadena);
                             if (cadena != "")
-                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                                //MostrarDgv(dgvLex, tokens.Last(), linea);
                             cadena = "";
                             c = "";
                         }
@@ -2310,7 +2219,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                         {
                             tokens.Add(cadena);
                             if (cadena != "")
-                                MostrarDgv(dgvLex, tokens.Last(), linea);
+                                //MostrarDgv(dgvLex, tokens.Last(), linea);
                             cadena = c;
                             if (i + 1 < texto.TextLength)
                             {
@@ -2324,7 +2233,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        //MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                 }
                             }
@@ -2342,7 +2251,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                                 cadena += c;
                                 tokens.Add(cadena);
                                 if (cadena != "")
-                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    //MostrarDgv(dgvLex, tokens.Last(), linea);
                                 cadena = "";
                             }
                             else if (constantesTL.IsMatch(siguienteChar.ToString()) || char.IsLetter(siguienteChar))
@@ -2364,7 +2273,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                                 tokens.Add(cadena);
                                 //tokens.Add(c);
                                 if (cadena != "")
-                                    MostrarDgv(dgvLex, tokens.Last(), linea);
+                                    //MostrarDgv(dgvLex, tokens.Last(), linea);
                                 cadena = "";
                             }
                             else if (tokens.Count != 0)
@@ -2373,7 +2282,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        //MostrarDgv(dgvLex, tokens.Last(), linea);
                                     sigo = true;
                                     cadena = "";
 
@@ -2382,7 +2291,7 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        //MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
 
                                 }
@@ -2398,14 +2307,14 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
 
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        //MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                 }
                                 else
                                 {
                                     tokens.Add(cadena);
                                     if (cadena != "")
-                                        MostrarDgv(dgvLex, tokens.Last(), linea);
+                                        //MostrarDgv(dgvLex, tokens.Last(), linea);
                                     cadena = "";
                                 }
                             }
@@ -2443,24 +2352,24 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
                     {
                         tokens.Add("'" + cadena + "'");
                         tokens.Add(c);
-                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        //MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         comillas = false;
                     }
                     else if (cadena != "" && (c == ")" || c == ",") && constantesTL.IsMatch(cadena))
                     {
                         tokens.Add(cadena);
-                        MostrarDgv(dgvLex, tokens.Last() + "~", linea);
+                        //MostrarDgv(dgvLex, tokens.Last() + "~", linea);
                         tokens.Add(c);
-                        MostrarDgv(dgvLex, c, linea);
+                        //MostrarDgv(dgvLex, c, linea);
                     }
                     else
                     {
                         tokens.Add(cadena);
-                        if (tokens.Last() != "")
-                            MostrarDgv(dgvLex, tokens.Last(), linea);
+                        //if (tokens.Last() != "")
+                        //    MostrarDgv(dgvLex, tokens.Last(), linea);
                         tokens.Add(c);
-                        if (c != "")
-                            MostrarDgv(dgvLex, c, linea);
+                        //if (c != "")
+                        //    MostrarDgv(dgvLex, c, linea);
                     }
                     cadena = "";
 
@@ -2541,66 +2450,66 @@ ref List<(int noTabla, string nombreTabla, int cantidadAtributos, int cantidadRe
             return salida;
         }
 
-        public void MostrarDgv(DataGridView dgvLex, string token, int linea)
-        {
-            tablaSimbolos.TryGetValue(token, out int valor);
-            if (reservadas.IsMatch(token))
-            {
-                dgvLex.Rows.Add(contador, linea, token, 1, valor);
-            }
-            else if (delimitadores.IsMatch(token))
-            {
-                dgvLex.Rows.Add(contador, linea, token, 5, valor);
-            }
-            else if (operadores.IsMatch(token))
-            {
-                dgvLex.Rows.Add(contador, linea, token, 7, valor);
-            }
-            else if (token.Contains('~'))
-            {
-                dgvLex.Rows.Add(contador, linea, "CONSTANTE", 6, valorConstante);
-                //dgvCons.Rows.Add(contador, token.Remove(token.Length - 1), 62, valorConstante);
-                valorConstante++;
-            }
-            else if (constantesTL.IsMatch(token))
-            {
-                dgvLex.Rows.Add(contador, linea, token, 6, valorConstante);
-                //if (Regex.IsMatch(token, @"^\d+$"))
-                    //dgvCons.Rows.Add(contador, token, 61, valorConstante);
-                if (Regex.IsMatch(token, @"^[a-zA-Z0-9]+$"))
-                    //dgvCons.Rows.Add(contador, token, 62, valorConstante);
-                    valorConstante++;
-            }
-            else if (relacionales.IsMatch(token))
-            {
-                dgvLex.Rows.Add(contador, linea, token, 8, valor);
-            }
-            else
-            {
-                bool encontrado = false;
+        //public void MostrarDgv(DataGridView dgvLex, string token, int linea)
+        //{
+        //    tablaSimbolos.TryGetValue(token, out int valor);
+        //    if (reservadas.IsMatch(token))
+        //    {
+        //        dgvLex.Rows.Add(contador, linea, token, 1, valor);
+        //    }
+        //    else if (delimitadores.IsMatch(token))
+        //    {
+        //        dgvLex.Rows.Add(contador, linea, token, 5, valor);
+        //    }
+        //    else if (operadores.IsMatch(token))
+        //    {
+        //        dgvLex.Rows.Add(contador, linea, token, 7, valor);
+        //    }
+        //    else if (token.Contains('~'))
+        //    {
+        //        dgvLex.Rows.Add(contador, linea, "CONSTANTE", 6, valorConstante);
+        //        //dgvCons.Rows.Add(contador, token.Remove(token.Length - 1), 62, valorConstante);
+        //        valorConstante++;
+        //    }
+        //    else if (constantesTL.IsMatch(token))
+        //    {
+        //        dgvLex.Rows.Add(contador, linea, token, 6, valorConstante);
+        //        //if (Regex.IsMatch(token, @"^\d+$"))
+        //        //dgvCons.Rows.Add(contador, token, 61, valorConstante);
+        //        if (Regex.IsMatch(token, @"^[a-zA-Z0-9]+$"))
+        //            //dgvCons.Rows.Add(contador, token, 62, valorConstante);
+        //            valorConstante++;
+        //    }
+        //    else if (relacionales.IsMatch(token))
+        //    {
+        //        dgvLex.Rows.Add(contador, linea, token, 8, valor);
+        //    }
+        //    else
+        //    {
+        //        bool encontrado = false;
 
-                for (int i = 0; i < dgvLex.Rows.Count; i++)
-                {
-                    if (dgvLex.Rows[i].Cells[2].Value != null && dgvLex.Rows[i].Cells[2].Value.ToString() == token)
-                    {
-                        if (dgvLex.Rows[i].Cells[4].Value != null)
-                        {
-                            dgvLex.Rows.Add(contador, linea, token, 4, dgvLex.Rows[i].Cells[4].Value);
-                        }
-                        encontrado = true;
-                        break;
-                    }
-                }
-                if (encontrado ==  false)
-                {
-                    dgvLex.Rows.Add(contador, linea, token, 4, valorIdentificador);
-                    //dgvIden.Rows.Add(token, valorIdentificador, linea);
-                    valorIdentificador++;
-                    encontrado = false;
-                }
-            }
-            contador++;
-        }
+        //        for (int i = 0; i < dgvLex.Rows.Count; i++)
+        //        {
+        //            if (dgvLex.Rows[i].Cells[2].Value != null && dgvLex.Rows[i].Cells[2].Value.ToString() == token)
+        //            {
+        //                if (dgvLex.Rows[i].Cells[4].Value != null)
+        //                {
+        //                    dgvLex.Rows.Add(contador, linea, token, 4, dgvLex.Rows[i].Cells[4].Value);
+        //                }
+        //                encontrado = true;
+        //                break;
+        //            }
+        //        }
+        //        if (encontrado == false)
+        //        {
+        //            dgvLex.Rows.Add(contador, linea, token, 4, valorIdentificador);
+        //            //dgvIden.Rows.Add(token, valorIdentificador, linea);
+        //            valorIdentificador++;
+        //            encontrado = false;
+        //        }
+        //    }
+        //    contador++;
+        //}
         public string ConvertirToken(string token)
         {
             if (tablaSimbolos.TryGetValue(token, out int valor))
