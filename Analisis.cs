@@ -65,9 +65,9 @@ namespace Escaner_DML
             }
             catch (Exception ex)
             {
-                if (ex.Message == "No se puede encontrar la tabla 0.")
+                if (ex.Message == "No se puede encontrar la tabla 0." || ex.Message == "Cannot find table 0.")
                 {
-
+                    
                 }
                 else
                 {
